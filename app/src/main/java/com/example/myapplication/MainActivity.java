@@ -142,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
                             if (document.exists()) {
                                 cashValue = document.getLong("point").intValue();
                                 pointNum.setText(Integer.toString(cashValue));
-                                editTextNumber.setText(Integer.toString(cashValue));
+                                editTextNumber.setHint(Integer.toString(cashValue)); // 힌트로 출력
                                 // 가져온 Cash 값을 사용할 수 있습니다.
                             } else {
                                 Log.d("MainActivity", "No such document");
