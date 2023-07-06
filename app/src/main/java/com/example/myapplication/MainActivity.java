@@ -1,12 +1,17 @@
 package com.example.myapplication;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.MenuItem;
 
@@ -36,8 +41,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
-
-    // GIT 연동 완료
 
     //네비게이션바
     private BottomNavigationView bottomNavigationView;
@@ -143,7 +146,7 @@ public class MainActivity extends AppCompatActivity {
                             if (document.exists()) {
                                 cashValue = document.getLong("point").intValue();
                                 pointNum.setText(Integer.toString(cashValue));
-                                editTextNumber.setText(Integer.toString(cashValue));
+                                editTextNumber.setHint(Integer.toString(cashValue)); // 힌트로 출력
                                 // 가져온 Cash 값을 사용할 수 있습니다.
                             } else {
                                 Log.d("MainActivity", "No such document");
@@ -185,4 +188,50 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+
+    // 다른 앱 위에 표시 권한
+    private void showPermissionDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("다른 앱 위에 표시 권한 요청");
+        builder.setMessage("이 앱은 다른 앱 위에 표시되는 기능이 있습니다. 허용하시겠습니까?");
+
+        builder.setPositiveButton("허용", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                requestOverlayPermission();
+            }
+        });
+
+        builder.setNegativeButton("거부", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                // 거절 시 처리 코드
+                finish();
+            }
+        });
+
+        builder.show();
+    }
+
+    private void requestOverlayPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (!Settings.canDrawOverlays(this)) {
+                Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                        Uri.parse("package:" + getPackageName()));
+                startActivityForResult(intent, 100);
+            }
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (!Settings.canDrawOverlays(this)) {
+                showPermissionDialog();
+            }
+        }
+    }
+
 }
