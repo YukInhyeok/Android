@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
     <application
         android:allowBackup="true"
@@ -18,16 +19,22 @@
         <activity
             android:name=".MyInfo"
             android:exported="false" />
-        <activity android:name=".ChatGpt"
-            android:windowSoftInputMode="adjustPan"/>
-        <activity android:name=".book.BookMainActivity"
+        <activity
+            android:name=".ChatGpt"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".book.BookMainActivity"
             android:exported="true"
-            android:windowSoftInputMode="adjustPan"/>
-        <receiver android:name=".screen.ScreenReceiver"></receiver>
-        <service android:name=".screen.ScreenService"></service>
-        <activity android:name=".screen.lockscreen"></activity>
+            android:windowSoftInputMode="adjustPan" />
 
-        <receiver android:name=".screen.BootCompletedReceiver"
+        <receiver android:name=".screen.ScreenReceiver" />
+
+        <service android:name=".screen.ScreenService" />
+
+        <activity android:name=".screen.lockscreen" />
+
+        <receiver
+            android:name=".screen.BootCompletedReceiver"
             android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
