@@ -1,12 +1,10 @@
 package com.example.myapplication;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
-
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
@@ -14,13 +12,18 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.MenuItem;
-
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.example.myapplication.book.BookMainActivity;
 import com.example.myapplication.screen.ScreenService;
@@ -47,6 +50,13 @@ public class MainActivity extends AppCompatActivity {
     //포인트 관련
     private ConstraintLayout constraintLayout;
     private TextView my_point;
+
+    // 사용시간
+    private TextView evgTextView;
+    private BroadcastReceiver usageTimeReceiver;
+
+    private int usageTime = 0;
+
     private TextView textView7;
     private ImageView imageView2;
     private EditText editTextNumber;
@@ -59,9 +69,24 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        // 사용시간을 보여주는 텍스트 뷰
+        evgTextView = findViewById(R.id.evg);
+
+        usageTimeReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                long usageTime = intent.getLongExtra("usageTime", 0);
+                updateUsageTime(usageTime);
+            }
+
+        };
+        IntentFilter filter = new IntentFilter("com.example.myapplication.USAGE_TIME_UPDATE");
+        LocalBroadcastManager.getInstance(this).registerReceiver(usageTimeReceiver, filter);
 
         //LookScreen 설정
         startService(new Intent(MainActivity.this, ScreenService.class));
+
+        updatePointNum();
 
         // BottomNavigationView 초기화
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
@@ -163,6 +188,10 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
     }
 
+    private void updateEvgTextView() {
+        evgTextView.setText(String.valueOf(usageTime));
+    }
+
 
     private void setData(RadarChart radarChart) {
         ArrayList<RadarEntry> entries = new ArrayList<>();
@@ -232,6 +261,17 @@ public class MainActivity extends AppCompatActivity {
                 showPermissionDialog();
             }
         }
+    }
+
+    protected void onDestroy() {
+        super.onDestroy();
+        // BroadcastReceiver 등록 해제
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(usageTimeReceiver);
+    }
+
+    private void updateUsageTime(long usageTime) {
+        // 사용시간을 업데이트하여 화면에 표시
+        evgTextView.setText(String.valueOf( usageTime/60 + " 분"+usageTime % 60 + " 초"));
     }
 
 }

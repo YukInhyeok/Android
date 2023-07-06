@@ -36,4 +36,8 @@ public class lockscreen extends AppCompatActivity {
             }
         });
     }
+
+    protected void onBackpressed(){
+
+    }
 }
