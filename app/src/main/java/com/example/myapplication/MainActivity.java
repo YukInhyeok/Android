@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.myapplication.book.BookMainActivity;
 import com.example.myapplication.screen.ScreenService;
@@ -83,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // 초기 선택된 네비게이션 아이템 설정
+        // 초기 선택된 네비게이션 아이템 설정.
         bottomNavigationView.setSelectedItemId(R.id.menu_home);
 
         // 레이더 차트 추가
@@ -115,6 +116,7 @@ public class MainActivity extends AppCompatActivity {
                             public void onSuccess(Void aVoid) {
                                 Log.d("MainActivity", "DocumentSnapshot successfully updated!");
                                 updatePointNum(); // 포인트 사용 후 화면 업데이트
+                                showMessage(inputPoint + "포인트가 사용되었습니다"); // 메시지 표시
                             }
                         })
                         .addOnFailureListener(new OnFailureListener() {
@@ -151,6 +153,12 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
     }
+
+    //클릭 메소드
+    private void showMessage(String message) {
+        Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
+    }
+
 
     private void setData(RadarChart radarChart) {
         ArrayList<RadarEntry> entries = new ArrayList<>();
