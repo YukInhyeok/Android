@@ -35,6 +35,8 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
+    // GIT 연동 완료
+
     //네비게이션바
     private BottomNavigationView bottomNavigationView;
     //포인트 관련
