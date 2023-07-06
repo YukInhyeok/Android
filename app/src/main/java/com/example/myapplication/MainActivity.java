@@ -97,6 +97,35 @@ public class MainActivity extends AppCompatActivity {
         point = findViewById(R.id.point);
         pointNum = findViewById(R.id.point_num);
 
+        updatePointNum(); // 데이터를 가져와 화면을 업데이트하는 코드 호출
+        point.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int inputPoint = Integer.parseInt(editTextNumber.getText().toString());
+                int remainingPoint = cashValue - inputPoint;
+
+                FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+                db.collection("UserCoin").document("Coin")
+                        .update("point", remainingPoint)
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Log.d("MainActivity", "DocumentSnapshot successfully updated!");
+                                updatePointNum(); // 포인트 사용 후 화면 업데이트
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.w("MainActivity", "Error updating document", e);
+                            }
+                        });
+            }
+        });
+    }
+
+    private void updatePointNum() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         db.collection("UserCoin").document("Coin")
@@ -119,29 +148,6 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 });
-
-        point.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int inputPoint = Integer.parseInt(editTextNumber.getText().toString());
-                int remainingPoint = cashValue - inputPoint;
-
-                db.collection("UserCoin").document("Coin")
-                        .update("point", remainingPoint)
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                Log.d("MainActivity", "DocumentSnapshot successfully updated!");
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Log.w("MainActivity", "Error updating document", e);
-                            }
-                        });
-            }
-        });
     }
 
     private void setData(RadarChart radarChart) {
