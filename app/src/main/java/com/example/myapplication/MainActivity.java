@@ -44,10 +44,7 @@ public class MainActivity extends AppCompatActivity {
     //네비게이션바
     private BottomNavigationView bottomNavigationView;
     //포인트 관련
-    private ConstraintLayout constraintLayout;
-    private TextView my_point;
-    private TextView textView7;
-    private ImageView imageView2;
+
     private EditText editTextNumber;
     private Button point;
     private TextView pointNum;
@@ -95,10 +92,6 @@ public class MainActivity extends AppCompatActivity {
         setData(radarChart);
 
         // 포인트 관련
-        constraintLayout = findViewById(R.id.constraintLayout);
-        my_point = findViewById(R.id.my_point);
-        textView7 = findViewById(R.id.textView7);
-        imageView2 = findViewById(R.id.imageView2);
         editTextNumber = findViewById(R.id.editTextNumber);
         point = findViewById(R.id.point);
         pointNum = findViewById(R.id.point_num);
@@ -232,5 +225,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+    public void onBackPressed(){
 
+    }
 }
