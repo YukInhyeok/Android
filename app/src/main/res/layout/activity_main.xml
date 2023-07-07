@@ -30,7 +30,9 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="364dp"
             android:layout_height="203dp"
+            android:layout_marginStart="8dp"
             android:layout_marginTop="96dp"
+            android:layout_marginEnd="8dp"
             android:background="@drawable/roundstyle20dp"
             android:backgroundTint="#80ED99"
             app:layout_constraintEnd_toEndOf="parent"
@@ -71,39 +73,39 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="28dp"
-            android:layout_marginBottom="388dp"
+            android:layout_marginTop="330dp"
             android:fontFamily="@font/omnigodic"
-            android:text="Today's "
+            android:text="Today's Goal"
             android:textColor="#212529"
-            android:textSize="20sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            android:textSize="28sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/evg"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="36dp"
-            android:layout_marginBottom="352dp"
+            android:layout_marginStart="36dp"
+            android:layout_marginTop="16dp"
             android:fontFamily="@font/omnigodic"
-            android:text="평균까지 ___% 남았습니다"
+            android:text="시간 : 0  / 120 분 "
             android:textColor="#212529"
-            android:textSize="23sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            android:textSize="24sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/today" />
 
         <TextView
             android:id="@+id/book"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="40dp"
-            android:layout_marginBottom="304dp"
+            android:layout_marginStart="36dp"
+            android:layout_marginTop="16dp"
             android:fontFamily="@font/omnigodic"
-            android:text="오늘 읽은 책은 __권입니다"
+            android:text="책 : 0 / 3 권 "
             android:textColor="#212529"
-            android:textSize="23sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            android:textSize="24sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/evg" />
 
         <TextView
             android:id="@+id/rank"
@@ -122,61 +124,69 @@
             android:id="@+id/constraintLayout"
             android:layout_width="357dp"
             android:layout_height="150dp"
-            android:layout_marginBottom="96dp"
+            android:layout_marginTop="480dp"
             android:background="@drawable/roundstyle20dp"
             android:backgroundTint="#FFFFFF"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.444"
-            app:layout_constraintStart_toStartOf="parent">
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <TextView
                 android:id="@+id/my_point"
-                android:layout_width="114dp"
-                android:layout_height="21dp"
-                android:layout_marginLeft="16dp"
+                android:layout_width="135dp"
+                android:layout_height="42dp"
+                android:layout_marginStart="24dp"
                 android:layout_marginTop="16dp"
                 android:fontFamily="@font/omnigodic"
+                android:gravity="center"
                 android:text="내 포인트"
-                android:textSize="20sp"
+                android:textColor="#3F51B5"
+                android:textSize="30sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+
             <TextView
                 android:id="@+id/point_num"
-                android:layout_width="130dp"
-                android:layout_height="30dp"
-                android:layout_marginBottom="80dp"
-                android:layout_marginLeft="40dp"
+                android:layout_width="110dp"
+                android:layout_height="42dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="16dp"
+                android:gravity="center"
                 android:inputType="number"
+                android:paddingTop="1dp"
+                android:paddingBottom="1dp"
                 android:textAlignment="center"
-                android:textSize="20sp"
+                android:textColor="#FFC107"
+                android:textSize="30sp"
                 android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"/>
+                app:layout_constraintStart_toEndOf="@+id/my_point"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/textView7"
                 android:layout_width="82dp"
                 android:layout_height="42dp"
-                android:layout_marginLeft="164dp"
-                android:layout_marginBottom="28dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="80dp"
                 android:fontFamily="@font/omnigodic"
+                android:gravity="center"
                 android:text="포인트"
                 android:textColor="#000000"
-                android:textSize="24sp"
+                android:textSize="20sp"
                 android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toEndOf="@+id/editTextNumber"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
                 android:id="@+id/imageView2"
-                android:layout_width="57dp"
-                android:layout_height="47dp"
-                android:layout_marginLeft="170dp"
+                android:layout_width="42dp"
+                android:layout_height="42dp"
+                android:layout_marginStart="10dp"
                 android:layout_marginTop="16dp"
                 android:src="@drawable/_528"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/point_num"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <EditText
@@ -184,34 +194,35 @@
                 android:layout_width="148dp"
                 android:layout_height="49dp"
                 android:layout_marginLeft="12dp"
-                android:layout_marginBottom="28dp"
+                android:layout_marginTop="80dp"
                 android:ems="10"
                 android:fontFamily="@font/omnigodic"
                 android:gravity="right"
                 android:inputType="number"
-                android:textSize="24sp"
+                android:textSize="20sp"
                 android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <Button
                 android:id="@+id/point"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="230dp"
-                android:layout_marginTop="16dp"
+                android:layout_width="91dp"
+                android:layout_height="42dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="80dp"
                 android:background="@drawable/roundstyle10dp"
                 android:backgroundTint="#232323"
                 android:fontFamily="@font/omnigodic"
                 android:inputType="number"
+                android:paddingLeft="1dp"
+                android:paddingRight="1dp"
                 android:text="포인트 사용"
                 android:textColor="#DFDFDF"
                 android:textSize="13sp"
                 android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/textView7"
                 app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
-
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottomNavigationView"

@@ -2,7 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#C7F9CC">
 
     <FrameLayout
         android:id="@+id/container"
@@ -21,10 +22,10 @@
                 android:layout_height="wrap_content"
                 app:tabMode="fixed"
                 app:tabGravity="fill"
+                android:background="#C7F9CC"
                 app:tabTextColor="?colorPrimary"
                 app:tabSelectedTextColor="?colorAccent"
-                android:elevation="1dp"
-                android:background="@android:color/background_light" />
+                android:elevation="1dp" />
         </com.google.android.material.appbar.AppBarLayout>
 
     </FrameLayout>

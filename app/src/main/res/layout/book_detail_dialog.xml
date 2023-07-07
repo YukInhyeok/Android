@@ -1,0 +1,31 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/tv_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/omnigodic"
+        android:text="책이름: Name"
+        android:textSize="23sp" />
+
+    <TextView
+        android:id="@+id/tv_author"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/omnigodic"
+        android:text="저자: Author"
+        android:textSize="21sp" />
+
+    <TextView
+        android:id="@+id/tv_contents"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/omnigodic"
+        android:text="줄거리: Contents"
+        android:textSize="19sp" />
+</LinearLayout>
