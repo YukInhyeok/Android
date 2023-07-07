@@ -2,38 +2,41 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:gravity="center_horizontal"
         android:orientation="vertical">
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="180px"
-            android:gravity="center"
-            android:text="현재는 핸드폰을 사용할 수 없습니다."
-            android:layout_marginTop="180sp"
-            android:textStyle="bold"
-            android:textSize="25sp">
-        </TextView>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="180px"
+            android:layout_marginTop="180sp"
+            android:fontFamily="@font/omnigodic"
+            android:gravity="center"
+            android:text="현재는 핸드폰을 사용할 수 없습니다."
+            android:textColor="#FF0000"
+            android:textSize="24sp"
+            android:textStyle="bold"></TextView>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="180px"
+            android:fontFamily="@font/omnigodic"
             android:gravity="center"
             android:text="문제를 해결하도록 합시다."
-            android:textStyle="bold"
-            android:textSize="25sp">
-        </TextView>
+            android:textSize="25sp"
+            android:textStyle="bold"></TextView>
 
         <Button
             android:id="@+id/going_btn"
+            android:layout_width="381dp"
             android:layout_height="200px"
-            android:layout_width="match_parent"
             android:layout_marginTop="250px"
+            android:fontFamily="@font/omnigodic"
             android:gravity="center"
             android:text="앱으로 돌아가기"
-            android:textSize="28sp"
-            >
-        </Button>
+            android:textSize="28sp"></Button>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
