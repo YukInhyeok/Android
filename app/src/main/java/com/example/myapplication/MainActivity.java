@@ -1,6 +1,7 @@
 package com.example.myapplication;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -35,7 +36,9 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 
 import java.util.ArrayList;
 
@@ -96,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
         point = findViewById(R.id.point);
         pointNum = findViewById(R.id.point_num);
 
-        updatePointNum(); // 데이터를 가져와 화면을 업데이트하는 코드 호출
+        initPointListener();
         point.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -111,7 +114,6 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void onSuccess(Void aVoid) {
                                 Log.d("MainActivity", "DocumentSnapshot successfully updated!");
-                                updatePointNum(); // 포인트 사용 후 화면 업데이트
                                 showMessage(inputPoint + "포인트가 사용되었습니다"); // 메시지 표시
                             }
                         })
@@ -125,26 +127,23 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void updatePointNum() {
+    private void initPointListener() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         db.collection("UserCoin").document("Coin")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                .addSnapshotListener(new EventListener<DocumentSnapshot>() {
                     @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful()) {
-                            DocumentSnapshot document = task.getResult();
-                            if (document.exists()) {
-                                cashValue = document.getLong("point").intValue();
-                                pointNum.setText(Integer.toString(cashValue));
-                                editTextNumber.setHint(Integer.toString(cashValue)); // 힌트로 출력
-                                // 가져온 Cash 값을 사용할 수 있습니다.
-                            } else {
-                                Log.d("MainActivity", "No such document");
-                            }
-                        } else {
-                            Log.d("MainActivity", "get failed with ", task.getException());
+                    public void onEvent(@Nullable DocumentSnapshot documentSnapshot,
+                                        @Nullable FirebaseFirestoreException e) {
+                        if (e != null) {
+                            Log.w("MainActivity", "listen:error", e);
+                            return;
+                        }
+
+                        if (documentSnapshot != null && documentSnapshot.exists()) {
+                            cashValue = documentSnapshot.getLong("point").intValue();
+                            pointNum.setText(Integer.toString(cashValue));
+                            editTextNumber.setHint(Integer.toString(cashValue));
                         }
                     }
                 });
