@@ -5,7 +5,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.CountDownTimer;
 import android.os.IBinder;
-import android.widget.Button;
+
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 public class ScreenService extends Service {
     private ScreenReceiver mReceiver = null;
@@ -35,7 +36,8 @@ public class ScreenService extends Service {
             @Override
             public void onTick(long millisUntilFinished) {
                 usageTime = System.currentTimeMillis() - startTime;
-                // 여기에서 사용시간을 업데이트하거나 다른 작업을 수행 할 수 있습니다. 1초마다 이 메서드가 불리워집니다.
+                int roundedTime = (int) (usageTime / 1000);
+                sendUsageTimeBroadcast(roundedTime); // MainActivity로 사용 시간 전달
             }
 
             @Override
@@ -67,10 +69,16 @@ public class ScreenService extends Service {
             timer.cancel();
         }
         long lastUsage = System.currentTimeMillis() - startTime;
-        // 여기에서 사용 시간 'lastUsage'에 대한 작업을 수행하거나 필요한 곳에 저장하십시오.
+        sendUsageTimeBroadcast(lastUsage); // MainActivity로 마지막 사용 시간 전달
 
         if (mReceiver != null) {
             unregisterReceiver(mReceiver);
         }
+    }
+
+    private void sendUsageTimeBroadcast(long usageTime) {
+        Intent intent = new Intent("com.example.myapplication.USAGE_TIME_UPDATE");
+        intent.putExtra("usageTime", usageTime);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 }

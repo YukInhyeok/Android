@@ -1,7 +1,6 @@
 package com.example.myapplication;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -35,23 +34,20 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
     //네비게이션바
     private BottomNavigationView bottomNavigationView;
     //포인트 관련
-
+    private ConstraintLayout constraintLayout;
+    private TextView my_point;
+    private TextView textView7;
+    private ImageView imageView2;
     private EditText editTextNumber;
     private Button point;
     private TextView pointNum;
@@ -99,81 +95,63 @@ public class MainActivity extends AppCompatActivity {
         setData(radarChart);
 
         // 포인트 관련
+        constraintLayout = findViewById(R.id.constraintLayout);
+        my_point = findViewById(R.id.my_point);
+        textView7 = findViewById(R.id.textView7);
+        imageView2 = findViewById(R.id.imageView2);
         editTextNumber = findViewById(R.id.editTextNumber);
         point = findViewById(R.id.point);
         pointNum = findViewById(R.id.point_num);
 
-        initPointListener();
+        updatePointNum(); // 데이터를 가져와 화면을 업데이트하는 코드 호출
         point.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 int inputPoint = Integer.parseInt(editTextNumber.getText().toString());
+                int remainingPoint = cashValue - inputPoint;
 
-                if (inputPoint <= cashValue) {
-                    int remainingPoint = cashValue - inputPoint;
+                FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-                    FirebaseFirestore db = FirebaseFirestore.getInstance();
-
-                    db.collection("UserCoin").document("Coin")
-                            .update("point", remainingPoint)
-                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                    Log.d("MainActivity", "DocumentSnapshot successfully updated!");
-                                    showMessage(inputPoint + "포인트가 사용되었습니다"); // 메시지 표시
-
-                                    // 사용된 포인트를 UseCoin 컬렉션에 추가
-                                    Map<String, Object> usedPointData = new HashMap<>();
-                                    usedPointData.put("usedPoint", inputPoint);
-                                    usedPointData.put("timestamp", FieldValue.serverTimestamp()); // 서버 타임스탬프로 시간 기록
-
-                                    db.collection("UseCoin")
-                                            .add(usedPointData)
-                                            .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                                                @Override
-                                                public void onSuccess(DocumentReference documentReference) {
-                                                    Log.d("MainActivity", "Used point added to UseCoin collection");
-                                                }
-                                            })
-                                            .addOnFailureListener(new OnFailureListener() {
-                                                @Override
-                                                public void onFailure(@NonNull Exception e) {
-                                                    Log.w("MainActivity", "Error adding used point to UseCoin collection", e);
-                                                }
-                                            });
-                                }
-                            })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Log.w("MainActivity", "Error updating document", e);
-                                }
-                            });
-                    editTextNumber.setText(""); // 입력한 숫자 지우기
-                } else {
-                    showMessage("보유한 포인트보다 많은 포인트를 사용할 수 없습니다.");
-                }
+                db.collection("UserCoin").document("Coin")
+                        .update("point", remainingPoint)
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Log.d("MainActivity", "DocumentSnapshot successfully updated!");
+                                updatePointNum(); // 포인트 사용 후 화면 업데이트
+                                showMessage(inputPoint + "포인트가 사용되었습니다"); // 메시지 표시
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.w("MainActivity", "Error updating document", e);
+                            }
+                        });
             }
         });
     }
 
-        private void initPointListener() {
+    private void updatePointNum() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         db.collection("UserCoin").document("Coin")
-                .addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
-                    public void onEvent(@Nullable DocumentSnapshot documentSnapshot,
-                                        @Nullable FirebaseFirestoreException e) {
-                        if (e != null) {
-                            Log.w("MainActivity", "listen:error", e);
-                            return;
-                        }
-
-                        if (documentSnapshot != null && documentSnapshot.exists()) {
-                            cashValue = documentSnapshot.getLong("point").intValue();
-                            pointNum.setText(Integer.toString(cashValue));
-                            editTextNumber.setHint("최대 " + cashValue);
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            if (document.exists()) {
+                                cashValue = document.getLong("point").intValue();
+                                pointNum.setText(Integer.toString(cashValue));
+                                editTextNumber.setHint(Integer.toString(cashValue)); // 힌트로 출력
+                                // 가져온 Cash 값을 사용할 수 있습니다.
+                            } else {
+                                Log.d("MainActivity", "No such document");
+                            }
+                        } else {
+                            Log.d("MainActivity", "get failed with ", task.getException());
                         }
                     }
                 });
@@ -254,7 +232,5 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-    public void onBackPressed(){
 
-    }
 }
