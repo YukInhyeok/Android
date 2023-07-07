@@ -35,12 +35,16 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -117,6 +121,26 @@ public class MainActivity extends AppCompatActivity {
                                 public void onSuccess(Void aVoid) {
                                     Log.d("MainActivity", "DocumentSnapshot successfully updated!");
                                     showMessage(inputPoint + "포인트가 사용되었습니다"); // 메시지 표시
+
+                                    // 사용된 포인트를 UseCoin 컬렉션에 추가
+                                    Map<String, Object> usedPointData = new HashMap<>();
+                                    usedPointData.put("usedPoint", inputPoint);
+                                    usedPointData.put("timestamp", FieldValue.serverTimestamp()); // 서버 타임스탬프로 시간 기록
+
+                                    db.collection("UseCoin")
+                                            .add(usedPointData)
+                                            .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                                @Override
+                                                public void onSuccess(DocumentReference documentReference) {
+                                                    Log.d("MainActivity", "Used point added to UseCoin collection");
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Log.w("MainActivity", "Error adding used point to UseCoin collection", e);
+                                                }
+                                            });
                                 }
                             })
                             .addOnFailureListener(new OnFailureListener() {
