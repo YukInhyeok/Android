@@ -10,9 +10,19 @@
             android:layout_width="match_parent"
             android:layout_height="180px"
             android:gravity="center"
-            android:text="잠금화면입니다."
+            android:text="현재는 핸드폰을 사용할 수 없습니다."
             android:layout_marginTop="180sp"
-            android:textSize="28sp">
+            android:textStyle="bold"
+            android:textSize="25sp">
+        </TextView>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="180px"
+            android:gravity="center"
+            android:text="문제를 해결하도록 합시다."
+            android:textStyle="bold"
+            android:textSize="25sp">
         </TextView>
 
         <Button
@@ -21,7 +31,7 @@
             android:layout_width="match_parent"
             android:layout_marginTop="250px"
             android:gravity="center"
-            android:text="문제 풀러 가기!"
+            android:text="앱으로 돌아가기"
             android:textSize="28sp"
             >
         </Button>

@@ -104,30 +104,36 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 int inputPoint = Integer.parseInt(editTextNumber.getText().toString());
-                int remainingPoint = cashValue - inputPoint;
 
-                FirebaseFirestore db = FirebaseFirestore.getInstance();
+                if (inputPoint <= cashValue) {
+                    int remainingPoint = cashValue - inputPoint;
 
-                db.collection("UserCoin").document("Coin")
-                        .update("point", remainingPoint)
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                Log.d("MainActivity", "DocumentSnapshot successfully updated!");
-                                showMessage(inputPoint + "포인트가 사용되었습니다"); // 메시지 표시
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Log.w("MainActivity", "Error updating document", e);
-                            }
-                        });
+                    FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+                    db.collection("UserCoin").document("Coin")
+                            .update("point", remainingPoint)
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    Log.d("MainActivity", "DocumentSnapshot successfully updated!");
+                                    showMessage(inputPoint + "포인트가 사용되었습니다"); // 메시지 표시
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.w("MainActivity", "Error updating document", e);
+                                }
+                            });
+                    editTextNumber.setText(""); // 입력한 숫자 지우기
+                } else {
+                    showMessage("보유한 포인트보다 많은 포인트를 사용할 수 없습니다.");
+                }
             }
         });
     }
 
-    private void initPointListener() {
+        private void initPointListener() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         db.collection("UserCoin").document("Coin")
@@ -143,7 +149,7 @@ public class MainActivity extends AppCompatActivity {
                         if (documentSnapshot != null && documentSnapshot.exists()) {
                             cashValue = documentSnapshot.getLong("point").intValue();
                             pointNum.setText(Integer.toString(cashValue));
-                            editTextNumber.setHint(Integer.toString(cashValue));
+                            editTextNumber.setHint("최대 " + cashValue);
                         }
                     }
                 });

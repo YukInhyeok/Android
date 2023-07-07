@@ -7,12 +7,14 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.myapplication.R;
@@ -48,8 +50,20 @@ public class Fragment2 extends Fragment {
             public void onItemClick(BookAdapter.ViewHolder holder, View view, int position) {
                 BookInfo item = adapter.getItem(position);
 
-                Toast.makeText(getContext(), "아이템 선택됨 : " + item.getName(), Toast.LENGTH_LONG).show();
+                final Dialog dialog = new Dialog(getContext());
+                dialog.setContentView(R.layout.book_detail_dialog);
+
+                TextView tvName = dialog.findViewById(R.id.tv_name);
+                TextView tvAuthor = dialog.findViewById(R.id.tv_author);
+                TextView tvContents = dialog.findViewById(R.id.tv_contents);
+
+                tvName.setText("책 제목:\n" + item.getName());
+                tvAuthor.setText("\n저자: " + item.getAuthor());
+                tvContents.setText("\n줄거리:\n" + item.getContents());
+
+                dialog.show();
             }
+
         });
 
         Button button = rootView.findViewById(R.id.button);

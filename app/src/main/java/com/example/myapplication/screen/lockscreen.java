@@ -9,6 +9,7 @@ import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.myapplication.ChatGpt;
+import com.example.myapplication.MainActivity;
 import com.example.myapplication.R;
 
 public class lockscreen extends AppCompatActivity {
@@ -28,7 +29,7 @@ public class lockscreen extends AppCompatActivity {
         goingbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(lockscreen.this, ChatGpt.class);
+                Intent intent = new Intent(lockscreen.this, MainActivity.class);
                 startActivity(intent);
             }
         });

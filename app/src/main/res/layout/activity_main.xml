@@ -188,7 +188,6 @@
                 android:ems="10"
                 android:fontFamily="@font/omnigodic"
                 android:gravity="right"
-                android:inputType="number"
                 android:textSize="24sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
