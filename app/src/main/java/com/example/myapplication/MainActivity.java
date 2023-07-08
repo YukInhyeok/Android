@@ -1,25 +1,31 @@
 package com.example.myapplication;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
-
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.example.myapplication.book.BookMainActivity;
 import com.example.myapplication.screen.ScreenService;
@@ -29,35 +35,80 @@ import com.github.mikephil.charting.data.RadarData;
 import com.github.mikephil.charting.data.RadarDataSet;
 import com.github.mikephil.charting.data.RadarEntry;
 import com.github.mikephil.charting.formatter.ValueFormatter;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
+    //스크린 관련
+    private ScreenService screenService;
+    private boolean isBound = false;
+
 
     //네비게이션바
     private BottomNavigationView bottomNavigationView;
     //포인트 관련
-    private ConstraintLayout constraintLayout;
-    private TextView my_point;
-    private TextView textView7;
-    private ImageView imageView2;
+
     private EditText editTextNumber;
     private Button point;
     private TextView pointNum;
+    // 사용시간
+    private TextView evgTextView;
+    private BroadcastReceiver usageTimeReceiver;
+
+    private int usageTime = 0;
     // 포인트 잔액
     private int cashValue;
+
+    private ServiceConnection serviceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName className, IBinder service) {
+            ScreenService.ScreenServiceBinder binder = (ScreenService.ScreenServiceBinder) service;
+            screenService = binder.getService();
+            isBound = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+            isBound = false;
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Intent screenServiceIntent = new Intent(this, ScreenService.class);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(screenServiceIntent);
+        } else {
+            startService(screenServiceIntent);
+        }
+
+
+        evgTextView = findViewById(R.id.evg);
+
+        usageTimeReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                long usageTime = intent.getLongExtra("usageTime", 0);
+                updateUsageTime(usageTime);
+            }
+
+        };
+        IntentFilter filter = new IntentFilter("com.example.myapplication.USAGE_TIME_UPDATE");
+        LocalBroadcastManager.getInstance(this).registerReceiver(usageTimeReceiver, filter);
 
         //LookScreen 설정
         startService(new Intent(MainActivity.this, ScreenService.class));
@@ -95,63 +146,81 @@ public class MainActivity extends AppCompatActivity {
         setData(radarChart);
 
         // 포인트 관련
-        constraintLayout = findViewById(R.id.constraintLayout);
-        my_point = findViewById(R.id.my_point);
-        textView7 = findViewById(R.id.textView7);
-        imageView2 = findViewById(R.id.imageView2);
         editTextNumber = findViewById(R.id.editTextNumber);
         point = findViewById(R.id.point);
         pointNum = findViewById(R.id.point_num);
 
-        updatePointNum(); // 데이터를 가져와 화면을 업데이트하는 코드 호출
+        initPointListener();
         point.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 int inputPoint = Integer.parseInt(editTextNumber.getText().toString());
-                int remainingPoint = cashValue - inputPoint;
 
-                FirebaseFirestore db = FirebaseFirestore.getInstance();
+                if (inputPoint <= cashValue) {
+                    int remainingPoint = cashValue - inputPoint;
 
-                db.collection("UserCoin").document("Coin")
-                        .update("point", remainingPoint)
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                Log.d("MainActivity", "DocumentSnapshot successfully updated!");
-                                updatePointNum(); // 포인트 사용 후 화면 업데이트
-                                showMessage(inputPoint + "포인트가 사용되었습니다"); // 메시지 표시
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Log.w("MainActivity", "Error updating document", e);
-                            }
-                        });
+                    FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+                    db.collection("UserCoin").document("Coin")
+                            .update("point", remainingPoint)
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    Log.d("MainActivity", "DocumentSnapshot successfully updated!");
+                                    showMessage(inputPoint + "포인트가 사용되었습니다"); // 메시지 표시
+
+                                    // 사용된 포인트를 UseCoin 컬렉션에 추가
+                                    Map<String, Object> usedPointData = new HashMap<>();
+                                    usedPointData.put("usedPoint", inputPoint);
+                                    usedPointData.put("timestamp", FieldValue.serverTimestamp()); // 서버 타임스탬프로 시간 기록
+
+                                    db.collection("UseCoin")
+                                            .add(usedPointData)
+                                            .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                                @Override
+                                                public void onSuccess(DocumentReference documentReference) {
+                                                    Log.d("MainActivity", "Used point added to UseCoin collection");
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Log.w("MainActivity", "Error adding used point to UseCoin collection", e);
+                                                }
+                                            });
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.w("MainActivity", "Error updating document", e);
+                                }
+                            });
+                    editTextNumber.setText(""); // 입력한 숫자 지우기
+                } else {
+                    showMessage("보유한 포인트보다 많은 포인트를 사용할 수 없습니다.");
+                }
             }
         });
     }
 
-    private void updatePointNum() {
+    private void initPointListener() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         db.collection("UserCoin").document("Coin")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                .addSnapshotListener(new EventListener<DocumentSnapshot>() {
                     @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful()) {
-                            DocumentSnapshot document = task.getResult();
-                            if (document.exists()) {
-                                cashValue = document.getLong("point").intValue();
-                                pointNum.setText(Integer.toString(cashValue));
-                                editTextNumber.setHint(Integer.toString(cashValue)); // 힌트로 출력
-                                // 가져온 Cash 값을 사용할 수 있습니다.
-                            } else {
-                                Log.d("MainActivity", "No such document");
-                            }
-                        } else {
-                            Log.d("MainActivity", "get failed with ", task.getException());
+                    public void onEvent(@Nullable DocumentSnapshot documentSnapshot,
+                                        @Nullable FirebaseFirestoreException e) {
+                        if (e != null) {
+                            Log.w("MainActivity", "listen:error", e);
+                            return;
+                        }
+
+                        if (documentSnapshot != null && documentSnapshot.exists()) {
+                            cashValue = documentSnapshot.getLong("point").intValue();
+                            pointNum.setText(Integer.toString(cashValue));
+                            editTextNumber.setHint("최대 " + cashValue);
                         }
                     }
                 });
@@ -160,6 +229,10 @@ public class MainActivity extends AppCompatActivity {
     //클릭 메소드
     private void showMessage(String message) {
         Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
+    }
+
+    private void updateEvgTextView() {
+        evgTextView.setText(String.valueOf(usageTime));
     }
 
 
@@ -184,8 +257,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         radarChart.invalidate();
-
-
     }
 
     // 다른 앱 위에 표시 권한
@@ -231,6 +302,21 @@ public class MainActivity extends AppCompatActivity {
                 showPermissionDialog();
             }
         }
+    }
+    public void onBackPressed(){
+
+    }
+    protected void onDestroy() {
+        super.onDestroy();
+        // BroadcastReceiver 등록 해제
+        if (isBound) {
+            unbindService(serviceConnection);
+            isBound = false;
+        }    }
+
+    private void updateUsageTime(long usageTime) {
+        // 사용시간을 업데이트하여 화면에 표시
+        evgTextView.setText(String.valueOf( "시간: "+ usageTime/60 + " 분 / 120분"));
     }
 
 }
