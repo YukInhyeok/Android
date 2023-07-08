@@ -41,6 +41,8 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -56,11 +58,16 @@ public class MainActivity extends AppCompatActivity {
     private TextView pointNum;
     // 포인트 잔액
     private int cashValue;
+    //firebase
+    private FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //firebase
+        db = FirebaseFirestore.getInstance();
 
         //LookScreen 설정
         startService(new Intent(MainActivity.this, ScreenService.class));
@@ -156,6 +163,20 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    //레이더 차트
+    private void setData(RadarChart radarChart) {
+        fetchData(new MyInfo.FirestoreCallback() {
+            @Override
+            public void onDataLoaded(ArrayList<RadarEntry> entries) {
+                RadarDataSet dataSet = new RadarDataSet(entries, "주간 데이터");
+                dataSet.setColor(Color.RED);
+                RadarData data = new RadarData(dataSet);
+                radarChart.setData(data);
+                radarChart.invalidate();
+            }
+        });
+    }
+
     private void initPointListener() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -181,32 +202,6 @@ public class MainActivity extends AppCompatActivity {
     //클릭 메소드
     private void showMessage(String message) {
         Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
-    }
-
-
-    private void setData(RadarChart radarChart) {
-        ArrayList<RadarEntry> entries = new ArrayList<>();
-        entries.add(new RadarEntry(4f, 0));
-        entries.add(new RadarEntry(3f, 1));
-        entries.add(new RadarEntry(2f, 2));
-        entries.add(new RadarEntry(5f, 3));
-        entries.add(new RadarEntry(3f, 4));
-
-        RadarDataSet dataSet = new RadarDataSet(entries, "주간 데이터");
-        dataSet.setColor(Color.RED); // 색상을 빨간색으로 설정
-        RadarData data = new RadarData(dataSet);
-        radarChart.setData(data);
-        XAxis xAxis = radarChart.getXAxis();
-        final String[] labels = new String[]{"Label 1", "Label 2", "Label 3", "Label 4", "Label 5"};
-        xAxis.setValueFormatter(new ValueFormatter() {
-            @Override
-            public String getFormattedValue(float value) {
-                return labels[(int) value % labels.length];
-            }
-        });
-        radarChart.invalidate();
-
-
     }
 
     // 다른 앱 위에 표시 권한
@@ -255,5 +250,33 @@ public class MainActivity extends AppCompatActivity {
     }
     public void onBackPressed(){
 
+    }
+
+    //Chart
+    private void fetchData(MyInfo.FirestoreCallback callback) {
+        db.collection("Chart").orderBy("label")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            ArrayList<RadarEntry> entries = new ArrayList<>();
+
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                float value = document.getDouble("value").floatValue();
+                                int label = document.getLong("label").intValue();
+                                entries.add(new RadarEntry(value, label));
+                            }
+
+                            callback.onDataLoaded(entries);
+                        } else {
+                            Log.e("MyInfo", "Error fetching data", task.getException());
+                        }
+                    }
+                });
+    }
+    // 콜백 인터페이스 추가
+    private interface FirestoreCallback {
+        void onDataLoaded(ArrayList<RadarEntry> entries);
     }
 }

@@ -9,6 +9,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.TextView;
 
@@ -17,7 +18,12 @@ import com.github.mikephil.charting.charts.RadarChart;
 import com.github.mikephil.charting.data.RadarData;
 import com.github.mikephil.charting.data.RadarDataSet;
 import com.github.mikephil.charting.data.RadarEntry;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -30,6 +36,9 @@ public class MyInfo extends AppCompatActivity {
 
     private BottomNavigationView bottomNavigationView;
 
+    //firebase
+    private FirebaseFirestore db;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,6 +49,9 @@ public class MyInfo extends AppCompatActivity {
 
         TextView textView5 = findViewById(R.id.textView5);
         textView5.setText(getCurrentWeekDates());
+
+        //firebase
+        db = FirebaseFirestore.getInstance();
 
         // BottomNavigationView 초기화
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
@@ -76,14 +88,27 @@ public class MyInfo extends AppCompatActivity {
     }
 
     private void setData(RadarChart radarChart) {
-        ArrayList<RadarEntry> entries = fetchData(); // 가져온 데이터 사용
-
-        RadarDataSet dataSet = new RadarDataSet(entries, "주간 데이터");
-        dataSet.setColor(Color.RED); // 색상을 빨간색으로 설정
-        RadarData data = new RadarData(dataSet);
-        radarChart.setData(data);
-        radarChart.invalidate();
+        fetchData(new FirestoreCallback() {
+            @Override
+            public void onDataLoaded(ArrayList<RadarEntry> entries) {
+                RadarDataSet dataSet = new RadarDataSet(entries, "주간 데이터");
+                dataSet.setColor(Color.RED);
+                RadarData data = new RadarData(dataSet);
+                radarChart.setData(data);
+                radarChart.invalidate();
+            }
+        });
     }
+
+//    private void setData(RadarChart radarChart) {
+//        ArrayList<RadarEntry> entries = fetchData(); // 가져온 데이터 사용
+//
+//        RadarDataSet dataSet = new RadarDataSet(entries, "주간 데이터");
+//        dataSet.setColor(Color.RED); // 색상을 빨간색으로 설정
+//        RadarData data = new RadarData(dataSet);
+//        radarChart.setData(data);
+//        radarChart.invalidate();
+//    }
 
     private String getCurrentMonthAndWeek() {
         Calendar calendar = Calendar.getInstance();
@@ -145,26 +170,54 @@ public class MyInfo extends AppCompatActivity {
         db.close();
     }
 
-    // 데이터 가져오기 함수 추가
-    private ArrayList<RadarEntry> fetchData() {
-        DatabaseHelper dbHelper = new DatabaseHelper(this);
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
+    private void fetchData(FirestoreCallback callback) {
+        db.collection("Chart").orderBy("label")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            ArrayList<RadarEntry> entries = new ArrayList<>();
 
-        Cursor cursor = db.rawQuery("SELECT * FROM radar_chart_data", null);
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                float value = document.getDouble("value").floatValue();
+                                int label = document.getLong("label").intValue();
+                                entries.add(new RadarEntry(value, label));
+                            }
 
-        ArrayList<RadarEntry> entries = new ArrayList<>();
-
-        if (cursor.moveToFirst()) {
-            do {
-                float value = cursor.getFloat(cursor.getColumnIndexOrThrow("value"));
-                int label = cursor.getInt(cursor.getColumnIndexOrThrow("label"));
-                entries.add(new RadarEntry(value, label));
-            } while (cursor.moveToNext());
-        }
-
-        cursor.close();
-        db.close();
-
-        return entries;
+                            callback.onDataLoaded(entries);
+                        } else {
+                            Log.e("MyInfo", "Error fetching data", task.getException());
+                        }
+                    }
+                });
+    }
+    // 콜백 인터페이스 추가
+    public interface FirestoreCallback {
+        void onDataLoaded(ArrayList<RadarEntry> entries);
     }
 }
+
+    // 데이터 가져오기 함수 추가
+//    private ArrayList<RadarEntry> fetchData() {
+//        DatabaseHelper dbHelper = new DatabaseHelper(this);
+//        SQLiteDatabase db = dbHelper.getReadableDatabase();
+//
+//        Cursor cursor = db.rawQuery("SELECT * FROM radar_chart_data", null);
+//
+//        ArrayList<RadarEntry> entries = new ArrayList<>();
+//
+//        if (cursor.moveToFirst()) {
+//            do {
+//                float value = cursor.getFloat(cursor.getColumnIndexOrThrow("value"));
+//                int label = cursor.getInt(cursor.getColumnIndexOrThrow("label"));
+//                entries.add(new RadarEntry(value, label));
+//            } while (cursor.moveToNext());
+//        }
+//
+//        cursor.close();
+//        db.close();
+//
+//        return entries;
+//    }
+//}
