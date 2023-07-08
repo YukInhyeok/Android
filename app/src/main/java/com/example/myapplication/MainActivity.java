@@ -63,6 +63,9 @@ public class MainActivity extends AppCompatActivity{
     private TextView bookNum;
     private int finishBooknum;
 
+    //제한 시간
+    private TextView limitTime;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,6 +118,10 @@ public class MainActivity extends AppCompatActivity{
         //독후감 관련
         bookNum = findViewById(R.id.book_text);
         fetchFinishBookNum();
+
+        // 제한 시간
+        limitTime = findViewById(R.id.limit_time);
+        fetchLimitTime();
 
         initPointListener();
         point.setOnClickListener(new View.OnClickListener() {
@@ -328,5 +335,37 @@ public class MainActivity extends AppCompatActivity{
                     }
                 });
     }
+
+    //제한 시간 메서드
+    private void fetchLimitTime() {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("Time").document("SetTime")
+                .addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable DocumentSnapshot documentSnapshot,
+                                        @Nullable FirebaseFirestoreException e) {
+                        if (e != null) {
+                            Log.w("MainActivity", "listen:error", e);
+                            return;
+                        }
+
+                        if (documentSnapshot != null && documentSnapshot.exists()) {
+                            String timeString = documentSnapshot.getString("time");
+                            int timeValue = convertTimeStringToMinutes(timeString);
+                            limitTime.setText("시간: "+ "0" + " / " + timeValue + "분");
+                        }
+                    }
+                });
+    }
+
+
+    private int convertTimeStringToMinutes(String timeString) {
+        String[] timeParts = timeString.split(":");
+        int hours = Integer.parseInt(timeParts[0]);
+        int minutes = Integer.parseInt(timeParts[1]);
+        return hours * 60 + minutes;
+    }
+
+
 
 }
