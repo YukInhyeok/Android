@@ -46,6 +46,10 @@ public class Fragment1 extends Fragment {
 
                 callback.insert(name, author, contents);
                 Toast.makeText(getContext(), "책 정보를 추가했습니다.", Toast.LENGTH_SHORT).show();
+
+                editText.setText("");
+                editText2.setText("");
+                editText3.setText("");
             }
         });
         return rootView;
