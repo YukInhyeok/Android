@@ -82,7 +82,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/evg"
+            android:id="@+id/limit_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="36dp"
@@ -105,7 +105,7 @@
             android:textColor="#212529"
             android:textSize="24sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/evg" />
+            app:layout_constraintTop_toBottomOf="@+id/limit_time" />
 
         <TextView
             android:id="@+id/rank"
