@@ -48,8 +48,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MainActivity extends AppCompatActivity {
-//test
+public class MainActivity extends AppCompatActivity{
     //네비게이션바
     private BottomNavigationView bottomNavigationView;
     //포인트 관련
@@ -60,6 +59,10 @@ public class MainActivity extends AppCompatActivity {
     private int cashValue;
     //firebase
     private FirebaseFirestore db;
+    //독후감
+    private TextView bookNum;
+    private int finishBooknum;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,6 +111,10 @@ public class MainActivity extends AppCompatActivity {
         editTextNumber = findViewById(R.id.editTextNumber);
         point = findViewById(R.id.point);
         pointNum = findViewById(R.id.point_num);
+
+        //독후감 관련
+        bookNum = findViewById(R.id.book_text);
+        fetchFinishBookNum();
 
         initPointListener();
         point.setOnClickListener(new View.OnClickListener() {
@@ -279,4 +286,47 @@ public class MainActivity extends AppCompatActivity {
     private interface FirestoreCallback {
         void onDataLoaded(ArrayList<RadarEntry> entries);
     }
+
+    // 독후감 책 관련 메서드
+    private void fetchWorkNum() {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("Book").document("report")
+                .addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable DocumentSnapshot documentSnapshot,
+                                        @Nullable FirebaseFirestoreException e) {
+                        if (e != null) {
+                            Log.w("MainActivity", "listen:error", e);
+                            return;
+                        }
+
+                        if (documentSnapshot != null && documentSnapshot.exists()) {
+                            int workNum = documentSnapshot.getLong("worknum").intValue();
+                            bookNum.setText("책: " + finishBooknum + " / " + workNum + " 권"); // TextView에 반영
+                        }
+                    }
+                });
+    }
+
+    private void fetchFinishBookNum() {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("Book").document("finish")
+                .addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable DocumentSnapshot documentSnapshot,
+                                        @Nullable FirebaseFirestoreException e) {
+                        if (e != null) {
+                            Log.w("MainActivity", "listen:error", e);
+                            return;
+                        }
+
+                        if (documentSnapshot != null && documentSnapshot.exists()) {
+                            finishBooknum = documentSnapshot.getLong("booknum").intValue();
+                            // finishBooknum 값을 가져온 후 fetchWorkNum 메소드를 호출합니다.
+                            fetchWorkNum();
+                        }
+                    }
+                });
+    }
+
 }
