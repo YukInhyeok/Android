@@ -49,7 +49,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
-
+//test
     //네비게이션바
     private BottomNavigationView bottomNavigationView;
     //포인트 관련
