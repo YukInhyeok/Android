@@ -45,7 +45,7 @@ public class Fragment1 extends Fragment {
                 String contents = editText3.getText().toString();
 
                 callback.insert(name, author, contents);
-                Toast.makeText(getContext(), "책 정보를 추가했습니다.", Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), "책 정보를 추가했습니다.", Toast.LENGTH_SHORT).show();
             }
         });
         return rootView;
