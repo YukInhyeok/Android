@@ -69,7 +69,7 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder>
     static class ViewHolder extends RecyclerView.ViewHolder {
         TextView textView;
         TextView textView2;
-//        TextView textView3;
+        TextView dateView;
         ImageView imageView;
 
         public ViewHolder(View itemView, final OnBookItemClickListener listener) {
@@ -77,7 +77,7 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder>
 
             textView = itemView.findViewById(R.id.textView);
             textView2 = itemView.findViewById(R.id.textView2);
-//            textView3 = itemView.findViewById(R.id.textView3);
+            dateView = itemView.findViewById(R.id.dateView);
             imageView = itemView.findViewById(R.id.imageView);
 
             itemView.setOnClickListener(new View.OnClickListener() {
@@ -96,7 +96,7 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder>
         public void setItem(BookInfo item) {
             textView.setText(item.getName());
             textView2.setText(item.getAuthor());
-//            textView3.setText(item.getContents());
+            dateView.setText(item.getCreateDate());
         }
     }
 }

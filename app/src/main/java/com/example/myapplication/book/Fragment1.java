@@ -1,10 +1,5 @@
 package com.example.myapplication.book;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -13,6 +8,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
 import com.example.myapplication.R;
 
@@ -45,7 +44,11 @@ public class Fragment1 extends Fragment {
                 String contents = editText3.getText().toString();
 
                 callback.insert(name, author, contents);
-                Toast.makeText(getContext(), "책 정보를 추가했습니다.", Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), "책 정보를 추가했습니다.", Toast.LENGTH_SHORT).show();
+
+                editText.setText("");
+                editText2.setText("");
+                editText3.setText("");
             }
         });
         return rootView;

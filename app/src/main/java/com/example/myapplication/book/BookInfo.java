@@ -7,10 +7,13 @@ public class BookInfo {
     String author;
     String contents;
 
-    public BookInfo(String name, String author, String contents) {
+    private String createDate;
+
+    public BookInfo(String name, String author, String contents, String createDate) {
         this.name = name;
         this.author = author;
         this.contents = contents;
+        this.createDate = createDate;
     }
 
     public void setName(String name) {
@@ -36,6 +39,16 @@ public class BookInfo {
     public String getContents() {
         return contents;
     }
+
+    // getter와 setter를 추가합니다.
+    public String getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(String createDate) {
+        this.createDate = createDate;
+    }
+
 
     @NonNull
     @Override

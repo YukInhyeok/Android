@@ -2,7 +2,6 @@ package com.example.myapplication;
 
 import android.content.ContentValues;
 import android.content.Intent;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -198,7 +197,7 @@ public class MyInfo extends AppCompatActivity {
     }
 }
 
-    // 데이터 가져오기 함수 추가
+// 데이터 가져오기 함수 추가
 //    private ArrayList<RadarEntry> fetchData() {
 //        DatabaseHelper dbHelper = new DatabaseHelper(this);
 //        SQLiteDatabase db = dbHelper.getReadableDatabase();

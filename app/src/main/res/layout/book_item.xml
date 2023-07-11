@@ -65,16 +65,16 @@
 
                 </RelativeLayout>
 
-<!--                <TextView-->
-<!--                    android:id="@+id/textView3"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="33dp"-->
-<!--                    android:fontFamily="@font/omnigodic"-->
-<!--                    android:paddingTop="2dp"-->
-<!--                    android:paddingBottom="1dp"-->
-<!--                    android:text="Contents"-->
-<!--                    android:textColor="#8BC34A"-->
-<!--                    android:textSize="12dp" />-->
+                <TextView
+                    android:id="@+id/dateView"
+                    android:layout_width="match_parent"
+                    android:layout_height="33dp"
+                    android:fontFamily="@font/omnigodic"
+                    android:paddingTop="2dp"
+                    android:paddingBottom="1dp"
+                    android:text="Date"
+                    android:textColor="#8BC34A"
+                    android:textSize="12dp" />
             </LinearLayout>
         </LinearLayout>
     </androidx.cardview.widget.CardView>

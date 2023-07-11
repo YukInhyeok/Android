@@ -138,13 +138,14 @@ public class BookDatabase {
     public ArrayList<BookInfo> selectAll(){
         ArrayList<BookInfo> result = new ArrayList<BookInfo>();
         try {
-            Cursor cursor = db.rawQuery("select NAME, AUTHOR, CONTENTS from " + TABLE_BOOK_INFO, null);
+            Cursor cursor = db.rawQuery("select NAME, AUTHOR, CONTENTS, CREATE_DATE from " + TABLE_BOOK_INFO, null);
             for (int i = 0; i < cursor.getCount(); i++){
                 cursor.moveToNext();
                 String name = cursor.getString(0);
                 String author = cursor.getString(1);
                 String contents = cursor.getString(2);
-                BookInfo info = new BookInfo(name, author, contents);
+                String createDate = cursor.getString(3); // 추가된 부분
+                BookInfo info = new BookInfo(name, author, contents, createDate);
                 result.add(info);
             }
         }catch (Exception ex){

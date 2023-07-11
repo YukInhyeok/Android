@@ -82,7 +82,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/evg"
+            android:id="@+id/limit_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="36dp"
@@ -95,7 +95,7 @@
             app:layout_constraintTop_toBottomOf="@+id/today" />
 
         <TextView
-            android:id="@+id/book"
+            android:id="@+id/book_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="36dp"
@@ -105,7 +105,7 @@
             android:textColor="#212529"
             android:textSize="24sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/evg" />
+            app:layout_constraintTop_toBottomOf="@+id/limit_time" />
 
         <TextView
             android:id="@+id/rank"
@@ -124,7 +124,7 @@
             android:id="@+id/constraintLayout"
             android:layout_width="357dp"
             android:layout_height="150dp"
-            android:layout_marginTop="480dp"
+            android:layout_marginTop="560dp"
             android:background="@drawable/roundstyle20dp"
             android:backgroundTint="#FFFFFF"
             app:layout_constraintEnd_toEndOf="parent"
@@ -135,14 +135,14 @@
             <TextView
                 android:id="@+id/my_point"
                 android:layout_width="135dp"
-                android:layout_height="42dp"
+                android:layout_height="50dp"
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="16dp"
                 android:fontFamily="@font/omnigodic"
                 android:gravity="center"
                 android:text="내 포인트"
                 android:textColor="#3F51B5"
-                android:textSize="30sp"
+                android:textSize="25sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
