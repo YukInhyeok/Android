@@ -4,8 +4,12 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -129,6 +133,9 @@ public class BookMainActivity extends AppCompatActivity implements OnDatabaseCal
         // 독후감 갯수 카운트
         prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         firestore = FirebaseFirestore.getInstance();
+
+        //추가
+        setAlarmToResetCount();
     }
 
     protected void onDestroy(){
@@ -192,6 +199,29 @@ public class BookMainActivity extends AppCompatActivity implements OnDatabaseCal
             }
         });
     }
+
+    //추가
+    private void setAlarmToResetCount() {
+        AlarmManager alarmMgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(this, ResetCountReceiver.class);
+
+        PendingIntent alarmIntent;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            alarmIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        } else {
+            alarmIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        }
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.add(Calendar.DAY_OF_YEAR, 1);
+
+        alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+                AlarmManager.INTERVAL_DAY, alarmIntent);
+    }
+
+
 
 
 }
