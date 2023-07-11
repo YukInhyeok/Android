@@ -1,31 +1,26 @@
 package com.example.myapplication;
 
-import android.content.BroadcastReceiver;
-import android.content.ComponentName;
-import android.content.Context;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.ServiceConnection;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.example.myapplication.book.BookMainActivity;
 import com.example.myapplication.screen.ScreenService;
@@ -35,8 +30,10 @@ import com.github.mikephil.charting.data.RadarData;
 import com.github.mikephil.charting.data.RadarDataSet;
 import com.github.mikephil.charting.data.RadarEntry;
 import com.github.mikephil.charting.formatter.ValueFormatter;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -44,71 +41,33 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
-    //스크린 관련
-    private ScreenService screenService;
-    private boolean isBound = false;
-
-
+//test
     //네비게이션바
     private BottomNavigationView bottomNavigationView;
     //포인트 관련
-
     private EditText editTextNumber;
     private Button point;
     private TextView pointNum;
-    // 사용시간
-    private TextView evgTextView;
-    private BroadcastReceiver usageTimeReceiver;
-
-    private int usageTime = 0;
     // 포인트 잔액
     private int cashValue;
-
-    private ServiceConnection serviceConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName className, IBinder service) {
-            ScreenService.ScreenServiceBinder binder = (ScreenService.ScreenServiceBinder) service;
-            screenService = binder.getService();
-            isBound = true;
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName arg0) {
-            isBound = false;
-        }
-    };
+    //firebase
+    private FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Intent screenServiceIntent = new Intent(this, ScreenService.class);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            startForegroundService(screenServiceIntent);
-        } else {
-            startService(screenServiceIntent);
-        }
-
-
-        evgTextView = findViewById(R.id.evg);
-
-        usageTimeReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                long usageTime = intent.getLongExtra("usageTime", 0);
-                updateUsageTime(usageTime);
-            }
-
-        };
-        IntentFilter filter = new IntentFilter("com.example.myapplication.USAGE_TIME_UPDATE");
-        LocalBroadcastManager.getInstance(this).registerReceiver(usageTimeReceiver, filter);
+        //firebase
+        db = FirebaseFirestore.getInstance();
 
         //LookScreen 설정
         startService(new Intent(MainActivity.this, ScreenService.class));
@@ -204,6 +163,20 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    //레이더 차트
+    private void setData(RadarChart radarChart) {
+        fetchData(new MyInfo.FirestoreCallback() {
+            @Override
+            public void onDataLoaded(ArrayList<RadarEntry> entries) {
+                RadarDataSet dataSet = new RadarDataSet(entries, "주간 데이터");
+                dataSet.setColor(Color.RED);
+                RadarData data = new RadarData(dataSet);
+                radarChart.setData(data);
+                radarChart.invalidate();
+            }
+        });
+    }
+
     private void initPointListener() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -229,34 +202,6 @@ public class MainActivity extends AppCompatActivity {
     //클릭 메소드
     private void showMessage(String message) {
         Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
-    }
-
-    private void updateEvgTextView() {
-        evgTextView.setText(String.valueOf(usageTime));
-    }
-
-
-    private void setData(RadarChart radarChart) {
-        ArrayList<RadarEntry> entries = new ArrayList<>();
-        entries.add(new RadarEntry(4f, 0));
-        entries.add(new RadarEntry(3f, 1));
-        entries.add(new RadarEntry(2f, 2));
-        entries.add(new RadarEntry(5f, 3));
-        entries.add(new RadarEntry(3f, 4));
-
-        RadarDataSet dataSet = new RadarDataSet(entries, "주간 데이터");
-        dataSet.setColor(Color.RED); // 색상을 빨간색으로 설정
-        RadarData data = new RadarData(dataSet);
-        radarChart.setData(data);
-        XAxis xAxis = radarChart.getXAxis();
-        final String[] labels = new String[]{"Label 1", "Label 2", "Label 3", "Label 4", "Label 5"};
-        xAxis.setValueFormatter(new ValueFormatter() {
-            @Override
-            public String getFormattedValue(float value) {
-                return labels[(int) value % labels.length];
-            }
-        });
-        radarChart.invalidate();
     }
 
     // 다른 앱 위에 표시 권한
@@ -306,17 +251,32 @@ public class MainActivity extends AppCompatActivity {
     public void onBackPressed(){
 
     }
-    protected void onDestroy() {
-        super.onDestroy();
-        // BroadcastReceiver 등록 해제
-        if (isBound) {
-            unbindService(serviceConnection);
-            isBound = false;
-        }    }
 
-    private void updateUsageTime(long usageTime) {
-        // 사용시간을 업데이트하여 화면에 표시
-        evgTextView.setText(String.valueOf( "시간: "+ usageTime/60 + " 분 / 120분"));
+    //Chart
+    private void fetchData(MyInfo.FirestoreCallback callback) {
+        db.collection("Chart").orderBy("label")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            ArrayList<RadarEntry> entries = new ArrayList<>();
+
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                float value = document.getDouble("value").floatValue();
+                                int label = document.getLong("label").intValue();
+                                entries.add(new RadarEntry(value, label));
+                            }
+
+                            callback.onDataLoaded(entries);
+                        } else {
+                            Log.e("MyInfo", "Error fetching data", task.getException());
+                        }
+                    }
+                });
     }
-
+    // 콜백 인터페이스 추가
+    private interface FirestoreCallback {
+        void onDataLoaded(ArrayList<RadarEntry> entries);
+    }
 }
