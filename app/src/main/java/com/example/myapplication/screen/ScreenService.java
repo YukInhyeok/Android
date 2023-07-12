@@ -8,8 +8,15 @@ import android.os.Binder;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.IBinder;
+import android.util.Log;
 
+import androidx.annotation.Nullable;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 
 import java.util.Calendar;
 
@@ -20,7 +27,26 @@ public class ScreenService extends Service {
     private Runnable resetRunnable;
     private long startTime;
     private long usageTime;
+    private int currentValueFromFirebase = 0;
 
+    private void fetchValueFromFirebase() {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("Time").document("UsageTime")
+                .addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable DocumentSnapshot documentSnapshot,
+                                        @Nullable FirebaseFirestoreException e) {
+                        if (e != null) {
+                            Log.w("ScreenService", "listen:error", e);
+                            return;
+                        }
+
+                        if (documentSnapshot != null && documentSnapshot.exists()) {
+                            currentValueFromFirebase = documentSnapshot.getLong("UsageTime").intValue();
+                        }
+                    }
+                });
+    }
     private final IBinder binder = new ScreenServiceBinder();
 
     public class ScreenServiceBinder extends Binder {
@@ -57,12 +83,13 @@ public class ScreenService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         startTime = System.currentTimeMillis();
+        fetchValueFromFirebase();
         timer = new CountDownTimer(Long.MAX_VALUE, 60000) {
             @Override
             public void onTick(long millisUntilFinished) {
                 usageTime = System.currentTimeMillis() - startTime;
-                int roundedTime = (int) (usageTime / (60 * 1000));
-                sendUsageTimeBroadcast(roundedTime);
+                int roundedTime = (int) (usageTime / (60 * 1000)) + currentValueFromFirebase;
+                sendUsageTimeBroadcast(roundedTime );
             }
 
             @Override
