@@ -6,12 +6,24 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import android.app.usage.UsageStats;
+import android.app.usage.UsageStatsManager;
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.IBinder;
+import android.os.Looper;
+import android.os.PowerManager;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.MenuItem;
@@ -45,8 +57,11 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity{
     //네비게이션바
@@ -62,9 +77,19 @@ public class MainActivity extends AppCompatActivity{
     //독후감
     private TextView bookNum;
     private int finishBooknum;
-
     //제한 시간
     private TextView limitTime;
+
+    // 핸드폰 사용시간
+// 멤버 변수로 screenOnReceiver 등록
+    private BroadcastReceiver screenOnReceiver;
+    private boolean isScreenOn = false;
+    private long screenOnTime = 0;
+    private long screenOffTime = 0;
+    long usedTimeInMinutes = 0;
+    private Handler updateHandler;
+    private Runnable updateRunnable;
+
 
 
     @Override
@@ -123,6 +148,8 @@ public class MainActivity extends AppCompatActivity{
         limitTime = findViewById(R.id.limit_time);
         fetchLimitTime();
 
+        //핸드폰 사용 시간
+
         initPointListener();
         point.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -175,6 +202,38 @@ public class MainActivity extends AppCompatActivity{
                 }
             }
         });
+
+        //핸드폰 사용 시간
+        // SCREEN_ON 시간 측정을 위한 BroadcastReceiver 등록
+        screenOnReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
+                    isScreenOn = true;
+                    screenOnTime = System.currentTimeMillis();
+                } else if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
+                    isScreenOn = false;
+                    screenOffTime = System.currentTimeMillis();
+                    usedTimeInMinutes += TimeUnit.MILLISECONDS.toMinutes(screenOffTime - screenOnTime);
+                }
+            }
+        };
+
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(Intent.ACTION_SCREEN_ON);
+        intentFilter.addAction(Intent.ACTION_SCREEN_OFF);
+        registerReceiver(screenOnReceiver, intentFilter);
+
+        // 주기적으로 사용 시간 업데이트를 위한 Handler 초기화
+        updateHandler = new Handler(Looper.getMainLooper());
+        updateRunnable = new Runnable() {
+            @Override
+            public void run() {
+                updateUsedTime(); // 사용 시간 업데이트 메서드를 여기에서 호출합니다.
+                updateHandler.postDelayed(this, (1000 * 60)); // 업데이트 간격 설정 (1000 밀리세컨드 = 1초)
+            }
+        };
+
     }
 
     //레이더 차트
@@ -255,13 +314,14 @@ public class MainActivity extends AppCompatActivity{
     @Override
     protected void onStart() {
         super.onStart();
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (!Settings.canDrawOverlays(this)) {
                 showPermissionDialog();
             }
         }
     }
+
+
     public void onBackPressed(){
 
     }
@@ -342,8 +402,7 @@ public class MainActivity extends AppCompatActivity{
         db.collection("Time").document("SetTime")
                 .addSnapshotListener(new EventListener<DocumentSnapshot>() {
                     @Override
-                    public void onEvent(@Nullable DocumentSnapshot documentSnapshot,
-                                        @Nullable FirebaseFirestoreException e) {
+                    public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
                         if (e != null) {
                             Log.w("MainActivity", "listen:error", e);
                             return;
@@ -352,7 +411,7 @@ public class MainActivity extends AppCompatActivity{
                         if (documentSnapshot != null && documentSnapshot.exists()) {
                             String timeString = documentSnapshot.getString("time");
                             int timeValue = convertTimeStringToMinutes(timeString);
-                            limitTime.setText("시간: "+ "0" + " / " + timeValue + "분");
+                            limitTime.setText("시간: " + usedTimeInMinutes + " / " + timeValue + "분");
                         }
                     }
                 });
@@ -364,6 +423,62 @@ public class MainActivity extends AppCompatActivity{
         int hours = Integer.parseInt(timeParts[0]);
         int minutes = Integer.parseInt(timeParts[1]);
         return hours * 60 + minutes;
+    }
+
+    //핸드폰 사용 시간
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        isScreenOn = true;
+        screenOnTime = System.currentTimeMillis();
+        usedTimeInMinutes = loadUsedTime(); // onResume 에서 저장된 사용 시간 불러오기
+        updateUsedTime();
+        updateHandler.postDelayed(updateRunnable, 0); // Runnable 시작
+    }
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        updateUsedTime();
+        saveUsedTime(); // onPause 에서 사용 시간 저장하기
+        isScreenOn = false;
+        updateHandler.removeCallbacks(updateRunnable); // Runnable 중지
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        updateUsedTime();
+        saveUsedTime(); // onStop 에서 사용 시간 저장하기
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // BroadcastReceiver 해제
+        unregisterReceiver(screenOnReceiver);
+    }
+
+    private void updateUsedTime() {
+        long currentTime = System.currentTimeMillis();
+        if (isScreenOn) {
+            usedTimeInMinutes += (currentTime - screenOnTime) / 60000; // 분 단위로 사용 시간 증가
+            screenOnTime = currentTime;
+        }
+        fetchLimitTime(); // fetchLimitTime() 메서드가 사용 시간을 업데이트하므로 이 부분에서 호출해주세요.
+    }
+
+    private void saveUsedTime() {
+        SharedPreferences sharedPreferences = getSharedPreferences("APP_PREFS", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putLong("USED_TIME", usedTimeInMinutes);
+        editor.apply();
+    }
+    private long loadUsedTime() {
+        SharedPreferences sharedPreferences = getSharedPreferences("APP_PREFS", MODE_PRIVATE);
+        return sharedPreferences.getLong("USED_TIME", 0);
     }
 
 
