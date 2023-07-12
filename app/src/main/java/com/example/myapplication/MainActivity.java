@@ -417,7 +417,7 @@ public class MainActivity extends AppCompatActivity {
         fetchLimitTime(new FetchLimitTimeCallback() {
             @Override
             public void onLimitTimeFetched(int limitTimeValue) {
-                evgTextView.setText("시간: " + usageTime / 60 + " 분 / " + limitTimeValue + " 분");
+                evgTextView.setText("시간: " + usageTime + " 분 / " + limitTimeValue + " 분");
 
                 // Firestore에 사용시간 저장
                 saveUsageTimeToFirestore(usageTime);

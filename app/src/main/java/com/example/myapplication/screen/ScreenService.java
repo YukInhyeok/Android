@@ -57,11 +57,11 @@ public class ScreenService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         startTime = System.currentTimeMillis();
-        timer = new CountDownTimer(Long.MAX_VALUE, 1000) {
+        timer = new CountDownTimer(Long.MAX_VALUE, 60000) {
             @Override
             public void onTick(long millisUntilFinished) {
                 usageTime = System.currentTimeMillis() - startTime;
-                int roundedTime = (int) (usageTime / 1000);
+                int roundedTime = (int) (usageTime / (60 * 1000));
                 sendUsageTimeBroadcast(roundedTime);
             }
 
