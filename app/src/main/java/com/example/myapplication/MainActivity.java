@@ -4,47 +4,39 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
-import android.app.usage.UsageStats;
-import android.app.usage.UsageStatsManager;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.IBinder;
 import android.os.Looper;
-import android.os.PowerManager;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.myapplication.book.BookMainActivity;
 import com.example.myapplication.book.ResetCountReceiver;
-import com.example.myapplication.screen.ScreenService;
+import com.example.myapplication.screen.MyForegroundService;
 import com.github.mikephil.charting.charts.RadarChart;
-import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.RadarData;
 import com.github.mikephil.charting.data.RadarDataSet;
 import com.github.mikephil.charting.data.RadarEntry;
-import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -62,7 +54,6 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -94,6 +85,8 @@ public class MainActivity extends AppCompatActivity{
     private Runnable updateRunnable;
 
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -102,8 +95,9 @@ public class MainActivity extends AppCompatActivity{
         //firebase
         db = FirebaseFirestore.getInstance();
 
-        //LookScreen 설정
-        startService(new Intent(MainActivity.this, ScreenService.class));
+        //Foreground 설정
+        Intent serviceIntent = new Intent(this, MyForegroundService.class);
+        ContextCompat.startForegroundService(this, serviceIntent);
 
         // BottomNavigationView 초기화
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
@@ -152,6 +146,8 @@ public class MainActivity extends AppCompatActivity{
         fetchLimitTime();
 
         //핸드폰 사용 시간
+
+
 
         initPointListener();
         point.setOnClickListener(new View.OnClickListener() {
@@ -207,7 +203,7 @@ public class MainActivity extends AppCompatActivity{
         });
 
         //핸드폰 사용 시간
-        // SCREEN_ON 시간 측정을 위한 BroadcastReceiver 등록
+////         SCREEN_ON 시간 측정을 위한 BroadcastReceiver 등록
         screenOnReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -415,6 +411,7 @@ public class MainActivity extends AppCompatActivity{
                             String timeString = documentSnapshot.getString("time");
                             int timeValue = convertTimeStringToMinutes(timeString);
                             limitTime.setText("시간: " + usedTimeInMinutes + " / " + timeValue + "분");
+
                         }
                     }
                 });
@@ -428,16 +425,19 @@ public class MainActivity extends AppCompatActivity{
         return hours * 60 + minutes;
     }
 
+
+
+
     //핸드폰 사용 시간
 
-    @Override
+        @Override
     protected void onResume() {
         super.onResume();
         isScreenOn = true;
         screenOnTime = System.currentTimeMillis();
         usedTimeInMinutes = loadUsedTime(); // onResume 에서 저장된 사용 시간 불러오기
         updateUsedTime();
-        updateHandler.postDelayed(updateRunnable, 0); // Runnable 시작
+        updateHandler.post(updateRunnable); // Runnable 시작
     }
 
 
