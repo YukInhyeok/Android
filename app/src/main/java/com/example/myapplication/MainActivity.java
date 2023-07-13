@@ -6,6 +6,8 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.app.usage.UsageStats;
 import android.app.usage.UsageStatsManager;
 import android.content.BroadcastReceiver;
@@ -35,6 +37,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.myapplication.book.BookMainActivity;
+import com.example.myapplication.book.ResetCountReceiver;
 import com.example.myapplication.screen.ScreenService;
 import com.github.mikephil.charting.charts.RadarChart;
 import com.github.mikephil.charting.components.XAxis;
@@ -142,8 +145,7 @@ public class MainActivity extends AppCompatActivity{
         //독후감 관련
         bookNum = findViewById(R.id.book_text);
         fetchFinishBookNum();
-        BookMainActivity instance = new BookMainActivity();
-        instance.setAlarmToResetCount();
+        setAlarmToResetCount();
 
         // 제한 시간
         limitTime = findViewById(R.id.limit_time);
@@ -482,6 +484,25 @@ public class MainActivity extends AppCompatActivity{
         return sharedPreferences.getLong("USED_TIME", 0);
     }
 
+    //추가
+    private void setAlarmToResetCount() {
+        AlarmManager alarmMgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(this, ResetCountReceiver.class);
 
+        PendingIntent alarmIntent;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            alarmIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        } else {
+            alarmIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        }
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.add(Calendar.DAY_OF_YEAR, 1);
+
+        alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+                AlarmManager.INTERVAL_DAY, alarmIntent);
+    }
 
 }
