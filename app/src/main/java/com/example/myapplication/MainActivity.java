@@ -91,7 +91,6 @@ public class MainActivity extends AppCompatActivity{
     private Runnable updateRunnable;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -143,6 +142,8 @@ public class MainActivity extends AppCompatActivity{
         //독후감 관련
         bookNum = findViewById(R.id.book_text);
         fetchFinishBookNum();
+        BookMainActivity instance = new BookMainActivity();
+        instance.setAlarmToResetCount();
 
         // 제한 시간
         limitTime = findViewById(R.id.limit_time);
