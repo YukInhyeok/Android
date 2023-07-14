@@ -8,7 +8,10 @@ import androidx.core.content.ContextCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import android.app.AlarmManager;
+import android.app.AppOpsManager;
 import android.app.PendingIntent;
+import android.app.usage.UsageStats;
+import android.app.usage.UsageStatsManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -34,9 +37,11 @@ import com.example.myapplication.book.BookMainActivity;
 import com.example.myapplication.book.ResetCountReceiver;
 import com.example.myapplication.screen.MyForegroundService;
 import com.github.mikephil.charting.charts.RadarChart;
+import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.RadarData;
 import com.github.mikephil.charting.data.RadarDataSet;
 import com.github.mikephil.charting.data.RadarEntry;
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -54,6 +59,8 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -74,6 +81,14 @@ public class MainActivity extends AppCompatActivity{
     //제한 시간
     private TextView limitTime;
     private long appUsageTime = 0;
+
+    //앱 사용시간
+    private final Handler handler = new Handler(Looper.getMainLooper());
+
+    //추가
+    private long lastUpdateTime;
+    private long appUsageTimeStart;
+
 
 
 
@@ -132,15 +147,14 @@ public class MainActivity extends AppCompatActivity{
 
         //독후감 관련
         bookNum = findViewById(R.id.book_text);
-        fetchFinishBookNum();
         setAlarmToResetCount();
+        fetchFinishBookNum();
 
         // 제한 시간
         limitTime = findViewById(R.id.limit_time);
         fetchLimitTime(appUsageTime);
 
-        //핸드폰 사용 시간
-
+        //어플 사용 시간
 
 
         initPointListener();
@@ -195,7 +209,6 @@ public class MainActivity extends AppCompatActivity{
                 }
             }
         });
-
     }
 
     //레이더 차트
@@ -208,6 +221,11 @@ public class MainActivity extends AppCompatActivity{
                 RadarData data = new RadarData(dataSet);
                 radarChart.setData(data);
                 radarChart.invalidate();
+
+                String[] labels = {"어휘력", "독해력", "멍멍이", "야옹이", "짹짹이"};
+
+                XAxis xAxis = radarChart.getXAxis();
+                xAxis.setValueFormatter(new IndexAxisValueFormatter(labels));
             }
         });
     }
@@ -238,6 +256,8 @@ public class MainActivity extends AppCompatActivity{
     private void showMessage(String message) {
         Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
     }
+//===================================================================================================
+    // 사용자에게 권한 요청 메서드
 
     // 다른 앱 위에 표시 권한
     private void showPermissionDialog() {
@@ -249,6 +269,7 @@ public class MainActivity extends AppCompatActivity{
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 requestOverlayPermission();
+                requestUsageStatsPermission();
             }
         });
 
@@ -283,6 +304,19 @@ public class MainActivity extends AppCompatActivity{
         }
     }
 
+    private void requestUsageStatsPermission() {
+        if (!hasUsageStatsPermission(getApplicationContext())) {
+            startActivity(new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS));
+        }
+    }
+
+    private boolean hasUsageStatsPermission(Context context) {
+        final AppOpsManager appOps = (AppOpsManager) context.getSystemService(Context.APP_OPS_SERVICE);
+        int mode = appOps.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS, android.os.Process.myUid(), context.getPackageName());
+        return mode == AppOpsManager.MODE_ALLOWED;
+    }
+
+//====================================================================================================
 
     public void onBackPressed(){
 
@@ -417,8 +451,7 @@ public class MainActivity extends AppCompatActivity{
                 AlarmManager.INTERVAL_DAY, alarmIntent);
     }
 
-    //추가
-
+    //핸드폰 사용시간
     public static final String APP_USAGE_TIME_KEY = "app_usage_time";
 
     private BroadcastReceiver appUsageTimeReceiver = new BroadcastReceiver() {
@@ -429,5 +462,74 @@ public class MainActivity extends AppCompatActivity{
             fetchLimitTime(appUsageTime);
         }
     };
+
+    //어플 사용시간
+    private long getAppUsageTime(Context context, String myapplication) {
+        UsageStatsManager usageStatsManager = (UsageStatsManager) context.getSystemService(Context.USAGE_STATS_SERVICE);
+        long currentTime = System.currentTimeMillis();
+
+        // 원하는 기간을 설정하세요. 예제에서는 최근 1일을 사용하고 있습니다.
+        List<UsageStats> usageStatsList = usageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, currentTime - TimeUnit.DAYS.toMillis(1), currentTime);
+
+        long totalTime = 0;
+
+        if (usageStatsList != null) {
+            for (UsageStats usageStats : usageStatsList) {
+                if (myapplication.equals(usageStats.getPackageName())) {
+                    totalTime += usageStats.getTotalTimeInForeground();
+                }
+            }
+        }
+        return totalTime;
+    }
+
+    private String formatMillis(long millis) {
+        long hours = TimeUnit.MILLISECONDS.toHours(millis);
+        long minutes = TimeUnit.MILLISECONDS.toMinutes(millis) % 60;
+        long seconds = TimeUnit.MILLISECONDS.toSeconds(millis) % 60;
+        return String.format(Locale.getDefault(), "%02d:%02d:%02d", hours, minutes, seconds);
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d("MainActivity", "onResume called");
+        appUsageTimeStart = System.currentTimeMillis(); // onResume() 호출 시 시작 시간 저장
+        requestOrCheckPermission();
+        lastUpdateTime = System.currentTimeMillis(); // 현재 시간을 기록
+        // Runnable 시작
+        handler.post(updateAppUsageTimeRunnable);
+    }
+    @Override
+    protected void onPause() {
+        super.onPause();
+        // Runnable 정지 및 제거
+        handler.removeCallbacks(updateAppUsageTimeRunnable);
+        Log.d("MainActivity", "onPause called");
+    }
+    private void requestOrCheckPermission() {
+        updateAppUsageTime();
+    }
+
+    private void updateAppUsageTime() {
+        TextView appUseTimeTextView = findViewById(R.id.app_use_time);
+        long elapsedTime = System.currentTimeMillis() - appUsageTimeStart; // 어플 사용 시작 시간으로부터 경과한 시간 계산
+        long appUsageTimeInMillis = getAppUsageTime(getApplicationContext(), getPackageName()) + elapsedTime; // 전체 사용 시간에 경과 시간 더하기
+        String formattedAppUsageTime = formatMillis(appUsageTimeInMillis);
+        appUseTimeTextView.setText(formattedAppUsageTime);
+        Log.d("AppUsageTime", "App usage time: " + formattedAppUsageTime);
+    }
+    private final Runnable updateAppUsageTimeRunnable = new Runnable() {
+        @Override
+        public void run() {
+            long updateTimeThreshold = 1000; // 1초
+            if (System.currentTimeMillis() - lastUpdateTime >= updateTimeThreshold) {
+                updateAppUsageTime();
+                lastUpdateTime = System.currentTimeMillis();
+                Log.d("AppUsageTime", "App usage time updated"); // 작동 로그 추가
+            }
+            handler.postDelayed(this, updateTimeThreshold); // 1초 간격으로 반복 실행
+        }
+    };
+
 
 }
