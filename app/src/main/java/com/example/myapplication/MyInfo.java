@@ -15,9 +15,11 @@ import android.widget.TextView;
 
 import com.example.myapplication.book.BookMainActivity;
 import com.github.mikephil.charting.charts.RadarChart;
+import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.RadarData;
 import com.github.mikephil.charting.data.RadarDataSet;
 import com.github.mikephil.charting.data.RadarEntry;
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -96,6 +98,11 @@ public class MyInfo extends AppCompatActivity {
                 RadarData data = new RadarData(dataSet);
                 radarChart.setData(data);
                 radarChart.invalidate();
+
+                String[] labels = {"어휘력", "독해력", "멍멍이", "야옹이", "짹짹이"};
+
+                XAxis xAxis = radarChart.getXAxis();
+                xAxis.setValueFormatter(new IndexAxisValueFormatter(labels));
             }
         });
     }
@@ -151,24 +158,6 @@ public class MyInfo extends AppCompatActivity {
         return String.join("   ", dates);
     }
 
-    // 데이터 삽입 함수 추가
-    private void insertDummyData() {
-        DatabaseHelper dbHelper = new DatabaseHelper(this);
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-
-        ContentValues values = new ContentValues();
-
-        // 임시 데이터 추가
-        float[] dummyValues = {8f, 4f, 1f, 5f, 9f};
-
-        for (int i = 0; i < dummyValues.length; i++) {
-            values.put("value", dummyValues[i]);
-            values.put("label", i);
-            db.insert("radar_chart_data", null, values);
-        }
-
-        db.close();
-    }
 
     private void fetchData(FirestoreCallback callback) {
         db.collection("Chart").orderBy("label")
