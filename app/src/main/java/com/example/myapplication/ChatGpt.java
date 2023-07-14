@@ -2,7 +2,6 @@ package com.example.myapplication;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -48,12 +47,13 @@ public class ChatGpt extends AppCompatActivity {
 
     List<Message> messageList;
     MessageAdapter messageAdapter;
+    JSONArray messages = new JSONArray();
 
 
     // API 호출에 사용할 상수와 객체를 선언합니다.
     public static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
     OkHttpClient client;
-    private static final String MY_SECRET_KEY = "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";
+    private static final String MY_SECRET_KEY = "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";
 
     //네비게이션바 설정
     private BottomNavigationView bottomNavigationView;
@@ -62,20 +62,6 @@ public class ChatGpt extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.gpt_main);
-
-        // 하단바 숨기기
-        int uiOptions = getWindow().getDecorView().getSystemUiVisibility();
-        int newUiOptions = uiOptions;
-        boolean isImmersiveModeEnabled = ((uiOptions | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY) == uiOptions);
-        if (isImmersiveModeEnabled) {
-            Log.i("Is on?", "Turning immersive mode mode off. ");
-        } else {
-            Log.i("Is on?", "Turning immersive mode mode on.");
-        }
-        newUiOptions ^= View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
-        newUiOptions ^= View.SYSTEM_UI_FLAG_FULLSCREEN;
-        newUiOptions ^= View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
-        getWindow().getDecorView().setSystemUiVisibility(newUiOptions);
 
         // 뷰들을 초기화하고 필요한 설정을 합니다.
         recycler_view = findViewById(R.id.recycler_view);
@@ -175,61 +161,46 @@ public class ChatGpt extends AppCompatActivity {
     }
 
     // GPT API를 호출하여 사용자의 메시지를 전달하고 응답을 받는 메소드입니다.
-    private JSONArray conversationHistory = new JSONArray();
-
     void callAPI(String question) {
         //okhttp
         messageList.add(new Message("...", Message.SENT_BY_BOT));
 
         //추가된 내용
+        JSONArray arr = new JSONArray();
+        JSONObject baseAi = new JSONObject();
         JSONObject userMsg = new JSONObject();
-
         try {
+            //AI 속성설정
+            baseAi.put("role", "user");
+            baseAi.put("content", "당신은 한국 관광 가이드 입니다. 당신은 한국의 유명 관광지에 대해 많은 정보를 가지고 있으며 사용자의 질문에 맞는 관광지를 소개할 수 있습니다.");
+            //유저 메세지
             userMsg.put("role", "user");
             userMsg.put("content", question);
-            conversationHistory.put(userMsg);
+            //array로 담아서 한번에 보낸다
+            if (messages.length() == 0)
+                messages.put(baseAi);
+            messages.put(userMsg);
         } catch (JSONException e) {
-            e.printStackTrace();
-            return;
-        }
-
-        JSONArray arr = new JSONArray();
-
-        if (conversationHistory.length() == 1) {
-            JSONObject baseAi = new JSONObject();
-            try {
-                baseAi.put("role", "system");
-                baseAi.put("content", "지금부터 당신은 한국어 선생님입니다. 당신은 사용자와의 10마디 대화를 통해 사용자의 한국어 문법 능력을 테스트를 해야 합니다. 점수 측정은 100점에서 한 문제를 틀릴 때마다 10점씩 차감되는 형태로 진행하며 10마디 대화 이후엔 어떠한 대화를 하고 있던 사용자의 한국어 능력 점수를 알려주어야 합니다.");
-                baseAi.put("role", "user");
-                baseAi.put("content", "당신은 한국어 선생님입니다. 당신은 지금부터 저와 대화를 통해서 저의 한국어 능력 점수를 평가해야합니다. 점수는 100점부터 틀릴 때마다 10점씩 차감되며 당신은 틀린 이유와 함께 현재 점수를 알려주어야합니다.");
-            } catch (JSONException e) {
-                e.printStackTrace();
-                return;
-            }
-            arr.put(baseAi);
-        }
-
-        for (int i = 0; i < conversationHistory.length(); ++i) {
-            try {
-                arr.put(conversationHistory.getJSONObject(i));
-            } catch (JSONException e) {
-                e.printStackTrace();
-                return;
-            }
+            throw new RuntimeException(e);
         }
 
         JSONObject object = new JSONObject();
         try {
+            //모델명 변경
             object.put("model", "gpt-3.5-turbo");
-            object.put("messages", arr);
+            object.put("messages", messages);
+//            아래 put 내용은 삭제하면 된다
+//            object.put("model", "text-davinci-003");
+//            object.put("prompt", question);
+//            object.put("max_tokens", 4000);
+//            object.put("temperature", 0);
+
         } catch (JSONException e) {
             e.printStackTrace();
-            return;
         }
-
         RequestBody body = RequestBody.create(object.toString(), JSON);
         Request request = new Request.Builder()
-                .url("https://api.openai.com/v1/chat/completions")
+                .url("https://api.openai.com/v1/chat/completions")  //url 경로 수정됨
                 .header("Authorization", "Bearer " + MY_SECRET_KEY)
                 .post(body)
                 .build();
@@ -237,22 +208,34 @@ public class ChatGpt extends AppCompatActivity {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                addResponse("실패 1 " + e.getMessage());
+                addResponse("Failed to load response due to " + e.getMessage());
             }
 
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                 if (response.isSuccessful()) {
+                    JSONObject jsonObject = null;
                     try {
-                        JSONObject jsonObject = new JSONObject(response.body().string());
+                        jsonObject = new JSONObject(response.body().string());
                         JSONArray jsonArray = jsonObject.getJSONArray("choices");
+                        // 아래 result 받아오는 경로가 좀 수정되었다.
                         String result = jsonArray.getJSONObject(0).getJSONObject("message").getString("content");
+
+                        // 채팅창에 추가한 뒤에, 메시지 기록에 AI의 응답을 저장합니다.
                         addResponse(result.trim());
+                        JSONObject assistantMsg = new JSONObject();
+                        try {
+                            assistantMsg.put("role", "assistant");
+                            assistantMsg.put("content", result.trim());
+                            messages.put(assistantMsg);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                 } else {
-                    addResponse("실패 2" + response.body().string());
+                    addResponse("Failed to load response due to " + response.body().string());
                 }
             }
         });
