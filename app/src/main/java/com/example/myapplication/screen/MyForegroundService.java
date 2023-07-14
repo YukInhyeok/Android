@@ -15,6 +15,7 @@ import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
+import android.os.SystemClock;
 
 import androidx.core.app.NotificationCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -27,7 +28,15 @@ import java.util.concurrent.TimeUnit;
 public class MyForegroundService extends Service {
 
     private static final String CHANNEL_ID = "ForegroundServiceChannel";
+    private static final String APP_USAGE_TIME_PREF = "app_usage_time_pref";
+    public static final String APP_USAGE_TIME_KEY = "app_usage_time";
+
     private static final int NOTIFICATION_ID = 1;
+
+    private SharedPreferences sharedPreferences;
+    private Handler handler;
+    private long lastRecordedTime;
+    private BroadcastReceiver screenOnReceiver;
 
     private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -64,6 +73,30 @@ public class MyForegroundService extends Service {
     public void onCreate() {
         super.onCreate();
         createNotificationChannel();
+        sharedPreferences = getSharedPreferences(APP_USAGE_TIME_PREF, MODE_PRIVATE);
+
+        handler = new Handler();
+        lastRecordedTime = SystemClock.elapsedRealtime();
+
+        screenOnReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (Intent.ACTION_SCREEN_OFF.equals(intent.getAction())) {
+                    saveAppUsageTime();
+                    handler.removeCallbacks(updateAppUsageTimeRunnable);
+                } else if (Intent.ACTION_SCREEN_ON.equals(intent.getAction())) {
+                    lastRecordedTime = SystemClock.elapsedRealtime();
+                    handler.post(updateAppUsageTimeRunnable);
+                }
+            }
+        };
+
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Intent.ACTION_SCREEN_ON);
+        filter.addAction(Intent.ACTION_SCREEN_OFF);
+        registerReceiver(screenOnReceiver, filter);
+
+        handler.post(updateAppUsageTimeRunnable);
     }
 
 
@@ -71,26 +104,6 @@ public class MyForegroundService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         Notification notification = buildForegroundNotification();
         startForeground(NOTIFICATION_ID, notification);
-
-        // 포그라운드 작업 수행...
-//        CountDownTimer countDownTimer = new CountDownTimer(10000, 1000) {
-//            @Override
-//            public void onTick(long millisUntilFinished) {
-//                // 카운트다운 진행 중..
-//            }
-//
-//            @Override
-//            public void onFinish() {
-//                // 카운트다운 멈춤
-//                stopForeground(true);
-//                stopSelf();
-//            }
-//        };
-//        countDownTimer.start();
-        // 서비스 작업이 완료되었을 때 정지
-//        stopForeground(true);
-//        stopSelf();
-
         return START_STICKY;
     }
 
@@ -99,5 +112,41 @@ public class MyForegroundService extends Service {
         return null;
     }
 
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (screenOnReceiver != null) {
+            unregisterReceiver(screenOnReceiver);
+        }
+        saveAppUsageTime();
+    }
+
+    private void saveAppUsageTime() {
+        long currentTime = SystemClock.elapsedRealtime();
+        long elapsedTime = currentTime - lastRecordedTime;
+        lastRecordedTime = currentTime;
+        long currentAppUsageTime = getAppUsageTime() + elapsedTime;
+        sharedPreferences.edit().putLong(APP_USAGE_TIME_KEY, currentAppUsageTime).apply();
+    }
+
+    private long getAppUsageTime() {
+        return sharedPreferences.getLong(APP_USAGE_TIME_KEY, 0);
+    }
+
+    private Runnable updateAppUsageTimeRunnable = new Runnable() {
+        @Override
+        public void run() {
+            saveAppUsageTime();
+            sendAppUsageTimeBroadcast();
+            handler.postDelayed(this, (1000));
+        }
+    };
+
+    private void sendAppUsageTimeBroadcast() {
+        Intent appUsageTimeIntent = new Intent("app_usage_time_intent_action");
+        appUsageTimeIntent.putExtra(APP_USAGE_TIME_KEY, getAppUsageTime());
+        sendBroadcast(appUsageTimeIntent);
+    }
 
 }

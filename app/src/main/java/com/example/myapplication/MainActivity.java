@@ -73,17 +73,7 @@ public class MainActivity extends AppCompatActivity{
     private int finishBooknum;
     //제한 시간
     private TextView limitTime;
-
-    // 핸드폰 사용시간
-// 멤버 변수로 screenOnReceiver 등록
-    private BroadcastReceiver screenOnReceiver;
-    private boolean isScreenOn = false;
-    private long screenOnTime = 0;
-    private long screenOffTime = 0;
-    long usedTimeInMinutes = 0;
-    private Handler updateHandler;
-    private Runnable updateRunnable;
-
+    private long appUsageTime = 0;
 
 
 
@@ -98,6 +88,10 @@ public class MainActivity extends AppCompatActivity{
         //Foreground 설정
         Intent serviceIntent = new Intent(this, MyForegroundService.class);
         ContextCompat.startForegroundService(this, serviceIntent);
+
+        //추가
+        IntentFilter intentFilter = new IntentFilter("app_usage_time_intent_action");
+        registerReceiver(appUsageTimeReceiver, intentFilter);
 
         // BottomNavigationView 초기화
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
@@ -143,7 +137,7 @@ public class MainActivity extends AppCompatActivity{
 
         // 제한 시간
         limitTime = findViewById(R.id.limit_time);
-        fetchLimitTime();
+        fetchLimitTime(appUsageTime);
 
         //핸드폰 사용 시간
 
@@ -201,37 +195,6 @@ public class MainActivity extends AppCompatActivity{
                 }
             }
         });
-
-        //핸드폰 사용 시간
-////         SCREEN_ON 시간 측정을 위한 BroadcastReceiver 등록
-        screenOnReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
-                    isScreenOn = true;
-                    screenOnTime = System.currentTimeMillis();
-                } else if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
-                    isScreenOn = false;
-                    screenOffTime = System.currentTimeMillis();
-                    usedTimeInMinutes += TimeUnit.MILLISECONDS.toMinutes(screenOffTime - screenOnTime);
-                }
-            }
-        };
-
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(Intent.ACTION_SCREEN_ON);
-        intentFilter.addAction(Intent.ACTION_SCREEN_OFF);
-        registerReceiver(screenOnReceiver, intentFilter);
-
-        // 주기적으로 사용 시간 업데이트를 위한 Handler 초기화
-        updateHandler = new Handler(Looper.getMainLooper());
-        updateRunnable = new Runnable() {
-            @Override
-            public void run() {
-                updateUsedTime(); // 사용 시간 업데이트 메서드를 여기에서 호출합니다.
-                updateHandler.postDelayed(this, (1000 * 60)); // 업데이트 간격 설정 (1000 밀리세컨드 = 1초)
-            }
-        };
 
     }
 
@@ -396,8 +359,9 @@ public class MainActivity extends AppCompatActivity{
     }
 
     //제한 시간 메서드
-    private void fetchLimitTime() {
+    private void fetchLimitTime(long appUsageTime) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
+        long usedTimeInMinutes = TimeUnit.MILLISECONDS.toMinutes(appUsageTime);
         db.collection("Time").document("SetTime")
                 .addSnapshotListener(new EventListener<DocumentSnapshot>() {
                     @Override
@@ -426,65 +390,13 @@ public class MainActivity extends AppCompatActivity{
     }
 
 
-
-
-    //핸드폰 사용 시간
-
-        @Override
-    protected void onResume() {
-        super.onResume();
-        isScreenOn = true;
-        screenOnTime = System.currentTimeMillis();
-        usedTimeInMinutes = loadUsedTime(); // onResume 에서 저장된 사용 시간 불러오기
-        updateUsedTime();
-        updateHandler.post(updateRunnable); // Runnable 시작
-    }
-
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        updateUsedTime();
-        saveUsedTime(); // onPause 에서 사용 시간 저장하기
-        isScreenOn = false;
-        updateHandler.removeCallbacks(updateRunnable); // Runnable 중지
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        updateUsedTime();
-        saveUsedTime(); // onStop 에서 사용 시간 저장하기
-    }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
         // BroadcastReceiver 해제
-        unregisterReceiver(screenOnReceiver);
+        unregisterReceiver(appUsageTimeReceiver);
     }
 
-    private void updateUsedTime() {
-        long currentTime = System.currentTimeMillis();
-        if (isScreenOn) {
-            usedTimeInMinutes += (currentTime - screenOnTime) / 60000; // 분 단위로 사용 시간 증가
-            screenOnTime = currentTime;
-        }
-        fetchLimitTime(); // fetchLimitTime() 메서드가 사용 시간을 업데이트하므로 이 부분에서 호출해주세요.
-    }
-
-    private void saveUsedTime() {
-        SharedPreferences sharedPreferences = getSharedPreferences("APP_PREFS", MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putLong("USED_TIME", usedTimeInMinutes);
-        editor.apply();
-    }
-    private long loadUsedTime() {
-        SharedPreferences sharedPreferences = getSharedPreferences("APP_PREFS", MODE_PRIVATE);
-        return sharedPreferences.getLong("USED_TIME", 0);
-    }
-
-    //추가
     private void setAlarmToResetCount() {
         AlarmManager alarmMgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(this, ResetCountReceiver.class);
@@ -504,5 +416,18 @@ public class MainActivity extends AppCompatActivity{
         alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
                 AlarmManager.INTERVAL_DAY, alarmIntent);
     }
+
+    //추가
+
+    public static final String APP_USAGE_TIME_KEY = "app_usage_time";
+
+    private BroadcastReceiver appUsageTimeReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            long appUsageTime = intent.getLongExtra(APP_USAGE_TIME_KEY, 0);
+            // 사용 시간 정보를 처리하는 코드를 여기에 작성하십시오.
+            fetchLimitTime(appUsageTime);
+        }
+    };
 
 }
