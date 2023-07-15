@@ -198,28 +198,4 @@ public class BookMainActivity extends AppCompatActivity implements OnDatabaseCal
         });
     }
 
-    //추가
-//    private void setAlarmToResetCount() {
-//        AlarmManager alarmMgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-//        Intent intent = new Intent(this, ResetCountReceiver.class);
-//
-//        PendingIntent alarmIntent;
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//            alarmIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-//        } else {
-//            alarmIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-//        }
-//
-//        Calendar calendar = Calendar.getInstance();
-//        calendar.setTimeInMillis(System.currentTimeMillis());
-//        calendar.set(Calendar.HOUR_OF_DAY, 0);
-//        calendar.add(Calendar.DAY_OF_YEAR, 1);
-//
-//        alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
-//                AlarmManager.INTERVAL_DAY, alarmIntent);
-//    }
-
-
-
-
 }
