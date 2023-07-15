@@ -36,6 +36,8 @@ import android.widget.Toast;
 import com.example.myapplication.book.BookMainActivity;
 import com.example.myapplication.book.ResetCountReceiver;
 import com.example.myapplication.screen.MyForegroundService;
+import com.example.myapplication.screen.ScreenOnReceiver;
+import com.example.myapplication.screen.lockscreen;
 import com.github.mikephil.charting.charts.RadarChart;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.RadarData;
@@ -67,17 +69,23 @@ import java.util.concurrent.TimeUnit;
 public class MainActivity extends AppCompatActivity{
     //네비게이션바
     private BottomNavigationView bottomNavigationView;
+
     //포인트 관련
     private EditText editTextNumber;
     private Button point;
     private TextView pointNum;
+
     // 포인트 잔액
     private int cashValue;
+
     //firebase
     private FirebaseFirestore db;
+
     //독후감
     private TextView bookNum;
     private int finishBooknum;
+    private int workNum = 0;
+
     //제한 시간
     private TextView limitTime;
     private long appUsageTime = 0;
@@ -88,7 +96,11 @@ public class MainActivity extends AppCompatActivity{
     //추가
     private long lastUpdateTime;
     private long appUsageTimeStart;
+    // 앱 사용시간 전역변수
+    private String formattedAppUsageTime;
+    private TextView appUseTimeTextView;
 
+    private int timeValue = 0;
 
 
 
@@ -96,6 +108,11 @@ public class MainActivity extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // 잠금화면
+        ScreenOnReceiver screenOnReceiver = new ScreenOnReceiver();
+        IntentFilter screenOnFilter = new IntentFilter(Intent.ACTION_SCREEN_ON);
+        registerReceiver(screenOnReceiver, screenOnFilter);
 
         //firebase
         db = FirebaseFirestore.getInstance();
@@ -155,7 +172,7 @@ public class MainActivity extends AppCompatActivity{
         fetchLimitTime(appUsageTime);
 
         //어플 사용 시간
-
+        appUseTimeTextView = findViewById(R.id.app_use_time);
 
         initPointListener();
         point.setOnClickListener(new View.OnClickListener() {
@@ -364,7 +381,7 @@ public class MainActivity extends AppCompatActivity{
                         }
 
                         if (documentSnapshot != null && documentSnapshot.exists()) {
-                            int workNum = documentSnapshot.getLong("worknum").intValue();
+                            workNum = documentSnapshot.getLong("worknum").intValue();
                             bookNum.setText("책: " + finishBooknum + " / " + workNum + " 권"); // TextView에 반영
                         }
                     }
@@ -407,12 +424,14 @@ public class MainActivity extends AppCompatActivity{
 
                         if (documentSnapshot != null && documentSnapshot.exists()) {
                             String timeString = documentSnapshot.getString("time");
-                            int timeValue = convertTimeStringToMinutes(timeString);
-                            limitTime.setText("시간: " + usedTimeInMinutes + " / " + timeValue + "분");
+                            timeValue = convertTimeStringToMinutes(timeString);
+                            limitTime.setText("시간: " + formattedAppUsageTime +" / " + timeValue + " 분");
+                            appUseTimeTextView.setText("총 시간: " + usedTimeInMinutes + " 분");
 
                         }
                     }
                 });
+
     }
 
 
@@ -484,10 +503,9 @@ public class MainActivity extends AppCompatActivity{
     }
 
     private String formatMillis(long millis) {
-        long hours = TimeUnit.MILLISECONDS.toHours(millis);
-        long minutes = TimeUnit.MILLISECONDS.toMinutes(millis) % 60;
-        long seconds = TimeUnit.MILLISECONDS.toSeconds(millis) % 60;
-        return String.format(Locale.getDefault(), "%02d:%02d:%02d", hours, minutes, seconds);
+        long minutes = TimeUnit.MILLISECONDS.toMinutes(millis);
+
+        return String.format(Locale.getDefault(), "%02d", minutes);
     }
     @Override
     protected void onResume() {
@@ -498,6 +516,9 @@ public class MainActivity extends AppCompatActivity{
         lastUpdateTime = System.currentTimeMillis(); // 현재 시간을 기록
         // Runnable 시작
         handler.post(updateAppUsageTimeRunnable);
+        long appUsageTimeInMinutes = Long.parseLong(formattedAppUsageTime);
+        fetchLimitTime(appUsageTimeInMinutes);
+
     }
     @Override
     protected void onPause() {
@@ -505,23 +526,31 @@ public class MainActivity extends AppCompatActivity{
         // Runnable 정지 및 제거
         handler.removeCallbacks(updateAppUsageTimeRunnable);
         Log.d("MainActivity", "onPause called");
+        SharedPreferences sharedPreferences = getSharedPreferences("AppData", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        editor.putString("formattedAppUsageTime", formattedAppUsageTime);
+        editor.putInt("finishBooknum", finishBooknum);
+        editor.putLong("timeValue", timeValue);
+        editor.putInt("workNum", workNum);
+        editor.apply();
     }
     private void requestOrCheckPermission() {
         updateAppUsageTime();
     }
 
     private void updateAppUsageTime() {
-        TextView appUseTimeTextView = findViewById(R.id.app_use_time);
+//        TextView appUseTimeTextView = findViewById(R.id.app_use_time);
         long elapsedTime = System.currentTimeMillis() - appUsageTimeStart; // 어플 사용 시작 시간으로부터 경과한 시간 계산
         long appUsageTimeInMillis = getAppUsageTime(getApplicationContext(), getPackageName()) + elapsedTime; // 전체 사용 시간에 경과 시간 더하기
-        String formattedAppUsageTime = formatMillis(appUsageTimeInMillis);
-        appUseTimeTextView.setText(formattedAppUsageTime);
+        formattedAppUsageTime = formatMillis(appUsageTimeInMillis);
+//        appUseTimeTextView.setText("총 시간: " + formattedAppUsageTime);
         Log.d("AppUsageTime", "App usage time: " + formattedAppUsageTime);
     }
     private final Runnable updateAppUsageTimeRunnable = new Runnable() {
         @Override
         public void run() {
-            long updateTimeThreshold = 1000; // 1초
+            long updateTimeThreshold = 1000 * 60; // 1분
             if (System.currentTimeMillis() - lastUpdateTime >= updateTimeThreshold) {
                 updateAppUsageTime();
                 lastUpdateTime = System.currentTimeMillis();
@@ -530,6 +559,7 @@ public class MainActivity extends AppCompatActivity{
             handler.postDelayed(this, updateTimeThreshold); // 1초 간격으로 반복 실행
         }
     };
+//=====================lockscreen=================================================
 
 
 }
