@@ -161,6 +161,7 @@ public class MainActivity extends AppCompatActivity{
         editTextNumber = findViewById(R.id.editTextNumber);
         point = findViewById(R.id.point);
         pointNum = findViewById(R.id.point_num);
+        initPointListener();
 
         //독후감 관련
         bookNum = findViewById(R.id.book_text);
@@ -174,7 +175,9 @@ public class MainActivity extends AppCompatActivity{
         //어플 사용 시간
         appUseTimeTextView = findViewById(R.id.app_use_time);
 
-        initPointListener();
+        //앱 종료 확인
+        ExitApp();
+//==================================Point 메서드===================================================================
         point.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -227,8 +230,10 @@ public class MainActivity extends AppCompatActivity{
             }
         });
     }
+//===============================================================================================================
 
-    //레이더 차트
+
+//=====================================레이더 차트==========================================================================
     private void setData(RadarChart radarChart) {
         fetchData(new MyInfo.FirestoreCallback() {
             @Override
@@ -246,7 +251,9 @@ public class MainActivity extends AppCompatActivity{
             }
         });
     }
+//===============================================================================================================
 
+//=====================================포인트 관련==========================================================================
     private void initPointListener() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -268,13 +275,19 @@ public class MainActivity extends AppCompatActivity{
                     }
                 });
     }
+//===============================================================================================================
 
-    //클릭 메소드
+
+//=====================================클릭 메소드==========================================================================
     private void showMessage(String message) {
         Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
     }
-//===================================================================================================
-    // 사용자에게 권한 요청 메서드
+
+//===============================================================================================================
+
+
+//=============================== 권한 요청 메서드====================================================================
+
 
     // 다른 앱 위에 표시 권한
     private void showPermissionDialog() {
@@ -339,7 +352,7 @@ public class MainActivity extends AppCompatActivity{
 
     }
 
-    //Chart
+//=====================================Chart==========================================================================
     private void fetchData(MyInfo.FirestoreCallback callback) {
         db.collection("Chart").orderBy("label")
                 .get()
@@ -362,12 +375,13 @@ public class MainActivity extends AppCompatActivity{
                     }
                 });
     }
+//===============================================================================================================
     // 콜백 인터페이스 추가
     private interface FirestoreCallback {
         void onDataLoaded(ArrayList<RadarEntry> entries);
     }
 
-    // 독후감 책 관련 메서드
+// =====================================독후감 책 관련 메서드==========================================================================
     private void fetchWorkNum() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("Book").document("report")
@@ -408,8 +422,10 @@ public class MainActivity extends AppCompatActivity{
                     }
                 });
     }
+//====================================================================================================================================================
 
-    //제한 시간 메서드
+
+//=====================================제한 시간 메서드==========================================================================
     private void fetchLimitTime(long appUsageTime) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         long usedTimeInMinutes = TimeUnit.MILLISECONDS.toMinutes(appUsageTime);
@@ -469,8 +485,10 @@ public class MainActivity extends AppCompatActivity{
         alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
                 AlarmManager.INTERVAL_DAY, alarmIntent);
     }
+//===============================================================================================================
 
-    //핸드폰 사용시간
+
+//=====================================핸드폰 사용시간==========================================================================
     public static final String APP_USAGE_TIME_KEY = "app_usage_time";
 
     private BroadcastReceiver appUsageTimeReceiver = new BroadcastReceiver() {
@@ -481,14 +499,30 @@ public class MainActivity extends AppCompatActivity{
             fetchLimitTime(appUsageTime);
         }
     };
+//===============================================================================================================
 
-    //어플 사용시간
+
+//=====================================어플 사용시간==========================================================================
     private long getAppUsageTime(Context context, String myapplication) {
         UsageStatsManager usageStatsManager = (UsageStatsManager) context.getSystemService(Context.USAGE_STATS_SERVICE);
+
+        // 오늘 자정 시간을 구합니다.
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        long startTime = calendar.getTimeInMillis();
+
+        // 현재 시간을 구합니다.
         long currentTime = System.currentTimeMillis();
 
-        // 원하는 기간을 설정하세요. 예제에서는 최근 1일을 사용하고 있습니다.
-        List<UsageStats> usageStatsList = usageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, currentTime - TimeUnit.DAYS.toMillis(1), currentTime);
+        // 설정한 기간의 앱 사용 정보를 가져옵니다.
+        List<UsageStats> usageStatsList = usageStatsManager.queryUsageStats(
+                UsageStatsManager.INTERVAL_DAILY,
+                startTime,
+                currentTime
+        );
 
         long totalTime = 0;
 
@@ -501,6 +535,7 @@ public class MainActivity extends AppCompatActivity{
         }
         return totalTime;
     }
+
 
     private String formatMillis(long millis) {
         long minutes = TimeUnit.MILLISECONDS.toMinutes(millis);
@@ -518,7 +553,6 @@ public class MainActivity extends AppCompatActivity{
         handler.post(updateAppUsageTimeRunnable);
         long appUsageTimeInMinutes = Long.parseLong(formattedAppUsageTime);
         fetchLimitTime(appUsageTimeInMinutes);
-
     }
     @Override
     protected void onPause() {
@@ -559,7 +593,65 @@ public class MainActivity extends AppCompatActivity{
             handler.postDelayed(this, updateTimeThreshold); // 1초 간격으로 반복 실행
         }
     };
-//=====================lockscreen=================================================
+//===============================================================================================================
+
+//=========================================앱 종료 메서드=================================================
+private void showExitDialog() {
+    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+    builder.setTitle("앱 종료 확인");
+    builder.setMessage("앱을 종료하시겠습니까?");
+
+    builder.setPositiveButton("예", new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialogInterface, int i) {
+            finishAffinity();
+            System.exit(0);
+        }
+    });
+
+    builder.setNegativeButton("아니요", new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialogInterface, int i) {
+            // 취소 시 처리 코드
+            dialogInterface.dismiss();
+        }
+    });
+
+    builder.show();
+}
+private void ExitApp(){
+        SharedPreferences sharedPreferences = getSharedPreferences("AppData", Context.MODE_PRIVATE);
+        String formattedAppUsageTime = sharedPreferences.getString("formattedAppUsageTime", "0");
+        int finishBooknum = sharedPreferences.getInt("finishBooknum", 0);
+        long timeValue = sharedPreferences.getLong("timeValue", 0);
+        int workNum = sharedPreferences.getInt("workNum", 0);
+
+    if (Long.parseLong(formattedAppUsageTime) >= timeValue && finishBooknum >= workNum){
+        showExitDialog();
+    }
+    if (Long.parseLong(formattedAppUsageTime) >= timeValue){
+        TargetTime(formattedAppUsageTime);
+    }
+}
+//========================================================================================================================
 
 
+//===============================firebase에 사용시간 추가====================================================================
+private void TargetTime(String formattedAppUsageTime){
+    DocumentReference documentReference = db.collection("Time").document("TargetTime");
+
+    documentReference.update("Ttime", formattedAppUsageTime)
+            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void unused) {
+                    Log.d("MainActivity", "App usage time successfully updated.");
+                }
+            })
+            .addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.e("MainActivity", "Error updating app usage time", e);
+                }
+            });
+    }
 }
