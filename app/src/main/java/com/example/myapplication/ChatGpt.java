@@ -1,5 +1,6 @@
 package com.example.myapplication;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -23,9 +24,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
@@ -53,7 +59,7 @@ public class ChatGpt extends AppCompatActivity {
     // API 호출에 사용할 상수와 객체를 선언합니다.
     public static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
     OkHttpClient client;
-    private static final String MY_SECRET_KEY = "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";
+    private static final String MY_SECRET_KEY = "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";
 
     //네비게이션바 설정
     private BottomNavigationView bottomNavigationView;
@@ -98,10 +104,33 @@ public class ChatGpt extends AppCompatActivity {
         });
 
         start_btn.setOnClickListener(new View.OnClickListener() {
+            // 파일에서 JSON 객체를 로드합니다.
+            JSONArray jsonArray = loadJsonArrayFromFile("Question.json");
             @Override
             public void onClick(View view) {
-                // "시작" 단어를 GPT에게 전달하는 함수 호출
-                callAPI("시작");
+                if (jsonArray != null && jsonArray.length() > 0) {
+                    // 랜덤 인덱스를 생성합니다.
+                    Random random = new Random();
+                    int index = random.nextInt(jsonArray.length());
+
+                    try {
+                        // JSON 배열에서 랜덤한 요소를 가져옵니다.
+                        JSONObject randomQuestion = jsonArray.getJSONObject(index);
+
+                        // 선택된 JSON 객체의 내용을 화면에 출력합니다.
+                        // 예시: 여기에서는 "content"라는 키를 사용하여 값을 가져옵니다.
+                        String questionContent = randomQuestion.getString("content");
+                        addResponse("문제: " + questionContent);
+
+                        // 이 내용을 GPT에게 전달하는 함수 호출
+                        callAPI(questionContent);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    // 파일 로드에 실패한 경우 또는 배열의 길이가 0인 경우 오류 메시지를 출력합니다.
+                    addResponse("Failed to load or empty Questions. Please check the file.");
+                }
                 // 버튼 감추기
                 start_btn.setVisibility(View.GONE);
             }
@@ -155,10 +184,15 @@ public class ChatGpt extends AppCompatActivity {
     }
 
     // GPT의 응답을 채팅창에 추가하는 메소드입니다.
+
     void addResponse(String response) {
-        messageList.remove(messageList.size() - 1);
+        if (messageList.size() > 0) {
+            messageList.remove(messageList.size() - 1);
+        }
         addToChat(response, Message.SENT_BY_BOT);
     }
+
+
 
     // GPT API를 호출하여 사용자의 메시지를 전달하고 응답을 받는 메소드입니다.
     void callAPI(String question) {
@@ -172,12 +206,7 @@ public class ChatGpt extends AppCompatActivity {
         try {
             //AI 속성설정
             baseAi.put("role", "user");
-            baseAi.put("content", "당신은 사용자와의 10가지의 국어 문제를 통해 사용자의 국어 능력을 테스트를 해야 합니다." +
-                    "점수 측정은 100점이 기준입니다. 한 문제를 틀릴 때마다 10점씩 차감합니다." +
-                    "10가지의 문제는 무조껀 한개씩 진행되어야 합니다." + "사용자의 대답을 듣고 정답 인지 오답 인지 판별하여 알려주어야합니다." +
-                    "사용자가 대화를 보내기 전까지 정답을 절대 알려주면 안됩니다." +
-                    "그 후 두번 째 문제를 내고 사용자의 대답을 듣고, 정답 인지 오답 인지 판별 하고 점수를 계산하는 행동을 열 번째 문제까지 반복합니다." +
-                    "10가지의 문제가 끝나면 사용자에게 점수를 꼭 알려주어야 합니다.");
+            baseAi.put("content", "당신은 국어선생님 입니다. 객관식 문제 5가지를 출제해야합니다. 문제는 100점 만점이며 한 문제당 20점의 배점을 가지고 있습니다. 사용자의 점수를 판단하세요. 반드시 문제를 출제할 때에는 절대 답을 알려주어서는 안되고, 사용자가 답을 입력한 후에 정답을 알려줍니다. 사용자의 답이 정답과 다르다면 오답 처리를 해야합니다.");
             //유저 메세지
             userMsg.put("role", "user");
             userMsg.put("content", question);
@@ -240,4 +269,21 @@ public class ChatGpt extends AppCompatActivity {
             }
         });
     }
+
+    // 추가
+    public JSONArray loadJsonArrayFromFile(String Question) {
+        try {
+            InputStream is = getAssets().open(Question);
+            byte[] buffer = new byte[is.available()];
+            is.read(buffer);
+
+            String jsonStr = new String(buffer, StandardCharsets.UTF_8);
+            return new JSONArray(jsonStr);
+
+        } catch (IOException | JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 }
