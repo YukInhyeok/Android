@@ -85,7 +85,6 @@ public class MyInfo extends AppCompatActivity {
 
         // 레이더 차트 추가
         RadarChart radarChart = findViewById(R.id.info_chart);
-//        insertDummyData(); // DB에 더미 데이터를 추가 (처음 한 번만 실행해서 데이터를 넣어주세요)
         setData(radarChart);
     }
 
@@ -106,16 +105,6 @@ public class MyInfo extends AppCompatActivity {
             }
         });
     }
-
-//    private void setData(RadarChart radarChart) {
-//        ArrayList<RadarEntry> entries = fetchData(); // 가져온 데이터 사용
-//
-//        RadarDataSet dataSet = new RadarDataSet(entries, "주간 데이터");
-//        dataSet.setColor(Color.RED); // 색상을 빨간색으로 설정
-//        RadarData data = new RadarData(dataSet);
-//        radarChart.setData(data);
-//        radarChart.invalidate();
-//    }
 
     private String getCurrentMonthAndWeek() {
         Calendar calendar = Calendar.getInstance();

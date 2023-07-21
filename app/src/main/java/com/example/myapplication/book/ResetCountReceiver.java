@@ -9,7 +9,7 @@ import android.util.Log;
 public class ResetCountReceiver extends BroadcastReceiver {
     private static final String TAG = "ResetCountReceiver";
     private static final String PREFS_NAME = "book_count_prefs";
-    private static final String KEY_BOOK_COUNT = "book_count";
+    private static final String KEY_BOOK_COUNT = "finishBooknum";
 
     @Override
     public void onReceive(Context context, Intent intent) {
