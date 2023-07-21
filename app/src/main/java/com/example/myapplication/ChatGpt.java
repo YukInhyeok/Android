@@ -3,6 +3,7 @@ package com.example.myapplication;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -18,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.myapplication.adapter.MessageAdapter;
 import com.example.myapplication.book.BookMainActivity;
 import com.example.myapplication.model.Message;
+import com.example.myapplication.socket.SocketClient;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import org.json.JSONArray;
@@ -33,6 +35,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -51,9 +55,15 @@ public class ChatGpt extends AppCompatActivity {
 
     Button start_btn;
 
+
     List<Message> messageList;
     MessageAdapter messageAdapter;
     JSONArray messages = new JSONArray();
+
+
+    JSONArray assistantMessages = new JSONArray();
+
+    private Button Btn1;
 
 
     // API 호출에 사용할 상수와 객체를 선언합니다.
@@ -86,14 +96,35 @@ public class ChatGpt extends AppCompatActivity {
         messageAdapter = new MessageAdapter(messageList);
         recycler_view.setAdapter(messageAdapter);
 
+        Btn1 = findViewById(R.id.btn1);
+
+        Btn1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int lastScore = findLastScoreFromAssistantMsg(assistantMessages);
+
+                if (lastScore != -1) {
+                    // 찾은 마지막 점수를 사용하여 필요한 작업 수행
+                    // 예를 들어, 결과를 TextView에 반영:
+                    Log.d("test score","마지막 점수: " + lastScore);
+                } else {
+                    // 점수를 찾지 못한 경우 처리
+                    Log.d("test score","점수를 찾지 못했습니다.");
+                }
+            }
+        });
+
         // 전송 버튼 클릭 이벤트 핸들러를 등록합니다.
         btn_send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // 사용자가 입력한 메시지를 가져와서 채팅창에 추가합니다.
+                // 기존 코드
                 String question = et_msg.getText().toString().trim();
                 addToChat(question, Message.SENT_BY_ME);
                 et_msg.setText("");
+
+                // 추가되는 코드
+//                socketClient.sendToPythonServer(question);
 
                 // API를 호출하여 GPT에게 사용자의 메시지를 전달합니다.
                 callAPI(question);
@@ -102,6 +133,7 @@ public class ChatGpt extends AppCompatActivity {
                 tv_welcome.setVisibility(View.GONE);
             }
         });
+
 
         start_btn.setOnClickListener(new View.OnClickListener() {
             // 파일에서 JSON 객체를 로드합니다.
@@ -247,7 +279,7 @@ public class ChatGpt extends AppCompatActivity {
                     try {
                         jsonObject = new JSONObject(response.body().string());
                         JSONArray jsonArray = jsonObject.getJSONArray("choices");
-                        // 아래 result 받아오는 경로가 좀 수정되었다.
+
                         String result = jsonArray.getJSONObject(0).getJSONObject("message").getString("content");
 
                         // 채팅창에 추가한 뒤에, 메시지 기록에 AI의 응답을 저장합니다.
@@ -257,6 +289,7 @@ public class ChatGpt extends AppCompatActivity {
                             assistantMsg.put("role", "assistant");
                             assistantMsg.put("content", result.trim());
                             messages.put(assistantMsg);
+                            assistantMessages.put(assistantMsg);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -285,5 +318,43 @@ public class ChatGpt extends AppCompatActivity {
             return null;
         }
     }
+
+    // assistantMsg 배열값을 사용하면 될듯
+    private int findScoreFromAssistantMsg(String content) {
+        int lastScore = -1;
+        int index = content.lastIndexOf("점");
+
+        if (index != -1) {
+            String subStrBeforePoint = content.substring(0, index);
+            Matcher m = Pattern.compile("\\d+").matcher(subStrBeforePoint);
+
+            while (m.find()) {
+                lastScore = Integer.parseInt(m.group());
+            }
+        }
+        return lastScore;
+    }
+
+
+    private int findLastScoreFromAssistantMsg(JSONArray assistantMessages) {
+        int lastScore = -1;
+        for (int i = assistantMessages.length() - 1; i >= 0; i--) {
+            try {
+                JSONObject msg = assistantMessages.getJSONObject(i);
+                if (msg.getString("role").equals("assistant")) {
+                    String content = msg.getString("content");
+                    int score = findScoreFromAssistantMsg(content);
+                    if (score != -1) { // 점수를 찾았을 때만 기록
+                        lastScore = score;
+                        break; // 내부 반복문 종료
+                    }
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return lastScore;
+    }
+
 
 }
