@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -54,22 +55,24 @@ public class ChatGpt extends AppCompatActivity {
     ImageButton btn_send;
 
     Button start_btn;
+    Button Btn1;
+    Button Btn2;
+    Button finishBtn;
 
 
     List<Message> messageList;
     MessageAdapter messageAdapter;
     JSONArray messages = new JSONArray();
 
-
     JSONArray assistantMessages = new JSONArray();
 
-    private Button Btn1;
+
 
 
     // API 호출에 사용할 상수와 객체를 선언합니다.
     public static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
     OkHttpClient client;
-    private static final String MY_SECRET_KEY = "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";
+    private static final String MY_SECRET_KEY = "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";
 
     //네비게이션바 설정
     private BottomNavigationView bottomNavigationView;
@@ -85,6 +88,9 @@ public class ChatGpt extends AppCompatActivity {
         et_msg = findViewById(R.id.et_msg);
         btn_send = findViewById(R.id.btn_send);
         start_btn = findViewById(R.id.start_btn);
+        Btn1 = findViewById(R.id.btn1);
+        Btn2 = findViewById(R.id.btn2);
+        finishBtn = findViewById(R.id.finish_Btn);
 
         recycler_view.setHasFixedSize(true);
         LinearLayoutManager manager = new LinearLayoutManager(this);
@@ -96,9 +102,9 @@ public class ChatGpt extends AppCompatActivity {
         messageAdapter = new MessageAdapter(messageList);
         recycler_view.setAdapter(messageAdapter);
 
-        Btn1 = findViewById(R.id.btn1);
 
-        Btn1.setOnClickListener(new View.OnClickListener() {
+
+        finishBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 int lastScore = findLastScoreFromAssistantMsg(assistantMessages);
@@ -107,6 +113,7 @@ public class ChatGpt extends AppCompatActivity {
                     // 찾은 마지막 점수를 사용하여 필요한 작업 수행
                     // 예를 들어, 결과를 TextView에 반영:
                     Log.d("test score","마지막 점수: " + lastScore);
+                    Toast.makeText(getApplicationContext(), "당신의 점수는: " + lastScore, Toast.LENGTH_SHORT).show();
                 } else {
                     // 점수를 찾지 못한 경우 처리
                     Log.d("test score","점수를 찾지 못했습니다.");
@@ -165,6 +172,8 @@ public class ChatGpt extends AppCompatActivity {
                 }
                 // 버튼 감추기
                 start_btn.setVisibility(View.GONE);
+                Btn2.setVisibility(View.GONE);
+                Btn1.setVisibility(View.GONE);
             }
         });
 
