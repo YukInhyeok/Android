@@ -96,7 +96,7 @@ public class ChatGpt extends AppCompatActivity {
     // API 호출에 사용할 상수와 객체를 선언합니다.
     public static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
     OkHttpClient client;
-    private static final String MY_SECRET_KEY = "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";
+    private static final String MY_SECRET_KEY = "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";
 
     //네비게이션바 설정
     private BottomNavigationView bottomNavigationView;

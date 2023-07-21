@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlarmManager;
+import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.content.ContentValues;
 import android.content.Context;
@@ -13,7 +14,11 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.NumberPicker;
 import android.widget.TextView;
 
 import com.example.myapplication.book.BookMainActivity;
@@ -51,6 +56,9 @@ public class MyInfo extends AppCompatActivity {
 
     private TextView textView7;
 
+    private TextView goalScoreText;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,7 +70,7 @@ public class MyInfo extends AppCompatActivity {
         TextView textView5 = findViewById(R.id.textView5);
         textView5.setText(getCurrentWeekDates());
 
-        textView7 = findViewById(R.id.textView7);
+        textView7 = findViewById(R.id.sol);
 
         //firebase
         db = FirebaseFirestore.getInstance();
@@ -96,14 +104,22 @@ public class MyInfo extends AppCompatActivity {
         bottomNavigationView.setSelectedItemId(R.id.menu_info);
 
         // 레이더 차트 추가
-        HorizontalBarChart barChart = findViewById(R.id.info_chart);
+        BarChart barChart = findViewById(R.id.info_chart);
         setData(barChart);
 
         //주간 차트 초기화
         setWeeklyResetAlarm();
+
+        goalScoreText = findViewById(R.id.goal_score);
+        goalScoreText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showGoalScorePopup();
+            }
+        });
     }
 
-    private void setData(HorizontalBarChart barChart) {
+    private void setData(BarChart barChart) {
         fetchData(new FirestoreCallback() {
             @Override
             public void onDataLoaded(ArrayList<BarEntry> entries) {
@@ -111,24 +127,15 @@ public class MyInfo extends AppCompatActivity {
                 for (int i = 0; i < entries.size(); i++) {
                     entries.get(i).setX(i + 1);
                 }
-
-                // 가장 낮은 값의 인덱스 찾기
-                int lowestIndex = 0;
-                float lowestValue = Float.MAX_VALUE;
-                for (int i = 0; i < entries.size(); i++) {
-                    if (entries.get(i).getY() < lowestValue) {
-                        lowestIndex = i;
-                        lowestValue = entries.get(i).getY();
-                    }
-                }
-
                 BarDataSet dataSet = new BarDataSet(entries, "주간 데이터");
 
                 // Set colors for each bar
                 List<Integer> colors = new ArrayList<>();
-                colors.add(Color.BLUE); // 독해력
-                colors.add(Color.GREEN); // 문해력
-                colors.add(Color.RED); // 어휘력
+                colors.add(Color.BLUE); // 월
+                colors.add(Color.GREEN); // 화
+                colors.add(Color.RED); // 수
+                colors.add(Color.CYAN); // 목
+                colors.add(Color.MAGENTA); // 금
                 dataSet.setColors(colors);
 
                 BarData data = new BarData(dataSet);
@@ -136,12 +143,14 @@ public class MyInfo extends AppCompatActivity {
                 barChart.setData(data);
                 barChart.invalidate();
 
-                String[] labels = {"", "독해력", "문해력", "어휘력"};
+                String[] labels = {"", "월", "화", "수", "목", "금"};
 
                 XAxis xAxis = barChart.getXAxis();
                 xAxis.setValueFormatter(new IndexAxisValueFormatter(labels));
-//                xAxis.setDrawAxisLine(false);
-                xAxis.setDrawGridLines(false);
+                xAxis.setDrawAxisLine(false);
+//                xAxis.setDrawGridLines(false);
+                xAxis.setAxisMinimum(0f);
+                xAxis.setAxisMaximum(6f);
 
                 // Disable YAxis labels
                 YAxis leftAxis = barChart.getAxisLeft();
@@ -149,16 +158,13 @@ public class MyInfo extends AppCompatActivity {
                 leftAxis.setAxisMinimum(0f);
                 leftAxis.setAxisMaximum(100f);
                 leftAxis.setDrawGridLines(false);
-//                leftYAxis.setDrawLabels(false);
+//                leftAxis.setDrawLabels(false);
 
                 YAxis rightYAxis = barChart.getAxisRight();
                 rightYAxis.setDrawLabels(false);
 
                 // Disable scaling
                 barChart.setScaleEnabled(false);
-
-                String lowestLabel = labels[lowestIndex + 1];
-                textView7.setText("평균점수보다 "+ lowestLabel + "점수가 부족하므로\n" + lowestLabel + "위주의 문제풀이를 추천드립니다."); // 가장 낮은 값의 레이블을 textBox7에 설정
             }
         });
     }
@@ -206,7 +212,7 @@ public class MyInfo extends AppCompatActivity {
 
 
     private void fetchData(FirestoreCallback callback) {
-        db.collection("Chart").orderBy("label")
+        db.collection("WeekChart").orderBy("label")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -215,10 +221,10 @@ public class MyInfo extends AppCompatActivity {
                             ArrayList<BarEntry> entries = new ArrayList<>();
 
                             for (QueryDocumentSnapshot document : task.getResult()) {
-                                float value = document.getDouble("value").floatValue();
+                                int average = document.getLong("average").intValue();
                                 int label = document.getLong("label").intValue();
                                 // RadarEntry 대신 BarEntry 사용
-                                entries.add(new BarEntry(label, value));
+                                entries.add(new BarEntry(label, average));
                             }
 
                             callback.onDataLoaded(entries);
@@ -255,4 +261,62 @@ public class MyInfo extends AppCompatActivity {
         alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY * 7, pendingIntent);
     }
 
+    private void showGoalScorePopup() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(MyInfo.this);
+        LayoutInflater inflater = getLayoutInflater();
+        View popupView = inflater.inflate(R.layout.goal_score_popup, null);
+        builder.setView(popupView);
+
+        final NumberPicker numberPicker = popupView.findViewById(R.id.b_work_num_picker);
+        numberPicker.setMinValue(0); // 최소값 설정
+        numberPicker.setMaxValue(100); // 최대값 설정
+        Button goalScoreBtn = popupView.findViewById(R.id.b_work_btn);
+
+        final AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+
+        goalScoreBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int selectedGoalScore = numberPicker.getValue();
+                goalScoreText.setText("목표 점수: " + selectedGoalScore);
+                alertDialog.dismiss();
+
+                // 목표 점수로 차트 업데이트 (새로 추가된 코드)
+                updateChartWithGoalScore(selectedGoalScore);
+            }
+        });
+    }
+
+    private void updateChartWithGoalScore(int goalScore) {
+        fetchData(new FirestoreCallback() {
+            @Override
+            public void onDataLoaded(ArrayList<BarEntry> entries) {
+                // 사용자가 선택한 목표 점수보다 작은 값의 레이블 추출
+                List<String> labelsSmallerThanGoalScore = new ArrayList<>();
+
+                for (BarEntry entry : entries) {
+                    if (entry.getY() < goalScore) {
+                        int index = Math.round(entry.getX());
+                        // 레이블 배열은 1부터 시작함에 유의하세요.
+                        if (index == 0) {
+                            labelsSmallerThanGoalScore.add("독해력");
+                        } else if (index == 1) {
+                            labelsSmallerThanGoalScore.add("문해력");
+                        } else if (index == 2) {
+                            labelsSmallerThanGoalScore.add("어휘력");
+                        }
+                    }
+                }
+
+                // 결과 출력
+                if (!labelsSmallerThanGoalScore.isEmpty()) {
+                    String labelsStr = String.join(", ", labelsSmallerThanGoalScore);
+                    textView7.setText("목표점수보다 낮은 유형은 " + labelsStr + " 입니다.");
+                } else {
+                    textView7.setText("축하합니다. 모두 목표점수보다 높습니다 ^^");
+                }
+            }
+        });
+    }
 }
