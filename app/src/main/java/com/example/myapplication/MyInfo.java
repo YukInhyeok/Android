@@ -3,7 +3,10 @@ package com.example.myapplication;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -14,12 +17,17 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.example.myapplication.book.BookMainActivity;
-import com.github.mikephil.charting.charts.RadarChart;
+import com.example.myapplication.receiver.WeeklyResetReceiver;
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.charts.HorizontalBarChart;
+import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.XAxis;
-import com.github.mikephil.charting.data.RadarData;
-import com.github.mikephil.charting.data.RadarDataSet;
-import com.github.mikephil.charting.data.RadarEntry;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
+import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -41,6 +49,8 @@ public class MyInfo extends AppCompatActivity {
     //firebase
     private FirebaseFirestore db;
 
+    private TextView textView7;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,6 +61,8 @@ public class MyInfo extends AppCompatActivity {
 
         TextView textView5 = findViewById(R.id.textView5);
         textView5.setText(getCurrentWeekDates());
+
+        textView7 = findViewById(R.id.textView7);
 
         //firebase
         db = FirebaseFirestore.getInstance();
@@ -84,38 +96,72 @@ public class MyInfo extends AppCompatActivity {
         bottomNavigationView.setSelectedItemId(R.id.menu_info);
 
         // 레이더 차트 추가
-        RadarChart radarChart = findViewById(R.id.info_chart);
-//        insertDummyData(); // DB에 더미 데이터를 추가 (처음 한 번만 실행해서 데이터를 넣어주세요)
-        setData(radarChart);
+        HorizontalBarChart barChart = findViewById(R.id.info_chart);
+        setData(barChart);
+
+        //주간 차트 초기화
+        setWeeklyResetAlarm();
     }
 
-    private void setData(RadarChart radarChart) {
+    private void setData(HorizontalBarChart barChart) {
         fetchData(new FirestoreCallback() {
             @Override
-            public void onDataLoaded(ArrayList<RadarEntry> entries) {
-                RadarDataSet dataSet = new RadarDataSet(entries, "주간 데이터");
-                dataSet.setColor(Color.RED);
-                RadarData data = new RadarData(dataSet);
-                radarChart.setData(data);
-                radarChart.invalidate();
+            public void onDataLoaded(ArrayList<BarEntry> entries) {
+                // Update the index number for entries
+                for (int i = 0; i < entries.size(); i++) {
+                    entries.get(i).setX(i + 1);
+                }
 
-                String[] labels = {"어휘력", "독해력", "멍멍이", "야옹이", "짹짹이"};
+                // 가장 낮은 값의 인덱스 찾기
+                int lowestIndex = 0;
+                float lowestValue = Float.MAX_VALUE;
+                for (int i = 0; i < entries.size(); i++) {
+                    if (entries.get(i).getY() < lowestValue) {
+                        lowestIndex = i;
+                        lowestValue = entries.get(i).getY();
+                    }
+                }
 
-                XAxis xAxis = radarChart.getXAxis();
+                BarDataSet dataSet = new BarDataSet(entries, "주간 데이터");
+
+                // Set colors for each bar
+                List<Integer> colors = new ArrayList<>();
+                colors.add(Color.BLUE); // 독해력
+                colors.add(Color.GREEN); // 문해력
+                colors.add(Color.RED); // 어휘력
+                dataSet.setColors(colors);
+
+                BarData data = new BarData(dataSet);
+                data.setBarWidth(0.5f);
+                barChart.setData(data);
+                barChart.invalidate();
+
+                String[] labels = {"", "독해력", "문해력", "어휘력"};
+
+                XAxis xAxis = barChart.getXAxis();
                 xAxis.setValueFormatter(new IndexAxisValueFormatter(labels));
+//                xAxis.setDrawAxisLine(false);
+                xAxis.setDrawGridLines(false);
+
+                // Disable YAxis labels
+                YAxis leftAxis = barChart.getAxisLeft();
+                leftAxis.setGranularity(20f);
+                leftAxis.setAxisMinimum(0f);
+                leftAxis.setAxisMaximum(100f);
+                leftAxis.setDrawGridLines(false);
+//                leftYAxis.setDrawLabels(false);
+
+                YAxis rightYAxis = barChart.getAxisRight();
+                rightYAxis.setDrawLabels(false);
+
+                // Disable scaling
+                barChart.setScaleEnabled(false);
+
+                String lowestLabel = labels[lowestIndex + 1];
+                textView7.setText("평균점수보다 "+ lowestLabel + "점수가 부족하므로\n" + lowestLabel + "위주의 문제풀이를 추천드립니다."); // 가장 낮은 값의 레이블을 textBox7에 설정
             }
         });
     }
-
-//    private void setData(RadarChart radarChart) {
-//        ArrayList<RadarEntry> entries = fetchData(); // 가져온 데이터 사용
-//
-//        RadarDataSet dataSet = new RadarDataSet(entries, "주간 데이터");
-//        dataSet.setColor(Color.RED); // 색상을 빨간색으로 설정
-//        RadarData data = new RadarData(dataSet);
-//        radarChart.setData(data);
-//        radarChart.invalidate();
-//    }
 
     private String getCurrentMonthAndWeek() {
         Calendar calendar = Calendar.getInstance();
@@ -166,12 +212,13 @@ public class MyInfo extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
-                            ArrayList<RadarEntry> entries = new ArrayList<>();
+                            ArrayList<BarEntry> entries = new ArrayList<>();
 
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 float value = document.getDouble("value").floatValue();
                                 int label = document.getLong("label").intValue();
-                                entries.add(new RadarEntry(value, label));
+                                // RadarEntry 대신 BarEntry 사용
+                                entries.add(new BarEntry(label, value));
                             }
 
                             callback.onDataLoaded(entries);
@@ -181,32 +228,31 @@ public class MyInfo extends AppCompatActivity {
                     }
                 });
     }
-    // 콜백 인터페이스 추가
-    public interface FirestoreCallback {
-        void onDataLoaded(ArrayList<RadarEntry> entries);
-    }
-}
 
-    // 데이터 가져오기 함수 추가
-//    private ArrayList<RadarEntry> fetchData() {
-//        DatabaseHelper dbHelper = new DatabaseHelper(this);
-//        SQLiteDatabase db = dbHelper.getReadableDatabase();
-//
-//        Cursor cursor = db.rawQuery("SELECT * FROM radar_chart_data", null);
-//
-//        ArrayList<RadarEntry> entries = new ArrayList<>();
-//
-//        if (cursor.moveToFirst()) {
-//            do {
-//                float value = cursor.getFloat(cursor.getColumnIndexOrThrow("value"));
-//                int label = cursor.getInt(cursor.getColumnIndexOrThrow("label"));
-//                entries.add(new RadarEntry(value, label));
-//            } while (cursor.moveToNext());
-//        }
-//
-//        cursor.close();
-//        db.close();
-//
-//        return entries;
-//    }
-//}
+    // 콜백 인터페이스 추가
+// 콜백 인터페이스 수정 (RadarEntry에서 BarEntry로 변경)
+    public interface FirestoreCallback {
+        void onDataLoaded(ArrayList<BarEntry> entries);
+    }
+
+    // 주간 데이터 초기화
+    private void setWeeklyResetAlarm() {
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+
+        Intent intent = new Intent(this, WeeklyResetReceiver.class);
+        int flags = PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE;
+
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, flags);
+
+        // 매주 월요일 자정에 대한 Calendar 객체 생성
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+
+        // 매주 월요일에 평균 값이 0으로 변경되도록 알람 설정
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY * 7, pendingIntent);
+    }
+
+}

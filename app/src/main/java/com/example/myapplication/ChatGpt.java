@@ -1,8 +1,12 @@
 package com.example.myapplication;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,20 +24,31 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.myapplication.adapter.MessageAdapter;
 import com.example.myapplication.book.BookMainActivity;
 import com.example.myapplication.model.Message;
-import com.example.myapplication.socket.SocketClient;
+import com.example.myapplication.receiver.WeeklyResetReceiver;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
-import java.io.FileInputStream;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
@@ -54,9 +69,9 @@ public class ChatGpt extends AppCompatActivity {
     EditText et_msg;
     ImageButton btn_send;
 
-    Button start_btn;
-    Button Btn1;
-    Button Btn2;
+    Button start_btn;   // 어휘력
+    Button Btn1;    // 문해력
+    Button Btn2;    // 독해력
     Button finishBtn;
 
 
@@ -66,13 +81,22 @@ public class ChatGpt extends AppCompatActivity {
 
     JSONArray assistantMessages = new JSONArray();
 
+    // 독해, 문해, 어휘 저장 변수
+    private String ability;
 
+    // 요일 변수
+    private String Week;
+
+    private FirebaseFirestore db;
+
+    private Handler mHandler;
+    private Runnable mRunnable;
 
 
     // API 호출에 사용할 상수와 객체를 선언합니다.
     public static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
     OkHttpClient client;
-    private static final String MY_SECRET_KEY = "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";
+    private static final String MY_SECRET_KEY = "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";
 
     //네비게이션바 설정
     private BottomNavigationView bottomNavigationView;
@@ -81,6 +105,8 @@ public class ChatGpt extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.gpt_main);
+
+        db = FirebaseFirestore.getInstance();
 
         // 뷰들을 초기화하고 필요한 설정을 합니다.
         recycler_view = findViewById(R.id.recycler_view);
@@ -102,22 +128,39 @@ public class ChatGpt extends AppCompatActivity {
         messageAdapter = new MessageAdapter(messageList);
         recycler_view.setAdapter(messageAdapter);
 
+        // 자정이 지나면 chart 값 0 메서드 호출
+        resetValuesAtMidnight();
 
+        // 주간 데이터
+        Week = getDayOfWeek();
+        Log.d("test week", "오늘의 요일은? => " + Week);
 
         finishBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 int lastScore = findLastScoreFromAssistantMsg(assistantMessages);
+                DocumentReference chartRef = db.collection("Chart").document(ability);
 
                 if (lastScore != -1) {
-                    // 찾은 마지막 점수를 사용하여 필요한 작업 수행
-                    // 예를 들어, 결과를 TextView에 반영:
-                    Log.d("test score","마지막 점수: " + lastScore);
-                    Toast.makeText(getApplicationContext(), "당신의 점수는: " + lastScore, Toast.LENGTH_SHORT).show();
+                    chartRef.update("value", lastScore)
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    Log.d("Firestore", "LastScore was successfully updated!");
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.w("Firestore", "Error updating lastScore", e);
+                                }
+                            });
                 } else {
                     // 점수를 찾지 못한 경우 처리
                     Log.d("test score","점수를 찾지 못했습니다.");
+                    Toast.makeText(getApplicationContext(), "점수를 찾을 수 없습니다. 다시 시도해 주세요.",Toast.LENGTH_LONG).show();
                 }
+                saveWeeklyAverage();
             }
         });
 
@@ -174,6 +217,33 @@ public class ChatGpt extends AppCompatActivity {
                 start_btn.setVisibility(View.GONE);
                 Btn2.setVisibility(View.GONE);
                 Btn1.setVisibility(View.GONE);
+                ability = "vocabulary";
+            }
+        });
+
+        Btn1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ability = "literacy";
+                // 여기에서 추가로 필요한 작업을 수행하세요.
+
+                // 버튼 감추기
+                start_btn.setVisibility(View.GONE);
+                Btn1.setVisibility(View.GONE);
+                Btn2.setVisibility(View.GONE);
+            }
+        });
+
+        Btn2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ability = "reading";
+                // 여기에서 추가로 필요한 작업을 수행하세요.
+
+                // 버튼 감추기
+                start_btn.setVisibility(View.GONE);
+                Btn1.setVisibility(View.GONE);
+                Btn2.setVisibility(View.GONE);
             }
         });
 
@@ -328,7 +398,7 @@ public class ChatGpt extends AppCompatActivity {
         }
     }
 
-    // assistantMsg 배열값을 사용하면 될듯
+    // 최종 점수 관련 메서드
     private int findScoreFromAssistantMsg(String content) {
         int lastScore = -1;
         int index = content.lastIndexOf("점");
@@ -365,5 +435,113 @@ public class ChatGpt extends AppCompatActivity {
         return lastScore;
     }
 
+    // 자정이 지나면 Chart 컬렉션의 value값 0으로 설정
+
+    private long getMillisUntilMidnight() {
+        Calendar c = Calendar.getInstance();
+        c.add(Calendar.DAY_OF_MONTH, 1);
+        c.set(Calendar.HOUR_OF_DAY, 0);
+        c.set(Calendar.MINUTE, 0);
+        c.set(Calendar.SECOND, 0);
+        c.set(Calendar.MILLISECOND, 0);
+
+        return c.getTimeInMillis() - System.currentTimeMillis();
+    }
+
+    private void resetChartValues() {
+        db.collection("Chart")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                document.getReference().update("value", 0);
+                            }
+                        } else {
+                            Log.w("Firestore", "Error getting documents.", task.getException());
+                        }
+                    }
+                });
+    }
+
+    private void resetValuesAtMidnight() {
+        mHandler = new Handler(Looper.getMainLooper());
+        mRunnable = new Runnable() {
+            @Override
+            public void run() {
+                resetChartValues();
+                mHandler.postDelayed(this, TimeUnit.DAYS.toMillis(1));
+            }
+        };
+        mHandler.postDelayed(mRunnable, getMillisUntilMidnight());
+    }
+
+    //주간 데이터
+    private String getDayOfWeek() {
+        Calendar c = Calendar.getInstance();
+        int day = c.get(Calendar.DAY_OF_WEEK);
+        return dayToString(day);
+    }
+    private String dayToString(int day) {
+        switch (day) {
+            case Calendar.MONDAY:
+                return "Mon";
+            case Calendar.TUESDAY:
+                return "Tues";
+            case Calendar.WEDNESDAY:
+                return "Wed";
+            case Calendar.THURSDAY:
+                return "Thurs";
+            case Calendar.FRIDAY:
+                return "Fri";
+            default:
+                return "";
+        }
+    }
+    private void saveWeeklyAverage() {
+        db.collection("Chart")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            int sum = 0;
+                            int count = 0;
+
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                sum += document.getLong("value");
+                                count++;
+                            }
+
+                            if (count > 0) {
+                                int average = (int) sum / count;
+                                Map<String, Object> data = new HashMap<>();
+                                data.put("average", average);
+
+                                DocumentReference weekDocRef = db.collection("WeekChart").document(Week);
+                                    weekDocRef.update(data)
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                Log.d("Firestore", "Weekly average was successfully written!");
+                                            }
+                                        })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Log.w("Firestore", "Error adding document", e);
+                                            }
+                                        });
+
+                            } else {
+                                Log.d("Firestore", "No documents found with a value");
+                            }
+                        } else {
+                            Log.w("Firestore", "Error getting documents.", task.getException());
+                        }
+                    }
+                });
+    }
 
 }

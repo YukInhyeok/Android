@@ -38,8 +38,14 @@ import com.example.myapplication.book.ResetCountReceiver;
 import com.example.myapplication.screen.MyForegroundService;
 import com.example.myapplication.screen.ScreenOnReceiver;
 import com.example.myapplication.screen.lockscreen;
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.charts.HorizontalBarChart;
 import com.github.mikephil.charting.charts.RadarChart;
 import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.RadarData;
 import com.github.mikephil.charting.data.RadarDataSet;
 import com.github.mikephil.charting.data.RadarEntry;
@@ -154,8 +160,8 @@ public class MainActivity extends AppCompatActivity{
         bottomNavigationView.setSelectedItemId(R.id.menu_home);
 
         // 레이더 차트 추가
-        RadarChart radarChart = findViewById(R.id.chart);
-        setData(radarChart);
+        HorizontalBarChart barChart = findViewById(R.id.chart);
+        setData(barChart);
 
         // 포인트 관련
         editTextNumber = findViewById(R.id.editTextNumber);
@@ -234,23 +240,51 @@ public class MainActivity extends AppCompatActivity{
 
 
 //=====================================레이더 차트==========================================================================
-    private void setData(RadarChart radarChart) {
-        fetchData(new MyInfo.FirestoreCallback() {
-            @Override
-            public void onDataLoaded(ArrayList<RadarEntry> entries) {
-                RadarDataSet dataSet = new RadarDataSet(entries, "주간 데이터");
-                dataSet.setColor(Color.RED);
-                RadarData data = new RadarData(dataSet);
-                radarChart.setData(data);
-                radarChart.invalidate();
-
-                String[] labels = {"어휘력", "독해력", "멍멍이", "야옹이", "짹짹이"};
-
-                XAxis xAxis = radarChart.getXAxis();
-                xAxis.setValueFormatter(new IndexAxisValueFormatter(labels));
+private void setData(HorizontalBarChart barChart) {
+    fetchData(new MyInfo.FirestoreCallback() {
+        @Override
+        public void onDataLoaded(ArrayList<BarEntry> entries) {
+            // Update the index number for entries
+            for (int i = 0; i < entries.size(); i++) {
+                entries.get(i).setX(i + 1);
             }
-        });
-    }
+
+            BarDataSet dataSet = new BarDataSet(entries, "주간 데이터");
+
+            // Set colors for each bar
+            List<Integer> colors = new ArrayList<>();
+            colors.add(Color.BLUE); // 독해력
+            colors.add(Color.GREEN); // 문해력
+            colors.add(Color.RED); // 어휘력
+            dataSet.setColors(colors);
+
+            BarData data = new BarData(dataSet);
+            data.setBarWidth(0.5f);
+            barChart.setData(data);
+            barChart.invalidate();
+
+            String[] labels = {"", "문해력", "독해력", "어휘력"};
+
+            XAxis xAxis = barChart.getXAxis();
+            xAxis.setDrawGridLines(false);
+            xAxis.setValueFormatter(new IndexAxisValueFormatter(labels));
+
+            // Disable YAxis labels
+            YAxis leftAxis = barChart.getAxisLeft();
+            leftAxis.setGranularity(20f);
+            leftAxis.setAxisMinimum(0f);
+            leftAxis.setAxisMaximum(100f);
+            leftAxis.setDrawGridLines(false);
+            // leftYAxis.setDrawLabels(false);
+
+            YAxis rightYAxis = barChart.getAxisRight();
+            rightYAxis.setDrawLabels(false);
+
+            // Disable scaling
+            barChart.setScaleEnabled(false);
+        }
+    });
+}
 //===============================================================================================================
 
 //=====================================포인트 관련==========================================================================
@@ -353,28 +387,29 @@ public class MainActivity extends AppCompatActivity{
     }
 
 //=====================================Chart==========================================================================
-    private void fetchData(MyInfo.FirestoreCallback callback) {
-        db.collection("Chart").orderBy("label")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            ArrayList<RadarEntry> entries = new ArrayList<>();
+private void fetchData(MyInfo.FirestoreCallback callback) {
+    db.collection("Chart").orderBy("label")
+            .get()
+            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    if (task.isSuccessful()) {
+                        ArrayList<BarEntry> entries = new ArrayList<>();
 
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                float value = document.getDouble("value").floatValue();
-                                int label = document.getLong("label").intValue();
-                                entries.add(new RadarEntry(value, label));
-                            }
-
-                            callback.onDataLoaded(entries);
-                        } else {
-                            Log.e("MyInfo", "Error fetching data", task.getException());
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            float value = document.getDouble("value").floatValue();
+                            int label = document.getLong("label").intValue();
+                            // RadarEntry 대신 BarEntry 사용
+                            entries.add(new BarEntry(label, value));
                         }
+
+                        callback.onDataLoaded(entries);
+                    } else {
+                        Log.e("MyInfo", "Error fetching data", task.getException());
                     }
-                });
-    }
+                }
+            });
+}
 //===============================================================================================================
     // 콜백 인터페이스 추가
     private interface FirestoreCallback {

@@ -27,7 +27,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <com.github.mikephil.charting.charts.RadarChart
+            <com.github.mikephil.charting.charts.HorizontalBarChart
                 android:id="@+id/info_chart"
                 android:layout_width="364dp"
                 android:layout_height="300dp"
