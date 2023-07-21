@@ -98,7 +98,7 @@ public class MyInfo extends AppCompatActivity {
                 radarChart.setData(data);
                 radarChart.invalidate();
 
-                String[] labels = {"어휘력", "독해력", "멍멍이", "야옹이", "짹짹이"};
+                String[] labels = {"어휘력", "독해력", "문해력"};
 
                 XAxis xAxis = radarChart.getXAxis();
                 xAxis.setValueFormatter(new IndexAxisValueFormatter(labels));

@@ -20,7 +20,13 @@ import com.example.myapplication.adapter.MessageAdapter;
 import com.example.myapplication.book.BookMainActivity;
 import com.example.myapplication.model.Message;
 import com.example.myapplication.socket.SocketClient;
+import com.github.mikephil.charting.data.RadarEntry;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -52,6 +58,7 @@ public class ChatGpt extends AppCompatActivity {
     TextView tv_welcome;
     EditText et_msg;
     ImageButton btn_send;
+    private FirebaseFirestore db;
 
     Button start_btn;
 
@@ -69,7 +76,7 @@ public class ChatGpt extends AppCompatActivity {
     // API 호출에 사용할 상수와 객체를 선언합니다.
     public static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
     OkHttpClient client;
-    private static final String MY_SECRET_KEY = "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";
+    private static final String MY_SECRET_KEY = "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";
 
     //네비게이션바 설정
     private BottomNavigationView bottomNavigationView;
@@ -318,6 +325,37 @@ public class ChatGpt extends AppCompatActivity {
             return null;
         }
     }
+
+    private void fetchData(int lastScore, MyInfo.FirestoreCallback callback) {
+        db.collection("Chart").orderBy("label")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            ArrayList<RadarEntry> entries = new ArrayList<>();
+
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                float value = document.getDouble("value").floatValue();
+                                int label = document.getLong("label").intValue();
+                                entries.add(new RadarEntry(value, label));
+                            }
+
+                            // lastScore를 파이어베이스에 저장
+                            if (lastScore != -1) {
+                                db.collection("Chart").add(
+                                        new RadarEntry((float) lastScore, 0) // 임의의 인덱스값 (0)을 사용하였습니다.
+                                );
+                            }
+
+                            callback.onDataLoaded(entries);
+                        } else {
+                            Log.e("MyInfo", "Error fetching data", task.getException());
+                        }
+                    }
+                });
+    }
+
 
     // assistantMsg 배열값을 사용하면 될듯
     private int findScoreFromAssistantMsg(String content) {
