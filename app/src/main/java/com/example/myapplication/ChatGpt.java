@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,13 +21,7 @@ import com.example.myapplication.adapter.MessageAdapter;
 import com.example.myapplication.book.BookMainActivity;
 import com.example.myapplication.model.Message;
 import com.example.myapplication.socket.SocketClient;
-import com.github.mikephil.charting.data.RadarEntry;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -58,25 +53,26 @@ public class ChatGpt extends AppCompatActivity {
     TextView tv_welcome;
     EditText et_msg;
     ImageButton btn_send;
-    private FirebaseFirestore db;
 
     Button start_btn;
+    Button Btn1;
+    Button Btn2;
+    Button finishBtn;
 
 
     List<Message> messageList;
     MessageAdapter messageAdapter;
     JSONArray messages = new JSONArray();
 
-
     JSONArray assistantMessages = new JSONArray();
 
-    private Button Btn1;
+
 
 
     // API 호출에 사용할 상수와 객체를 선언합니다.
     public static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
     OkHttpClient client;
-    private static final String MY_SECRET_KEY = "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";
+    private static final String MY_SECRET_KEY = "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";
 
     //네비게이션바 설정
     private BottomNavigationView bottomNavigationView;
@@ -92,6 +88,9 @@ public class ChatGpt extends AppCompatActivity {
         et_msg = findViewById(R.id.et_msg);
         btn_send = findViewById(R.id.btn_send);
         start_btn = findViewById(R.id.start_btn);
+        Btn1 = findViewById(R.id.btn1);
+        Btn2 = findViewById(R.id.btn2);
+        finishBtn = findViewById(R.id.finish_Btn);
 
         recycler_view.setHasFixedSize(true);
         LinearLayoutManager manager = new LinearLayoutManager(this);
@@ -103,9 +102,9 @@ public class ChatGpt extends AppCompatActivity {
         messageAdapter = new MessageAdapter(messageList);
         recycler_view.setAdapter(messageAdapter);
 
-        Btn1 = findViewById(R.id.btn1);
 
-        Btn1.setOnClickListener(new View.OnClickListener() {
+
+        finishBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 int lastScore = findLastScoreFromAssistantMsg(assistantMessages);
@@ -114,6 +113,7 @@ public class ChatGpt extends AppCompatActivity {
                     // 찾은 마지막 점수를 사용하여 필요한 작업 수행
                     // 예를 들어, 결과를 TextView에 반영:
                     Log.d("test score","마지막 점수: " + lastScore);
+                    Toast.makeText(getApplicationContext(), "당신의 점수는: " + lastScore, Toast.LENGTH_SHORT).show();
                 } else {
                     // 점수를 찾지 못한 경우 처리
                     Log.d("test score","점수를 찾지 못했습니다.");
@@ -172,6 +172,8 @@ public class ChatGpt extends AppCompatActivity {
                 }
                 // 버튼 감추기
                 start_btn.setVisibility(View.GONE);
+                Btn2.setVisibility(View.GONE);
+                Btn1.setVisibility(View.GONE);
             }
         });
 
@@ -325,37 +327,6 @@ public class ChatGpt extends AppCompatActivity {
             return null;
         }
     }
-
-    private void fetchData(int lastScore, MyInfo.FirestoreCallback callback) {
-        db.collection("Chart").orderBy("label")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            ArrayList<RadarEntry> entries = new ArrayList<>();
-
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                float value = document.getDouble("value").floatValue();
-                                int label = document.getLong("label").intValue();
-                                entries.add(new RadarEntry(value, label));
-                            }
-
-                            // lastScore를 파이어베이스에 저장
-                            if (lastScore != -1) {
-                                db.collection("Chart").add(
-                                        new RadarEntry((float) lastScore, 0) // 임의의 인덱스값 (0)을 사용하였습니다.
-                                );
-                            }
-
-                            callback.onDataLoaded(entries);
-                        } else {
-                            Log.e("MyInfo", "Error fetching data", task.getException());
-                        }
-                    }
-                });
-    }
-
 
     // assistantMsg 배열값을 사용하면 될듯
     private int findScoreFromAssistantMsg(String content) {

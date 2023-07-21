@@ -38,9 +38,16 @@ import com.example.myapplication.book.ResetCountReceiver;
 import com.example.myapplication.screen.MyForegroundService;
 import com.example.myapplication.screen.ScreenOnReceiver;
 import com.example.myapplication.screen.lockscreen;
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.charts.HorizontalBarChart;
 import com.github.mikephil.charting.charts.RadarChart;
 import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.RadarData;
+
 import com.github.mikephil.charting.data.RadarDataSet;
 import com.github.mikephil.charting.data.RadarEntry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
@@ -154,8 +161,8 @@ public class MainActivity extends AppCompatActivity{
         bottomNavigationView.setSelectedItemId(R.id.menu_home);
 
         // 레이더 차트 추가
-        RadarChart radarChart = findViewById(R.id.chart);
-        setData(radarChart);
+        HorizontalBarChart barChart = findViewById(R.id.chart);
+        setData(barChart);
 
         // 포인트 관련
         editTextNumber = findViewById(R.id.editTextNumber);
@@ -233,27 +240,73 @@ public class MainActivity extends AppCompatActivity{
 //===============================================================================================================
 
 
-//=====================================레이더 차트==========================================================================
-    private void setData(RadarChart radarChart) {
+    //=====================================레이더 차트==========================================================================
+    private void setData(HorizontalBarChart barChart) {
         fetchData(new MyInfo.FirestoreCallback() {
             @Override
-            public void onDataLoaded(ArrayList<RadarEntry> entries) {
-                RadarDataSet dataSet = new RadarDataSet(entries, "주간 데이터");
-                dataSet.setColor(Color.RED);
-                RadarData data = new RadarData(dataSet);
-                radarChart.setData(data);
-                radarChart.invalidate();
+            public void onDataLoaded(ArrayList<BarEntry> entries) {
+                // Update the index number for entries
+                for (int i = 0; i < entries.size(); i++) {
+                    entries.get(i).setX(i + 1);
+                }
 
-                String[] labels = {"어휘력", "독해력", "멍멍이", "야옹이", "짹짹이"};
+                BarDataSet dataSet = new BarDataSet(entries, "주간 데이터");
 
-                XAxis xAxis = radarChart.getXAxis();
+                // Set colors for each bar
+                int[] colors = new int[]{Color.rgb(192, 255, 140), Color.rgb(255, 247, 97), Color.rgb(79, 208, 45)};
+                dataSet.setColors(colors, 255);
+
+                BarData data = new BarData(dataSet);
+                barChart.setData(data);
+                data.setBarWidth(0.5f);
+
+                String[] labels = {"", "문해력", "독해력", "어휘력"};
+
+                XAxis xAxis = barChart.getXAxis();
                 xAxis.setValueFormatter(new IndexAxisValueFormatter(labels));
+
+                // Change the space between bars using the variable spaceForBar
+//                float spaceForBar = 1f;
+                xAxis.setSpaceMin(0);
+                xAxis.setLabelCount(3);
+                // Set X axis style
+                xAxis.setPosition(XAxis.XAxisPosition.BOTTOM); // Set X axis position to the bottom
+                xAxis.setTextSize(10f); // Set X axis text size
+                xAxis.setTextColor(Color.BLACK); // Set X axis text color
+                xAxis.setDrawAxisLine(true); // Set X axis line to be visible
+                xAxis.setDrawGridLines(false); // Set X axis grid lines to be invisible
+                xAxis.setSpaceMax(0);
+
+
+                // Y axis
+                YAxis leftAxis = barChart.getAxisLeft();
+                leftAxis.setGranularity(20f);
+                leftAxis.setAxisMinimum(0f);
+                leftAxis.setAxisMaximum(100f);
+                leftAxis.setDrawGridLines(false);
+                leftAxis.setTextColor(Color.BLACK);
+
+
+                // Set Y axis style
+                YAxis rightAxis = barChart.getAxisRight();
+                rightAxis.setEnabled(false);
+
+                // Set chart style
+                barChart.getDescription().setEnabled(false);
+                barChart.setDrawGridBackground(false);
+                barChart.setTouchEnabled(false);
+
+                // Disable scaling
+                barChart.setScaleEnabled(false);
+
+                barChart.invalidate();
             }
         });
     }
+
 //===============================================================================================================
 
-//=====================================포인트 관련==========================================================================
+    //=====================================포인트 관련==========================================================================
     private void initPointListener() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -278,7 +331,7 @@ public class MainActivity extends AppCompatActivity{
 //===============================================================================================================
 
 
-//=====================================클릭 메소드==========================================================================
+    //=====================================클릭 메소드==========================================================================
     private void showMessage(String message) {
         Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
     }
@@ -352,7 +405,7 @@ public class MainActivity extends AppCompatActivity{
 
     }
 
-//=====================================Chart==========================================================================
+    //=====================================Chart==========================================================================
     private void fetchData(MyInfo.FirestoreCallback callback) {
         db.collection("Chart").orderBy("label")
                 .get()
@@ -360,12 +413,13 @@ public class MainActivity extends AppCompatActivity{
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
-                            ArrayList<RadarEntry> entries = new ArrayList<>();
+                            ArrayList<BarEntry> entries = new ArrayList<>();
 
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 float value = document.getDouble("value").floatValue();
                                 int label = document.getLong("label").intValue();
-                                entries.add(new RadarEntry(value, label));
+                                // RadarEntry 대신 BarEntry 사용
+                                entries.add(new BarEntry(label, value));
                             }
 
                             callback.onDataLoaded(entries);
@@ -375,13 +429,13 @@ public class MainActivity extends AppCompatActivity{
                     }
                 });
     }
-//===============================================================================================================
+    //===============================================================================================================
     // 콜백 인터페이스 추가
     private interface FirestoreCallback {
         void onDataLoaded(ArrayList<RadarEntry> entries);
     }
 
-// =====================================독후감 책 관련 메서드==========================================================================
+    // =====================================독후감 책 관련 메서드==========================================================================
     private void fetchWorkNum() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("Book").document("report")
@@ -425,7 +479,7 @@ public class MainActivity extends AppCompatActivity{
 //====================================================================================================================================================
 
 
-//=====================================제한 시간 메서드==========================================================================
+    //=====================================제한 시간 메서드==========================================================================
     private void fetchLimitTime(long appUsageTime) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         long usedTimeInMinutes = TimeUnit.MILLISECONDS.toMinutes(appUsageTime);
@@ -488,7 +542,7 @@ public class MainActivity extends AppCompatActivity{
 //===============================================================================================================
 
 
-//=====================================핸드폰 사용시간==========================================================================
+    //=====================================핸드폰 사용시간==========================================================================
     public static final String APP_USAGE_TIME_KEY = "app_usage_time";
 
     private BroadcastReceiver appUsageTimeReceiver = new BroadcastReceiver() {
@@ -502,7 +556,7 @@ public class MainActivity extends AppCompatActivity{
 //===============================================================================================================
 
 
-//=====================================어플 사용시간==========================================================================
+    //=====================================어플 사용시간==========================================================================
     private long getAppUsageTime(Context context, String myapplication) {
         UsageStatsManager usageStatsManager = (UsageStatsManager) context.getSystemService(Context.USAGE_STATS_SERVICE);
 
@@ -595,63 +649,63 @@ public class MainActivity extends AppCompatActivity{
     };
 //===============================================================================================================
 
-//=========================================앱 종료 메서드=================================================
-private void showExitDialog() {
-    AlertDialog.Builder builder = new AlertDialog.Builder(this);
-    builder.setTitle("앱 종료 확인");
-    builder.setMessage("앱을 종료하시겠습니까?");
+    //=========================================앱 종료 메서드=================================================
+    private void showExitDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("앱 종료 확인");
+        builder.setMessage("앱을 종료하시겠습니까?");
 
-    builder.setPositiveButton("예", new DialogInterface.OnClickListener() {
-        @Override
-        public void onClick(DialogInterface dialogInterface, int i) {
-            finishAffinity();
-            System.exit(0);
-        }
-    });
+        builder.setPositiveButton("예", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                finishAffinity();
+                System.exit(0);
+            }
+        });
 
-    builder.setNegativeButton("아니요", new DialogInterface.OnClickListener() {
-        @Override
-        public void onClick(DialogInterface dialogInterface, int i) {
-            // 취소 시 처리 코드
-            dialogInterface.dismiss();
-        }
-    });
+        builder.setNegativeButton("아니요", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                // 취소 시 처리 코드
+                dialogInterface.dismiss();
+            }
+        });
 
-    builder.show();
-}
-private void ExitApp(){
+        builder.show();
+    }
+    private void ExitApp(){
         SharedPreferences sharedPreferences = getSharedPreferences("AppData", Context.MODE_PRIVATE);
         String formattedAppUsageTime = sharedPreferences.getString("formattedAppUsageTime", "0");
         int finishBooknum = sharedPreferences.getInt("finishBooknum", 0);
         long timeValue = sharedPreferences.getLong("timeValue", 0);
         int workNum = sharedPreferences.getInt("workNum", 0);
 
-    if (Long.parseLong(formattedAppUsageTime) >= timeValue && finishBooknum >= workNum){
-        showExitDialog();
+        if (Long.parseLong(formattedAppUsageTime) >= timeValue && finishBooknum >= workNum){
+            showExitDialog();
+        }
+        if (Long.parseLong(formattedAppUsageTime) >= timeValue){
+            TargetTime(formattedAppUsageTime);
+        }
     }
-    if (Long.parseLong(formattedAppUsageTime) >= timeValue){
-        TargetTime(formattedAppUsageTime);
-    }
-}
 //========================================================================================================================
 
 
-//===============================firebase에 사용시간 추가====================================================================
-private void TargetTime(String formattedAppUsageTime){
-    DocumentReference documentReference = db.collection("Time").document("TargetTime");
+    //===============================firebase에 사용시간 추가====================================================================
+    private void TargetTime(String formattedAppUsageTime){
+        DocumentReference documentReference = db.collection("Time").document("TargetTime");
 
-    documentReference.update("Ttime", formattedAppUsageTime)
-            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                @Override
-                public void onSuccess(Void unused) {
-                    Log.d("MainActivity", "App usage time successfully updated.");
-                }
-            })
-            .addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Log.e("MainActivity", "Error updating app usage time", e);
-                }
-            });
+        documentReference.update("Ttime", formattedAppUsageTime)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Log.d("MainActivity", "App usage time successfully updated.");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e("MainActivity", "Error updating app usage time", e);
+                    }
+                });
     }
 }

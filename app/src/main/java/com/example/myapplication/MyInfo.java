@@ -1,6 +1,7 @@
 package com.example.myapplication;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.ContentValues;
@@ -10,16 +11,25 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.NumberPicker;
 import android.widget.TextView;
 
 import com.example.myapplication.book.BookMainActivity;
-import com.github.mikephil.charting.charts.RadarChart;
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.charts.HorizontalBarChart;
+import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.XAxis;
-import com.github.mikephil.charting.data.RadarData;
-import com.github.mikephil.charting.data.RadarDataSet;
-import com.github.mikephil.charting.data.RadarEntry;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
+import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -51,6 +61,9 @@ public class MyInfo extends AppCompatActivity {
 
         TextView textView5 = findViewById(R.id.textView5);
         textView5.setText(getCurrentWeekDates());
+
+        TextView goal_score = findViewById(R.id.goal_score);
+
 
         //firebase
         db = FirebaseFirestore.getInstance();
@@ -84,27 +97,101 @@ public class MyInfo extends AppCompatActivity {
         bottomNavigationView.setSelectedItemId(R.id.menu_info);
 
         // 레이더 차트 추가
-        RadarChart radarChart = findViewById(R.id.info_chart);
-        setData(radarChart);
+        HorizontalBarChart barChart = findViewById(R.id.info_chart);
+        TextView textBox7 = findViewById(R.id.sol);
+
+        setData(barChart,textBox7);
+
+        goal_score.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showBWorkPopup();
+            }
+        }
     }
 
-    private void setData(RadarChart radarChart) {
+
+    private void showBWorkPopup() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(MyInfo.this);
+        LayoutInflater inflater = getLayoutInflater();
+        View popupView = inflater.inflate(R.layout.b_work_popup, null);
+        builder.setView(popupView);
+
+        final NumberPicker numberPicker = popupView.findViewById(R.id.b_work_num_picker);
+        numberPicker.setMinValue(1); // 최소값 설정
+        numberPicker.setMaxValue(100); // 최대값 설정
+        Button bWorkBtn = popupView.findViewById(R.id.b_work_btn);
+
+        final AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+
+    }
+
+
+    private void setData(HorizontalBarChart barChart, TextView textBox7) {
         fetchData(new FirestoreCallback() {
             @Override
-            public void onDataLoaded(ArrayList<RadarEntry> entries) {
-                RadarDataSet dataSet = new RadarDataSet(entries, "주간 데이터");
-                dataSet.setColor(Color.RED);
-                RadarData data = new RadarData(dataSet);
-                radarChart.setData(data);
-                radarChart.invalidate();
+            public void onDataLoaded(ArrayList<BarEntry> entries) {
+                // Update the index number for entries
+                for (int i = 0; i < entries.size(); i++) {
+                    entries.get(i).setX(i + 1);
+                }
 
-                String[] labels = {"어휘력", "독해력", "문해력"};
+                // 가장 낮은 값의 인덱스 찾기
+                int lowestIndex = 0;
+                float lowestValue = Float.MAX_VALUE;
+                for (int i = 0; i < entries.size(); i++) {
+                    if (entries.get(i).getY() < lowestValue) {
+                        lowestIndex = i;
+                        lowestValue = entries.get(i).getY();
+                    }
+                }
 
-                XAxis xAxis = radarChart.getXAxis();
+                BarDataSet dataSet = new BarDataSet(entries, "주간 데이터");
+
+                // Set colors for each bar
+                List<Integer> colors = new ArrayList<>();
+                colors.add(Color.BLUE); // 독해력
+                colors.add(Color.GREEN); // 문해력
+                colors.add(Color.RED); // 어휘력
+                dataSet.setColors(colors);
+
+                YAxis leftAxis = barChart.getAxisLeft();
+                leftAxis.setGranularity(20f);
+                leftAxis.setAxisMinimum(0f);
+                leftAxis.setAxisMaximum(100f);
+                leftAxis.setDrawGridLines(false);
+                leftAxis.setTextColor(Color.BLACK);
+
+                // Set Y axis style
+                YAxis rightAxis = barChart.getAxisRight();
+                rightAxis.setEnabled(false);
+
+                BarData data = new BarData(dataSet);
+                data.setBarWidth(0.5f);
+
+                barChart.setData(data);
+                barChart.invalidate();
+
+                String[] labels = {"", "독해력", "문해력", "어휘력"};
+
+                XAxis xAxis = barChart.getXAxis();
                 xAxis.setValueFormatter(new IndexAxisValueFormatter(labels));
+                xAxis.setDrawAxisLine(false);
+                xAxis.setDrawGridLines(false);
+
+                YAxis rightYAxis = barChart.getAxisRight();
+                rightYAxis.setDrawLabels(false);
+
+                // Disable scaling
+                barChart.setScaleEnabled(false);
+
+                String lowestLabel = labels[lowestIndex + 1];
+                textBox7.setText("평균보다 "+ lowestLabel + "이(가) 부족하므로 "); // 가장 낮은 값의 레이블을 textBox7에 설정
             }
         });
     }
+
 
     private String getCurrentMonthAndWeek() {
         Calendar calendar = Calendar.getInstance();
@@ -155,12 +242,13 @@ public class MyInfo extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
-                            ArrayList<RadarEntry> entries = new ArrayList<>();
+                            ArrayList<BarEntry> entries = new ArrayList<>();
 
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 float value = document.getDouble("value").floatValue();
                                 int label = document.getLong("label").intValue();
-                                entries.add(new RadarEntry(value, label));
+                                // RadarEntry 대신 BarEntry 사용
+                                entries.add(new BarEntry(label, value));
                             }
 
                             callback.onDataLoaded(entries);
@@ -170,32 +258,11 @@ public class MyInfo extends AppCompatActivity {
                     }
                 });
     }
-    // 콜백 인터페이스 추가
-    public interface FirestoreCallback {
-        void onDataLoaded(ArrayList<RadarEntry> entries);
-    }
-}
 
-    // 데이터 가져오기 함수 추가
-//    private ArrayList<RadarEntry> fetchData() {
-//        DatabaseHelper dbHelper = new DatabaseHelper(this);
-//        SQLiteDatabase db = dbHelper.getReadableDatabase();
-//
-//        Cursor cursor = db.rawQuery("SELECT * FROM radar_chart_data", null);
-//
-//        ArrayList<RadarEntry> entries = new ArrayList<>();
-//
-//        if (cursor.moveToFirst()) {
-//            do {
-//                float value = cursor.getFloat(cursor.getColumnIndexOrThrow("value"));
-//                int label = cursor.getInt(cursor.getColumnIndexOrThrow("label"));
-//                entries.add(new RadarEntry(value, label));
-//            } while (cursor.moveToNext());
-//        }
-//
-//        cursor.close();
-//        db.close();
-//
-//        return entries;
-//    }
-//}
+    // 콜백 인터페이스 추가
+// 콜백 인터페이스 수정 (RadarEntry에서 BarEntry로 변경)
+    public interface FirestoreCallback {
+        void onDataLoaded(ArrayList<BarEntry> entries);
+    }
+
+}
