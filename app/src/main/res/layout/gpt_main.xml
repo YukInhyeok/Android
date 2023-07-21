@@ -42,7 +42,15 @@
             android:layout_marginBottom="60dp"
             android:textSize="20sp"/>
 
-
+        <Button
+            android:id="@+id/finish_Btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="종료"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:fontFamily="@font/omnigodic"
+            android:textSize="20dp" />
 
     <TextView
         android:id="@+id/tv_welcome"
