@@ -1,25 +1,23 @@
 package com.example.myapplication;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.NumberPicker;
 import android.widget.TextView;
 
 import com.example.myapplication.book.BookMainActivity;
+import com.example.myapplication.receiver.WeeklyResetReceiver;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.HorizontalBarChart;
 import com.github.mikephil.charting.components.AxisBase;
@@ -51,6 +49,8 @@ public class MyInfo extends AppCompatActivity {
     //firebase
     private FirebaseFirestore db;
 
+    private TextView textView7;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,8 +62,7 @@ public class MyInfo extends AppCompatActivity {
         TextView textView5 = findViewById(R.id.textView5);
         textView5.setText(getCurrentWeekDates());
 
-        TextView goal_score = findViewById(R.id.goal_score);
-
+        textView7 = findViewById(R.id.textView7);
 
         //firebase
         db = FirebaseFirestore.getInstance();
@@ -98,37 +97,13 @@ public class MyInfo extends AppCompatActivity {
 
         // 레이더 차트 추가
         HorizontalBarChart barChart = findViewById(R.id.info_chart);
-        TextView textBox7 = findViewById(R.id.sol);
+        setData(barChart);
 
-        setData(barChart,textBox7);
-
-        goal_score.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showBWorkPopup();
-            }
-        }
+        //주간 차트 초기화
+        setWeeklyResetAlarm();
     }
 
-
-    private void showBWorkPopup() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(MyInfo.this);
-        LayoutInflater inflater = getLayoutInflater();
-        View popupView = inflater.inflate(R.layout.b_work_popup, null);
-        builder.setView(popupView);
-
-        final NumberPicker numberPicker = popupView.findViewById(R.id.b_work_num_picker);
-        numberPicker.setMinValue(1); // 최소값 설정
-        numberPicker.setMaxValue(100); // 최대값 설정
-        Button bWorkBtn = popupView.findViewById(R.id.b_work_btn);
-
-        final AlertDialog alertDialog = builder.create();
-        alertDialog.show();
-
-    }
-
-
-    private void setData(HorizontalBarChart barChart, TextView textBox7) {
+    private void setData(HorizontalBarChart barChart) {
         fetchData(new FirestoreCallback() {
             @Override
             public void onDataLoaded(ArrayList<BarEntry> entries) {
@@ -156,20 +131,8 @@ public class MyInfo extends AppCompatActivity {
                 colors.add(Color.RED); // 어휘력
                 dataSet.setColors(colors);
 
-                YAxis leftAxis = barChart.getAxisLeft();
-                leftAxis.setGranularity(20f);
-                leftAxis.setAxisMinimum(0f);
-                leftAxis.setAxisMaximum(100f);
-                leftAxis.setDrawGridLines(false);
-                leftAxis.setTextColor(Color.BLACK);
-
-                // Set Y axis style
-                YAxis rightAxis = barChart.getAxisRight();
-                rightAxis.setEnabled(false);
-
                 BarData data = new BarData(dataSet);
                 data.setBarWidth(0.5f);
-
                 barChart.setData(data);
                 barChart.invalidate();
 
@@ -177,8 +140,16 @@ public class MyInfo extends AppCompatActivity {
 
                 XAxis xAxis = barChart.getXAxis();
                 xAxis.setValueFormatter(new IndexAxisValueFormatter(labels));
-                xAxis.setDrawAxisLine(false);
+//                xAxis.setDrawAxisLine(false);
                 xAxis.setDrawGridLines(false);
+
+                // Disable YAxis labels
+                YAxis leftAxis = barChart.getAxisLeft();
+                leftAxis.setGranularity(20f);
+                leftAxis.setAxisMinimum(0f);
+                leftAxis.setAxisMaximum(100f);
+                leftAxis.setDrawGridLines(false);
+//                leftYAxis.setDrawLabels(false);
 
                 YAxis rightYAxis = barChart.getAxisRight();
                 rightYAxis.setDrawLabels(false);
@@ -187,11 +158,10 @@ public class MyInfo extends AppCompatActivity {
                 barChart.setScaleEnabled(false);
 
                 String lowestLabel = labels[lowestIndex + 1];
-                textBox7.setText("평균보다 "+ lowestLabel + "이(가) 부족하므로 "); // 가장 낮은 값의 레이블을 textBox7에 설정
+                textView7.setText("평균점수보다 "+ lowestLabel + "점수가 부족하므로\n" + lowestLabel + "위주의 문제풀이를 추천드립니다."); // 가장 낮은 값의 레이블을 textBox7에 설정
             }
         });
     }
-
 
     private String getCurrentMonthAndWeek() {
         Calendar calendar = Calendar.getInstance();
@@ -263,6 +233,26 @@ public class MyInfo extends AppCompatActivity {
 // 콜백 인터페이스 수정 (RadarEntry에서 BarEntry로 변경)
     public interface FirestoreCallback {
         void onDataLoaded(ArrayList<BarEntry> entries);
+    }
+
+    // 주간 데이터 초기화
+    private void setWeeklyResetAlarm() {
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+
+        Intent intent = new Intent(this, WeeklyResetReceiver.class);
+        int flags = PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE;
+
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, flags);
+
+        // 매주 월요일 자정에 대한 Calendar 객체 생성
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+
+        // 매주 월요일에 평균 값이 0으로 변경되도록 알람 설정
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY * 7, pendingIntent);
     }
 
 }
