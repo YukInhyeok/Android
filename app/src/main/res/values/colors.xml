@@ -4,4 +4,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="purple_200">#FFBB86FC</color>
     <color name="teal_200">#069E8E</color>
+
+    <color name="bar_start_color">#FF4B1F</color>
+    <color name="bar_end_color">#1FDDFF</color>
 </resources>

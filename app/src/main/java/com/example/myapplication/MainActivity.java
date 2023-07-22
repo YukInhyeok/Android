@@ -5,7 +5,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import android.app.AlarmManager;
 import android.app.AppOpsManager;
@@ -19,6 +18,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -35,21 +36,17 @@ import android.widget.Toast;
 
 import com.example.myapplication.book.BookMainActivity;
 import com.example.myapplication.book.ResetCountReceiver;
-import com.example.myapplication.screen.MyForegroundService;
-import com.example.myapplication.screen.ScreenOnReceiver;
-import com.example.myapplication.screen.lockscreen;
-import com.github.mikephil.charting.charts.BarChart;
+import com.example.myapplication.model.screen.MyForegroundService;
+import com.example.myapplication.model.screen.ScreenOnReceiver;
 import com.github.mikephil.charting.charts.HorizontalBarChart;
-import com.github.mikephil.charting.charts.RadarChart;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
-import com.github.mikephil.charting.data.RadarData;
-import com.github.mikephil.charting.data.RadarDataSet;
 import com.github.mikephil.charting.data.RadarEntry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
+import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -65,6 +62,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -114,6 +112,9 @@ public class MainActivity extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // 메뉴 하단바 삭제
+        Utils.deleteMenuButton(this);
 
         // 잠금화면
         ScreenOnReceiver screenOnReceiver = new ScreenOnReceiver();
@@ -263,7 +264,7 @@ private void setData(HorizontalBarChart barChart) {
             barChart.setData(data);
             barChart.invalidate();
 
-            String[] labels = {"", "문해력", "독해력", "어휘력"};
+            String[] labels = {"", "독해력", "문해력", "어휘력"};
 
             XAxis xAxis = barChart.getXAxis();
             xAxis.setDrawGridLines(false);
@@ -274,18 +275,25 @@ private void setData(HorizontalBarChart barChart) {
             leftAxis.setGranularity(20f);
             leftAxis.setAxisMinimum(0f);
             leftAxis.setAxisMaximum(100f);
-            leftAxis.setDrawGridLines(false);
-            // leftYAxis.setDrawLabels(false);
+            leftAxis.setDrawGridLines(true);
+
+            // Y축 라벨이 0, 20, 40, 60, 80, 100 위치에만 표시되게 하려면 granulartiy를 설정하세요.
+            leftAxis.setLabelCount(6, true);
 
             YAxis rightYAxis = barChart.getAxisRight();
             rightYAxis.setDrawLabels(false);
+            rightYAxis.setDrawGridLines(false); // 오른쪽 Y축 그리드 선을 숨깁니다.
 
             // Disable scaling
             barChart.setScaleEnabled(false);
+
+            // 추가된 코드: 범례 숨기기
+            barChart.getLegend().setEnabled(false);
         }
     });
 }
-//===============================================================================================================
+
+//=====================================================================================================================
 
 //=====================================포인트 관련==========================================================================
     private void initPointListener() {

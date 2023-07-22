@@ -1,8 +1,5 @@
 package com.example.myapplication;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -30,7 +27,6 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -68,9 +64,9 @@ public class ChatGpt extends AppCompatActivity {
     EditText et_msg;
     ImageButton btn_send;
 
-    Button start_btn;   // 어휘력
-    Button Btn1;    // 문해력
-    Button Btn2;    // 독해력
+    Button VocabularyBtn;   // 어휘력
+    Button LiteracyBtn;    // 문해력
+    Button ReadingBtn;    // 독해력
     Button finishBtn;
 
 
@@ -95,7 +91,7 @@ public class ChatGpt extends AppCompatActivity {
     // API 호출에 사용할 상수와 객체를 선언합니다.
     public static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
     OkHttpClient client;
-    private static final String MY_SECRET_KEY = "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";
+    private static final String MY_SECRET_KEY = "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";
 
     //네비게이션바 설정
     private BottomNavigationView bottomNavigationView;
@@ -104,7 +100,10 @@ public class ChatGpt extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.gpt_main);
+        // 하단 메뉴바 삭제
+        Utils.deleteMenuButton(this);
 
+        // firebase 초기화
         db = FirebaseFirestore.getInstance();
 
         // 뷰들을 초기화하고 필요한 설정을 합니다.
@@ -112,9 +111,9 @@ public class ChatGpt extends AppCompatActivity {
         tv_welcome = findViewById(R.id.tv_welcome);
         et_msg = findViewById(R.id.et_msg);
         btn_send = findViewById(R.id.btn_send);
-        start_btn = findViewById(R.id.start_btn);
-        Btn1 = findViewById(R.id.btn1);
-        Btn2 = findViewById(R.id.btn2);
+        VocabularyBtn = findViewById(R.id.VocabularyBtn);
+        LiteracyBtn = findViewById(R.id.LiteracyBtn);
+        ReadingBtn = findViewById(R.id.ReadingBtn);
         finishBtn = findViewById(R.id.finish_Btn);
 
         recycler_view.setHasFixedSize(true);
@@ -172,9 +171,6 @@ public class ChatGpt extends AppCompatActivity {
                 addToChat(question, Message.SENT_BY_ME);
                 et_msg.setText("");
 
-                // 추가되는 코드
-//                socketClient.sendToPythonServer(question);
-
                 // API를 호출하여 GPT에게 사용자의 메시지를 전달합니다.
                 callAPI(question);
 
@@ -184,9 +180,9 @@ public class ChatGpt extends AppCompatActivity {
         });
 
 
-        start_btn.setOnClickListener(new View.OnClickListener() {
+        VocabularyBtn.setOnClickListener(new View.OnClickListener() {
             // 파일에서 JSON 객체를 로드합니다.
-            JSONArray jsonArray = loadJsonArrayFromFile("Question.json");
+            JSONArray jsonArray = loadJsonArrayFromFile("Vocabulary.json");
             @Override
             public void onClick(View view) {
                 if (jsonArray != null && jsonArray.length() > 0) {
@@ -213,36 +209,81 @@ public class ChatGpt extends AppCompatActivity {
                     addResponse("Failed to load or empty Questions. Please check the file.");
                 }
                 // 버튼 감추기
-                start_btn.setVisibility(View.GONE);
-                Btn2.setVisibility(View.GONE);
-                Btn1.setVisibility(View.GONE);
+                VocabularyBtn.setVisibility(View.GONE);
+                ReadingBtn.setVisibility(View.GONE);
+                LiteracyBtn.setVisibility(View.GONE);
                 ability = "vocabulary";
             }
         });
 
-        Btn1.setOnClickListener(new View.OnClickListener() {
+        LiteracyBtn.setOnClickListener(new View.OnClickListener() {
+            JSONArray jsonArray = loadJsonArrayFromFile("Literacy.json");
             @Override
             public void onClick(View view) {
-                ability = "literacy";
-                // 여기에서 추가로 필요한 작업을 수행하세요.
+                if (jsonArray != null && jsonArray.length() > 0) {
+                    // 랜덤 인덱스를 생성합니다.
+                    Random random = new Random();
+                    int index = random.nextInt(jsonArray.length());
 
+                    try {
+                        // JSON 배열에서 랜덤한 요소를 가져옵니다.
+                        JSONObject randomQuestion = jsonArray.getJSONObject(index);
+
+                        // 선택된 JSON 객체의 내용을 화면에 출력합니다.
+                        // 예시: 여기에서는 "content"라는 키를 사용하여 값을 가져옵니다.
+                        String questionContent = randomQuestion.getString("content");
+                        addResponse("문제: " + questionContent);
+
+                        // 이 내용을 GPT에게 전달하는 함수 호출
+                        callAPI(questionContent);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    // 파일 로드에 실패한 경우 또는 배열의 길이가 0인 경우 오류 메시지를 출력합니다.
+                    addResponse("Failed to load or empty Questions. Please check the file.");
+                }
                 // 버튼 감추기
-                start_btn.setVisibility(View.GONE);
-                Btn1.setVisibility(View.GONE);
-                Btn2.setVisibility(View.GONE);
+                VocabularyBtn.setVisibility(View.GONE);
+                LiteracyBtn.setVisibility(View.GONE);
+                ReadingBtn.setVisibility(View.GONE);
+                ability = "literacy";
             }
         });
 
-        Btn2.setOnClickListener(new View.OnClickListener() {
+        ReadingBtn.setOnClickListener(new View.OnClickListener() {
+            JSONArray jsonArray = loadJsonArrayFromFile("Reading.json");
             @Override
             public void onClick(View view) {
-                ability = "reading";
-                // 여기에서 추가로 필요한 작업을 수행하세요.
+                if (jsonArray != null && jsonArray.length() > 0) {
+                    // 랜덤 인덱스를 생성합니다.
+                    Random random = new Random();
+                    int index = random.nextInt(jsonArray.length());
+
+                    try {
+                        // JSON 배열에서 랜덤한 요소를 가져옵니다.
+                        JSONObject randomQuestion = jsonArray.getJSONObject(index);
+
+                        // 선택된 JSON 객체의 내용을 화면에 출력합니다.
+                        // 예시: 여기에서는 "content"라는 키를 사용하여 값을 가져옵니다.
+                        String questionContent = randomQuestion.getString("content");
+                        addResponse("문제: " + questionContent);
+
+                        // 이 내용을 GPT에게 전달하는 함수 호출
+                        callAPI(questionContent);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    // 파일 로드에 실패한 경우 또는 배열의 길이가 0인 경우 오류 메시지를 출력합니다.
+                    addResponse("Failed to load or empty Questions. Please check the file.");
+                }
 
                 // 버튼 감추기
-                start_btn.setVisibility(View.GONE);
-                Btn1.setVisibility(View.GONE);
-                Btn2.setVisibility(View.GONE);
+                VocabularyBtn.setVisibility(View.GONE);
+                LiteracyBtn.setVisibility(View.GONE);
+                ReadingBtn.setVisibility(View.GONE);
+                ability = "read";
             }
         });
 
@@ -495,6 +536,10 @@ public class ChatGpt extends AppCompatActivity {
                 return "Thurs";
             case Calendar.FRIDAY:
                 return "Fri";
+            case Calendar.SATURDAY:
+                return "Satur";
+            case Calendar.SUNDAY:
+                return "Sun";
             default:
                 return "";
         }
@@ -543,5 +588,4 @@ public class ChatGpt extends AppCompatActivity {
                     }
                 });
     }
-
 }

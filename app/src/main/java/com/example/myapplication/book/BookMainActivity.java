@@ -19,6 +19,7 @@ import com.example.myapplication.ChatGpt;
 import com.example.myapplication.MainActivity;
 import com.example.myapplication.MyInfo;
 import com.example.myapplication.R;
+import com.example.myapplication.Utils;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -53,6 +54,9 @@ public class BookMainActivity extends AppCompatActivity implements OnDatabaseCal
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_book_main);
+
+        // 메뉴 하단바 삭제
+        Utils.deleteMenuButton(this);
 
         fragment1 = new Fragment1();
         fragment2 = new Fragment2();

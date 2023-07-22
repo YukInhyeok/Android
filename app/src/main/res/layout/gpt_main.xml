@@ -15,7 +15,7 @@
         android:layout_above="@+id/bottom_layout"/>
 
         <Button
-            android:id="@+id/btn1"
+            android:id="@+id/LiteracyBtn"
             android:layout_width="600px"
             android:layout_height="150px"
             android:fontFamily="@font/omnigodic"
@@ -24,7 +24,7 @@
             android:layout_marginBottom="60dp"
             android:textSize="20sp" />
         <Button
-            android:id="@+id/btn2"
+            android:id="@+id/ReadingBtn"
             android:layout_width="600px"
             android:layout_height="150px"
             android:fontFamily="@font/omnigodic"
@@ -33,10 +33,10 @@
             android:layout_marginBottom="60dp"
             android:textSize="20sp" />
         <Button
-            android:id="@+id/start_btn"
+            android:id="@+id/VocabularyBtn"
             android:layout_width="600px"
             android:layout_height="150px"
-            android:text="시작"
+            android:text="어휘력"
             android:fontFamily="@font/omnigodic"
             android:layout_marginLeft="85dp"
             android:layout_marginBottom="60dp"

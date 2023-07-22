@@ -1,4 +1,4 @@
-package com.example.myapplication.screen;
+package com.example.myapplication.model.screen;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,9 +8,9 @@ import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.myapplication.ChatGpt;
 import com.example.myapplication.MainActivity;
 import com.example.myapplication.R;
+import com.example.myapplication.Utils;
 
 public class lockscreen extends AppCompatActivity {
 
@@ -20,6 +20,9 @@ public class lockscreen extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.lockscreen);
+
+        // 메뉴 하단바 삭제
+        Utils.deleteMenuButton(this);
 
         // 홈 버튼이나 뒤로가기 버튼 비활성화를 위한 플래그 추가
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
