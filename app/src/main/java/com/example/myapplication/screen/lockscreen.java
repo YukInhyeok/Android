@@ -1,4 +1,4 @@
-package com.example.myapplication.model.screen;
+package com.example.myapplication.screen;
 
 import android.content.Intent;
 import android.os.Bundle;

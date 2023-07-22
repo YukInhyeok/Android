@@ -1,4 +1,4 @@
-package com.example.myapplication.model.screen;
+package com.example.myapplication.screen;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
