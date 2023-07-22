@@ -24,7 +24,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.myapplication.adapter.MessageAdapter;
 import com.example.myapplication.book.BookMainActivity;
 import com.example.myapplication.model.Message;
-import com.example.myapplication.receiver.WeeklyResetReceiver;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -447,6 +446,7 @@ public class ChatGpt extends AppCompatActivity {
 
         return c.getTimeInMillis() - System.currentTimeMillis();
     }
+
 
     private void resetChartValues() {
         db.collection("Chart")

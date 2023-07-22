@@ -1,8 +1,10 @@
-package com.example.myapplication.receiver;
+package com.example.myapplication;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
+
+import androidx.annotation.NonNull;
+import androidx.work.Worker;
+import androidx.work.WorkerParameters;
 
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -11,15 +13,26 @@ import com.google.firebase.firestore.SetOptions;
 import java.util.HashMap;
 import java.util.Map;
 
-public class WeeklyResetReceiver extends BroadcastReceiver {
+public class WeeklyResetWorker extends Worker {
+
     private FirebaseFirestore db;
 
-    public WeeklyResetReceiver() {
+    public WeeklyResetWorker(@NonNull Context appContext, @NonNull WorkerParameters workerParams) {
+        super(appContext, workerParams);
         db = FirebaseFirestore.getInstance();
     }
-
+    @NonNull
     @Override
-    public void onReceive(Context context, Intent intent) {
+    public Result doWork() {
+        // 주간 데이터 초기화 작업을 수행합니다.
+        resetWeeklyData();
+
+        // 작업이 성공적으로 완료되었음을 알립니다.
+        return Result.success();
+    }
+
+    private void resetWeeklyData() {
+        // 주간 데이터 초기화 로직 구현: 기능을 하나의 메소드로 구현하여 호출하십시오.
         int zeroValue = 0;
         Map<String, Object> data = new HashMap<>();
         data.put("average", zeroValue);
@@ -33,5 +46,4 @@ public class WeeklyResetReceiver extends BroadcastReceiver {
             weekDocRef.set(data, SetOptions.merge());
         }
     }
-
 }

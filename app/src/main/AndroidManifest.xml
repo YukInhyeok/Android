@@ -31,10 +31,6 @@
             </intent-filter>
         </receiver>
 
-        <receiver
-            android:name=".receiver.WeeklyResetReceiver"
-            android:exported="true">
-        </receiver>
 
         <activity
             android:name=".MyInfo"
