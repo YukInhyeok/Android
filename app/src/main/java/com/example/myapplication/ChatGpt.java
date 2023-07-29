@@ -80,11 +80,8 @@ public class ChatGpt extends AppCompatActivity {
 
     // 독해, 문해, 어휘 저장 변수
     private String ability;
-
     // 요일 변수
     private String Week;
-
-
 
     private FirebaseFirestore db;
 
@@ -136,6 +133,9 @@ public class ChatGpt extends AppCompatActivity {
         // 주간 데이터
         Week = getDayOfWeek();
         Log.d("test week", "오늘의 요일은? => " + Week);
+
+        //종료 버튼 감추기
+        finishBtn.setVisibility(View.GONE);
 
         finishBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -211,6 +211,9 @@ public class ChatGpt extends AppCompatActivity {
 
                 // 환영 메시지를 감춥니다.
                 tv_welcome.setVisibility(View.GONE);
+
+                finishBtn.setVisibility(View.VISIBLE);
+
             }
         });
 
@@ -263,11 +266,13 @@ public class ChatGpt extends AppCompatActivity {
                     try {
                         // JSON 배열에서 랜덤한 요소를 가져옵니다.
                         JSONObject randomQuestion = jsonArray.getJSONObject(index);
+                        Log.d("question", "index: " + randomQuestion);
 
                         // 선택된 JSON 객체의 내용을 화면에 출력합니다.
                         // 예시: 여기에서는 "content"라는 키를 사용하여 값을 가져옵니다.
                         String questionContent = randomQuestion.getString("content");
                         addResponse("문제: " + questionContent);
+                        Log.d("question", "문제: " + questionContent);
 
                         // 이 내용을 GPT에게 전달하는 함수 호출
                         callAPI(questionContent);
@@ -392,7 +397,7 @@ public class ChatGpt extends AppCompatActivity {
         try {
             //AI 속성설정
             baseAi.put("role", "user");
-            baseAi.put("content", "당신은 국어선생님 입니다. 객관식 문제 5가지를 출제해야합니다. 문제는 100점 만점이며 한 문제당 20점의 배점을 가지고 있습니다. 사용자의 점수를 판단하세요. 반드시 문제를 출제할 때에는 절대 답을 알려주어서는 안되고, 사용자가 답을 입력한 후에 정답을 알려줍니다. 사용자의 답이 정답과 다르다면 오답 처리를 해야합니다.");
+            baseAi.put("content", "당신은 국어선생님 입니다. 주어진 지문을 가지고 객관식 문제 5가지를 출제해야합니다. 문제는 100점 만점이며 한 문제당 20점의 배점을 가지고 있습니다. 사용자의 점수를 판단하세요. 반드시 문제를 출제할 때에는 절대 답을 알려주어서는 안되고, 사용자가 답을 입력한 후에 정답을 알려줍니다. 사용자의 답이 정답과 다르다면 오답 처리를 해야합니다.");
             //유저 메세지
             userMsg.put("role", "user");
             userMsg.put("content", question);
