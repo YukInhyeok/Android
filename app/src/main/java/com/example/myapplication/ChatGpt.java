@@ -27,6 +27,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -39,6 +40,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -82,6 +84,8 @@ public class ChatGpt extends AppCompatActivity {
     // 요일 변수
     private String Week;
 
+
+
     private FirebaseFirestore db;
 
     private Handler mHandler;
@@ -91,7 +95,7 @@ public class ChatGpt extends AppCompatActivity {
     // API 호출에 사용할 상수와 객체를 선언합니다.
     public static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
     OkHttpClient client;
-    private static final String MY_SECRET_KEY = "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";
+    private static final String MY_SECRET_KEY = "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";
 
     //네비게이션바 설정
     private BottomNavigationView bottomNavigationView;
@@ -137,30 +141,61 @@ public class ChatGpt extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 int lastScore = findLastScoreFromAssistantMsg(assistantMessages);
-                DocumentReference chartRef = db.collection("Chart").document(ability);
+                DocumentReference dateRef = db.collection("Chart").document(ability);
 
                 if (lastScore != -1) {
-                    chartRef.update("value", lastScore)
-                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    dateRef
+                            .get()
+                            .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                                 @Override
-                                public void onSuccess(Void aVoid) {
-                                    Log.d("Firestore", "LastScore was successfully updated!");
+                                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                    Integer currentValue = documentSnapshot.contains("value") ? documentSnapshot.getLong("value").intValue() : 0;
+                                    Integer currentCount = documentSnapshot.contains("count") ? documentSnapshot.getLong("count").intValue() : 0;
+
+                                    // 새로운 평균 계산
+                                    int newValue = ((currentValue * currentCount) + lastScore) / (currentCount + 1);
+                                    currentCount = currentCount + 1;
+
+                                    // 데이터 갱신
+                                    Map<String, Object> newData = new HashMap<>(documentSnapshot.getData()); // 기존 데이터를 유지하려면 이렇게 수정하세요.
+                                    newData.put("value", newValue);
+                                    newData.put("count", currentCount);
+                                    dateRef
+                                            .set(newData)
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    Log.d("Firestore", "Value and count were successfully updated!");
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Log.w("Firestore", "Error updating data", e);
+                                                }
+                                            });
                                 }
                             })
                             .addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
-                                    Log.w("Firestore", "Error updating lastScore", e);
+                                    Log.w("Firestore", "Error getting document", e);
                                 }
                             });
+
+                    Intent intent = new Intent(ChatGpt.this, MainActivity.class);
+                    startActivity(intent);
+
                 } else {
                     // 점수를 찾지 못한 경우 처리
-                    Log.d("test score","점수를 찾지 못했습니다.");
-                    Toast.makeText(getApplicationContext(), "점수를 찾을 수 없습니다. 다시 시도해 주세요.",Toast.LENGTH_LONG).show();
+                    Log.d("test score", "점수를 찾지 못했습니다.");
+                    Toast.makeText(getApplicationContext(), "점수를 찾을 수 없습니다. 다시 시도해 주세요.", Toast.LENGTH_LONG).show();
                 }
                 saveWeeklyAverage();
             }
         });
+
+
 
         // 전송 버튼 클릭 이벤트 핸들러를 등록합니다.
         btn_send.setOnClickListener(new View.OnClickListener() {

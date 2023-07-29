@@ -80,10 +80,12 @@ public class MyInfo extends AppCompatActivity {
         textView5.setText(getCurrentWeekDates());
 
         Sol = findViewById(R.id.textView7);
-
-
         //firebase
         db = FirebaseFirestore.getInstance();
+
+        int previousGoalScore = loadGoalScore();
+        goalScoreText = findViewById(R.id.goal_score);
+
 
         // BottomNavigationView 초기화
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
@@ -121,7 +123,6 @@ public class MyInfo extends AppCompatActivity {
         SharedPreferences preferences = getSharedPreferences(WEEKLY_RESET_PREF, Context.MODE_PRIVATE);
         boolean isAlarmSet = preferences.getBoolean(WEEKLY_RESET_ALARM_SET, false);
 
-        // onCreate() 메소드 내부에 있는 '주간 차트 초기화' 섹션을 아래 코드로 대체합니다.
         if (!isAlarmSet) {
             long initialDelay = calculateDelayForNextMonday();
             PeriodicWorkRequest resetWeeklyWorkRequest =
@@ -147,7 +148,10 @@ public class MyInfo extends AppCompatActivity {
                 showGoalScorePopup();
             }
         });
-
+        if (previousGoalScore != 0) {
+            goalScoreText.setText("" + previousGoalScore);
+            updateChartWithGoalScore(previousGoalScore);
+        }
     }
 
     private void setData(BarChart barChart) {
@@ -274,6 +278,31 @@ public class MyInfo extends AppCompatActivity {
                 });
     }
 
+    // 금일 데이터 불러오기
+    private void fetchtodayData(FirestoreCallback callback) {
+        db.collection("Chart").orderBy("label")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            ArrayList<BarEntry> entries = new ArrayList<>();
+
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                int average = document.getLong("value").intValue();
+                                int label = document.getLong("label").intValue();
+                                // RadarEntry 대신 BarEntry 사용
+                                entries.add(new BarEntry(label, average));
+                            }
+
+                            callback.onDataLoaded(entries);
+                        } else {
+                            Log.e("MyInfo", "Error fetching data", task.getException());
+                        }
+                    }
+                });
+    }
+
     // 콜백 인터페이스 추가
 // 콜백 인터페이스 수정 (RadarEntry에서 BarEntry로 변경)
     public interface FirestoreCallback {
@@ -295,6 +324,18 @@ public class MyInfo extends AppCompatActivity {
         return nextMonday.getTimeInMillis() - now.getTimeInMillis();
     }
 
+    // 목표 점수 저장
+    private void saveGoalScore(int goalScore) {
+        SharedPreferences sharedPreferences = getSharedPreferences("GoalScorePrefs", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt("goalScore", goalScore);
+        editor.apply();
+    }
+    private int loadGoalScore() {
+        SharedPreferences sharedPreferences = getSharedPreferences("GoalScorePrefs", Context.MODE_PRIVATE);
+        return sharedPreferences.getInt("goalScore", 0);
+    }
+
     //목표 점수
     private void showGoalScorePopup() {
         AlertDialog.Builder builder = new AlertDialog.Builder(MyInfo.this);
@@ -303,6 +344,7 @@ public class MyInfo extends AppCompatActivity {
         builder.setView(popupView);
 
         final NumberPicker numberPicker = popupView.findViewById(R.id.num_picker);
+
         String[] values = new String[]{"0", "10", "20", "30", "40", "50", "60", "70", "80", "90", "100"};
 
         for (int i = 0; i < values.length; i++) {
@@ -313,6 +355,7 @@ public class MyInfo extends AppCompatActivity {
         numberPicker.setMinValue(0);
         numberPicker.setMaxValue(values.length - 1);
         numberPicker.setDisplayedValues(values);
+
         Button goalScoreBtn = popupView.findViewById(R.id.btn);
 
         final AlertDialog alertDialog = builder.create();
@@ -322,10 +365,11 @@ public class MyInfo extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 int selectedGoalScore = numberPicker.getValue() * 10;
-                goalScoreText.setText("목표 점수: " + selectedGoalScore);
+                goalScoreText.setText("" + selectedGoalScore);
                 alertDialog.dismiss();
 
-                // 목표 점수로 차트 업데이트 (새로 추가된 코드)
+                // 목표 점수 저장
+                saveGoalScore(selectedGoalScore);
                 updateChartWithGoalScore(selectedGoalScore);
             }
         });
@@ -333,7 +377,7 @@ public class MyInfo extends AppCompatActivity {
 
     // 솔루션
     private void updateChartWithGoalScore(int goalScore) {
-        fetchData(new FirestoreCallback() {
+        fetchtodayData(new FirestoreCallback() {
             @Override
             public void onDataLoaded(ArrayList<BarEntry> entries) {
                 // 사용자가 선택한 목표 점수보다 작은 값의 레이블 추출
