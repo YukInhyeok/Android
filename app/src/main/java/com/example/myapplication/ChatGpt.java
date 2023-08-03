@@ -41,8 +41,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -92,7 +94,7 @@ public class ChatGpt extends AppCompatActivity {
     // API 호출에 사용할 상수와 객체를 선언합니다.
     public static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
     OkHttpClient client;
-    private static final String MY_SECRET_KEY = "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";
+    private static final String MY_SECRET_KEY = "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";
 
     //네비게이션바 설정
     private BottomNavigationView bottomNavigationView;
@@ -151,6 +153,14 @@ public class ChatGpt extends AppCompatActivity {
                                 public void onSuccess(DocumentSnapshot documentSnapshot) {
                                     Integer currentValue = documentSnapshot.contains("value") ? documentSnapshot.getLong("value").intValue() : 0;
                                     Integer currentCount = documentSnapshot.contains("count") ? documentSnapshot.getLong("count").intValue() : 0;
+                                    // 날짜 변경 여부 확인
+                                    String last_updated = documentSnapshot.contains("last_updated") ? documentSnapshot.getString("last_updated") : "";
+                                    String today = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+
+                                    // 날짜가 변경되었을 경우 count를 0으로 초기화
+                                    if (!last_updated.equals(today)) {
+                                        currentCount = 0;
+                                    }
 
                                     // 새로운 평균 계산
                                     int newValue = ((currentValue * currentCount) + lastScore) / (currentCount + 1);
@@ -166,6 +176,7 @@ public class ChatGpt extends AppCompatActivity {
                                                 @Override
                                                 public void onSuccess(Void aVoid) {
                                                     Log.d("Firestore", "Value and count were successfully updated!");
+                                                    newData.put("last_updated", today); // 오늘 날짜 추가
                                                 }
                                             })
                                             .addOnFailureListener(new OnFailureListener() {

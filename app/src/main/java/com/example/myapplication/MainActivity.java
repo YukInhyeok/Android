@@ -489,14 +489,12 @@ private void fetchData(MyInfo.FirestoreCallback callback) {
 
     }
 
-
     private int convertTimeStringToMinutes(String timeString) {
         String[] timeParts = timeString.split(":");
         int hours = Integer.parseInt(timeParts[0]);
         int minutes = Integer.parseInt(timeParts[1]);
         return hours * 60 + minutes;
     }
-
 
     @Override
     protected void onDestroy() {
