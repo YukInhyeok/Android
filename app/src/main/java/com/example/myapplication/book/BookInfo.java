@@ -40,7 +40,7 @@ public class BookInfo {
         return contents;
     }
 
-    // getter와 setter를 추가합니다.
+    // getter, setter 추가
     public String getCreateDate() {
         return createDate;
     }
@@ -58,7 +58,5 @@ public class BookInfo {
                 ", author='" + author + '\'' +
                 ", contents='" + contents + '\'' +
                 '}';
-
-
     }
 }

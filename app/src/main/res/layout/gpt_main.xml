@@ -14,50 +14,64 @@
         android:layout_weight="1"
         android:layout_above="@+id/bottom_layout"/>
 
+<!--        <Button-->
+<!--            android:id="@+id/LiteracyBtn"-->
+<!--            android:layout_width="600px"-->
+<!--            android:layout_height="150px"-->
+<!--            android:fontFamily="@font/omnigodic"-->
+<!--            android:text="문해력"-->
+<!--            android:layout_marginLeft="85dp"-->
+<!--            android:layout_marginBottom="60dp"-->
+<!--            android:textSize="20sp" />-->
         <Button
-            android:id="@+id/LiteracyBtn"
+            android:id="@+id/InteractiveBtn"
             android:layout_width="600px"
             android:layout_height="150px"
             android:fontFamily="@font/omnigodic"
-            android:text="문해력"
+            android:text="대화형"
             android:layout_marginLeft="85dp"
             android:layout_marginBottom="60dp"
             android:textSize="20sp" />
         <Button
-            android:id="@+id/ReadingBtn"
+            android:id="@+id/QuestionBtn"
             android:layout_width="600px"
             android:layout_height="150px"
-            android:fontFamily="@font/omnigodic"
-            android:text="독해력"
-            android:layout_marginLeft="85dp"
-            android:layout_marginBottom="60dp"
-            android:textSize="20sp" />
-        <Button
-            android:id="@+id/VocabularyBtn"
-            android:layout_width="600px"
-            android:layout_height="150px"
-            android:text="어휘력"
+            android:text="문제형"
             android:fontFamily="@font/omnigodic"
             android:layout_marginLeft="85dp"
             android:layout_marginBottom="60dp"
             android:textSize="20sp"/>
 
-        <Button
-            android:id="@+id/finish_Btn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="종료"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:fontFamily="@font/omnigodic"
-            android:textSize="20dp" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+
+    <Button
+        android:id="@+id/finish_Btn"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:fontFamily="@font/omnigodic"
+        android:text="종료"
+        android:textSize="20dp" />
+
+    <Button
+        android:id="@+id/continue_Btn"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="80dp"
+        android:fontFamily="@font/omnigodic"
+        android:text="다음문제"
+        android:textSize="20dp" />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/tv_welcome"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:textSize="28sp"/>
+        android:textSize="28sp" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -82,10 +96,9 @@
             android:layout_alignParentRight="true"
             android:layout_centerInParent="true"
             android:layout_marginLeft="10dp"
-            android:padding="8dp"
-            android:src="@drawable/ic_send"
             android:background="?attr/selectableItemBackgroundBorderless"
-            />
+            android:padding="8dp"
+            android:src="@drawable/ic_send" />
     </RelativeLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView

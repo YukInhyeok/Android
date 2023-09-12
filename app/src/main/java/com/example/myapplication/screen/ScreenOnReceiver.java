@@ -8,6 +8,8 @@ import android.util.Log;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 
+// 휴대폰의 화면 꺼짐 및 켜짐 상태 확인하는 리시버
+
 public class ScreenOnReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {

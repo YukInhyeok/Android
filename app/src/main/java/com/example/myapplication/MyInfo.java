@@ -154,20 +154,18 @@ public class MyInfo extends AppCompatActivity {
         }
     }
 
+    // 파이어베이스에서 데이터 불러오기
     private void setData(BarChart barChart) {
         fetchData(new FirestoreCallback() {
             @Override
             public void onDataLoaded(ArrayList<BarEntry> entries) {
-                // Update the index number for entries
                 for (int i = 0; i < entries.size(); i++) {
                     entries.get(i).setX(i + 1);
                 }
-                // Create separate BarDataSets for each bar
                 ArrayList<IBarDataSet> dataSets = new ArrayList<>();
                 for (BarEntry entry : entries) {
-                    BarDataSet dataSet = new BarDataSet(Arrays.asList(entry), "요일별 점수"); // 데이터셋 이름은 필요하다면 변경하세요.
+                    BarDataSet dataSet = new BarDataSet(Arrays.asList(entry), "요일별 점수");
 
-                    // Set gradient color for each bar
                     int startColor = Color.parseColor("#FF5F6D");
                     int endColor = Color.parseColor("#FFC371");
                     dataSet.setGradientColor(startColor, endColor);
@@ -185,28 +183,24 @@ public class MyInfo extends AppCompatActivity {
                 XAxis xAxis = barChart.getXAxis();
                 xAxis.setValueFormatter(new IndexAxisValueFormatter(labels));
                 xAxis.setDrawAxisLine(false);
-//                xAxis.setDrawGridLines(false);
                 xAxis.setAxisMinimum(0f);
                 xAxis.setAxisMaximum(6f);
 
-                // Disable YAxis labels
                 YAxis leftAxis = barChart.getAxisLeft();
                 leftAxis.setGranularity(20f);
                 leftAxis.setAxisMinimum(0f);
                 leftAxis.setAxisMaximum(100f);
                 leftAxis.setDrawGridLines(true);
 
-                // Y축 라벨이 0, 20, 40, 60, 80, 100 위치에만 표시되게 하려면 granulartiy를 설정하세요.
                 leftAxis.setLabelCount(6, true);
 
                 YAxis rightYAxis = barChart.getAxisRight();
                 rightYAxis.setDrawLabels(false);
-                rightYAxis.setDrawGridLines(false); // 오른쪽 Y축 그리드 선을 숨깁니다.
+                // 오른쪽 Y축 그리드 선 없애기
+                rightYAxis.setDrawGridLines(false);
 
-                // Disable scaling
                 barChart.setScaleEnabled(false);
 
-                // 추가된 코드: 범례 숨기기
                 barChart.getLegend().setEnabled(false);
             }
         });
@@ -253,7 +247,7 @@ public class MyInfo extends AppCompatActivity {
         return String.join("   ", dates);
     }
 
-
+    // 파이어베이스
     private void fetchData(FirestoreCallback callback) {
         db.collection("WeekChart").orderBy("label")
                 .get()
@@ -303,14 +297,12 @@ public class MyInfo extends AppCompatActivity {
                 });
     }
 
-    // 콜백 인터페이스 추가
-// 콜백 인터페이스 수정 (RadarEntry에서 BarEntry로 변경)
+    // 콜백 인터페이스 (RadarEntry에서 BarEntry로 변경)
     public interface FirestoreCallback {
         void onDataLoaded(ArrayList<BarEntry> entries);
     }
 
     // 주간 데이터 초기화
-// WorkManager 와 함께 사용될 다음 월요일 자정까지의 남은 시간을 계산합니다.
     private long calculateDelayForNextMonday() {
         Calendar now = Calendar.getInstance();
         Calendar nextMonday = (Calendar) now.clone();
@@ -386,7 +378,6 @@ public class MyInfo extends AppCompatActivity {
                 for (BarEntry entry : entries) {
                     if (entry.getY() < goalScore) {
                         int index = Math.round(entry.getX());
-                        // 레이블 배열은 1부터 시작함에 유의하세요.
                         if (index == 0) {
                             labelsSmallerThanGoalScore.add("독해력");
                         } else if (index == 1) {
