@@ -21,6 +21,7 @@ import android.widget.Button;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 
+import com.example.myapplication.aladdin.AladdinMainActivity;
 import com.example.myapplication.book.BookMainActivity;
 
 import com.github.mikephil.charting.charts.BarChart;
@@ -61,6 +62,9 @@ public class MyInfo extends AppCompatActivity {
     private TextView Sol;
     private TextView goalScoreText;
 
+    // 버튼
+    private Button BookBtn;
+
     private static final String WEEKLY_RESET_PREF = "WeeklyResetAlarmPref";
     private static final String WEEKLY_RESET_ALARM_SET = "WeeklyResetAlarmSet";
 
@@ -79,7 +83,10 @@ public class MyInfo extends AppCompatActivity {
         TextView textView5 = findViewById(R.id.textView5);
         textView5.setText(getCurrentWeekDates());
 
-        Sol = findViewById(R.id.textView7);
+        //버튼
+        BookBtn = findViewById(R.id.book_button);
+
+//        Sol = findViewById(R.id.textView7);
         //firebase
         db = FirebaseFirestore.getInstance();
 
@@ -152,6 +159,15 @@ public class MyInfo extends AppCompatActivity {
             goalScoreText.setText("" + previousGoalScore);
             updateChartWithGoalScore(previousGoalScore);
         }
+
+        //버튼 메소드
+        BookBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MyInfo.this, AladdinMainActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     private void setData(BarChart barChart) {
@@ -165,7 +181,7 @@ public class MyInfo extends AppCompatActivity {
                 // Create separate BarDataSets for each bar
                 ArrayList<IBarDataSet> dataSets = new ArrayList<>();
                 for (BarEntry entry : entries) {
-                    BarDataSet dataSet = new BarDataSet(Arrays.asList(entry), "요일별 점수"); // 데이터셋 이름은 필요하다면 변경하세요.
+                    BarDataSet dataSet = new BarDataSet(Arrays.asList(entry), "요일별 점수");
 
                     // Set gradient color for each bar
                     int startColor = Color.parseColor("#FF5F6D");
@@ -304,7 +320,6 @@ public class MyInfo extends AppCompatActivity {
     }
 
     // 콜백 인터페이스 추가
-// 콜백 인터페이스 수정 (RadarEntry에서 BarEntry로 변경)
     public interface FirestoreCallback {
         void onDataLoaded(ArrayList<BarEntry> entries);
     }

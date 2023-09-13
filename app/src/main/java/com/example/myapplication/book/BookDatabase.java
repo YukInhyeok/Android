@@ -144,7 +144,7 @@ public class BookDatabase {
                 String name = cursor.getString(0);
                 String author = cursor.getString(1);
                 String contents = cursor.getString(2);
-                String createDate = cursor.getString(3); // 추가된 부분
+                String createDate = cursor.getString(3);
                 BookInfo info = new BookInfo(name, author, contents, createDate);
                 result.add(info);
             }
