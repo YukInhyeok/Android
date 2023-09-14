@@ -1,5 +1,6 @@
 package com.example.myapplication;
 
+import android.view.Gravity;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -70,14 +71,8 @@ public class MainActivity extends AppCompatActivity{
     //네비게이션바
     private BottomNavigationView bottomNavigationView;
 
-    //포인트 관련
-    private EditText editTextNumber;
-    private Button point;
-    private TextView pointNum;
-
-    // 포인트 잔액
-    private int cashValue;
-
+    //일일 솔루션
+    private TextView Today_Sol;
     //firebase
     private FirebaseFirestore db;
 
@@ -116,6 +111,9 @@ public class MainActivity extends AppCompatActivity{
         ScreenOnReceiver screenOnReceiver = new ScreenOnReceiver();
         IntentFilter screenOnFilter = new IntentFilter(Intent.ACTION_SCREEN_ON);
         registerReceiver(screenOnReceiver, screenOnFilter);
+
+        //일일 솔루션
+        Today_Sol = findViewById(R.id.today_sol);
 
         //firebase
         db = FirebaseFirestore.getInstance();
@@ -160,12 +158,6 @@ public class MainActivity extends AppCompatActivity{
         HorizontalBarChart barChart = findViewById(R.id.chart);
         setData(barChart);
 
-        // 포인트 관련
-        editTextNumber = findViewById(R.id.editTextNumber);
-        point = findViewById(R.id.point);
-        pointNum = findViewById(R.id.point_num);
-        initPointListener();
-
         //독후감 관련
         bookNum = findViewById(R.id.book_text);
         setAlarmToResetCount();
@@ -180,61 +172,66 @@ public class MainActivity extends AppCompatActivity{
 
         //앱 종료 확인
         ExitApp();
-//==================================Point 메서드===================================================================
-        point.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int inputPoint = Integer.parseInt(editTextNumber.getText().toString());
 
-                if (inputPoint <= cashValue) {
-                    int remainingPoint = cashValue - inputPoint;
-
-                    FirebaseFirestore db = FirebaseFirestore.getInstance();
-
-                    db.collection("UserCoin").document("Coin")
-                            .update("point", remainingPoint)
-                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                    Log.d("MainActivity", "DocumentSnapshot successfully updated!");
-                                    showMessage(inputPoint + "포인트가 사용되었습니다"); // 메시지 표시
-
-                                    // 사용된 포인트를 UseCoin 컬렉션에 추가
-                                    Map<String, Object> usedPointData = new HashMap<>();
-                                    usedPointData.put("usedPoint", inputPoint);
-                                    usedPointData.put("timestamp", FieldValue.serverTimestamp()); // 서버 타임스탬프로 시간 기록
-
-                                    db.collection("UseCoin")
-                                            .add(usedPointData)
-                                            .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                                                @Override
-                                                public void onSuccess(DocumentReference documentReference) {
-                                                    Log.d("MainActivity", "Used point added to UseCoin collection");
-                                                }
-                                            })
-                                            .addOnFailureListener(new OnFailureListener() {
-                                                @Override
-                                                public void onFailure(@NonNull Exception e) {
-                                                    Log.w("MainActivity", "Error adding used point to UseCoin collection", e);
-                                                }
-                                            });
-                                }
-                            })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Log.w("MainActivity", "Error updating document", e);
-                                }
-                            });
-                    editTextNumber.setText(""); // 입력한 숫자 지우기
-                } else {
-                    showMessage("보유한 포인트보다 많은 포인트를 사용할 수 없습니다.");
-                }
-            }
-        });
     }
 //===============================================================================================================
 
+//=====================================일일 솔루션=================================================================
+private void solData(ArrayList<BarEntry> entries) {
+    // 가장 낮은 점수와 해당 과목을 초기값으로 설정합니다.
+    float lowestScore = Float.MAX_VALUE;
+    int lowestScoreSubjectLabel = 0;
+
+    for (int i = 0; i < entries.size(); i++) {
+        BarEntry entry = entries.get(i);
+        float value = entry.getY();
+        int label = (int) entry.getX();
+
+        // 현재 과목의 점수가 가장 낮은지 확인하고 업데이트합니다.
+        if (value < lowestScore) {
+            lowestScore = value;
+            lowestScoreSubjectLabel = label;
+        }
+    }
+    // 가장 낮은 과목에 해당하는 솔루션을 설정합니다.
+    String lowestScoreSubject = getSubjectByLabel(lowestScoreSubjectLabel);
+    String solution = generateSolutionForSubject(lowestScoreSubject);
+    Today_Sol.setText(solution);
+}
+
+    private String getSubjectByLabel(int label) {
+        switch (label) {
+            case 1:
+                return "독해력";
+            case 2:
+                return "문해력";
+            case 3:
+                return "어휘력";
+            default:
+                return "알 수 없음";
+        }
+    }
+    private String generateSolutionForSubject(String subject) {
+        String solution = "";
+
+        switch (subject) {
+            case "독해력":
+                solution = "독해력을 향상시키려면 매일 정독과 관련된 기사나 글을 읽어보세요.";
+                break;
+            case "문해력":
+                solution = "문해력을 향상시키려면 다양한 글을 읽고 요약해보세요.";
+                break;
+            case "어휘력":
+                solution = "어휘력을 향상시키려면 매일 새로운 단어를 학습하고 사용해보세요.";
+                break;
+            default:
+                solution = "가장 낮은 점수에 대한 솔루션을 찾을 수 없습니다.";
+                break;
+        }
+        return solution;
+    }
+
+//===============================================================================================================
 
 //=====================================레이더 차트==========================================================================
 private void setData(HorizontalBarChart barChart) {
@@ -285,34 +282,15 @@ private void setData(HorizontalBarChart barChart) {
 
             // 추가된 코드: 범례 숨기기
             barChart.getLegend().setEnabled(false);
+
+            solData(entries);
         }
     });
 }
 
 //=====================================================================================================================
 
-//=====================================포인트 관련==========================================================================
-    private void initPointListener() {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        db.collection("UserCoin").document("Coin")
-                .addSnapshotListener(new EventListener<DocumentSnapshot>() {
-                    @Override
-                    public void onEvent(@Nullable DocumentSnapshot documentSnapshot,
-                                        @Nullable FirebaseFirestoreException e) {
-                        if (e != null) {
-                            Log.w("MainActivity", "listen:error", e);
-                            return;
-                        }
-
-                        if (documentSnapshot != null && documentSnapshot.exists()) {
-                            cashValue = documentSnapshot.getLong("point").intValue();
-                            pointNum.setText(Integer.toString(cashValue));
-                            editTextNumber.setHint("최대 " + cashValue);
-                        }
-                    }
-                });
-    }
 //===============================================================================================================
 
 
