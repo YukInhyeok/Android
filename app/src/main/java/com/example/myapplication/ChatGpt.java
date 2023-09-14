@@ -94,7 +94,7 @@ public class ChatGpt extends AppCompatActivity {
     // API 호출에 사용할 상수와 객체를 선언합니다.
     public static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
     OkHttpClient client;
-    private static final String MY_SECRET_KEY = "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";
+    private static final String MY_SECRET_KEY = "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";
 
     //네비게이션바 설정
     private BottomNavigationView bottomNavigationView;
@@ -164,19 +164,20 @@ public class ChatGpt extends AppCompatActivity {
 
                                     // 새로운 평균 계산
                                     int newValue = ((currentValue * currentCount) + lastScore) / (currentCount + 1);
-                                    currentCount = currentCount + 1;
+                                    currentCount += 1;
 
                                     // 데이터 갱신
                                     Map<String, Object> newData = new HashMap<>(documentSnapshot.getData()); // 기존 데이터를 유지하려면 이렇게 수정하세요.
                                     newData.put("value", newValue);
                                     newData.put("count", currentCount);
+                                    newData.put("last_updated", today); // 오늘 날짜 추가
                                     dateRef
                                             .set(newData)
                                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                 @Override
                                                 public void onSuccess(Void aVoid) {
                                                     Log.d("Firestore", "Value and count were successfully updated!");
-                                                    newData.put("last_updated", today); // 오늘 날짜 추가
+
                                                 }
                                             })
                                             .addOnFailureListener(new OnFailureListener() {
@@ -536,6 +537,8 @@ public class ChatGpt extends AppCompatActivity {
         c.set(Calendar.SECOND, 0);
         c.set(Calendar.MILLISECOND, 0);
 
+        long test = c.getTimeInMillis() - System.currentTimeMillis();
+        Log.d("test", "남은시간: " + test);
         return c.getTimeInMillis() - System.currentTimeMillis();
     }
 
@@ -549,6 +552,9 @@ public class ChatGpt extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 document.getReference().update("value", 0);
+                                document.getReference().update("ans", 0);
+                                document.getReference().update("wrong_ans", 0);
+                                Log.d("test", "Successful init");
                             }
                         } else {
                             Log.w("Firestore", "Error getting documents.", task.getException());
@@ -563,6 +569,7 @@ public class ChatGpt extends AppCompatActivity {
             @Override
             public void run() {
                 resetChartValues();
+                Log.d("test","Runnable is run");
                 mHandler.postDelayed(this, TimeUnit.DAYS.toMillis(1));
             }
         };
