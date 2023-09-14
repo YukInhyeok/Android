@@ -296,6 +296,7 @@ public class MyInfo extends AppCompatActivity {
         return String.join("   ", dates);
     }
 
+    // 파이어베이스
     private void fetchData(FirestoreCallback callback) {
         db.collection("WeekChart").orderBy("label")
                 .get()

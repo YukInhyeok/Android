@@ -25,6 +25,7 @@ import com.example.myapplication.R;
 
 import java.util.concurrent.TimeUnit;
 
+// 포그라운드
 public class MyForegroundService extends Service {
 
     private static final String CHANNEL_ID = "ForegroundServiceChannel";

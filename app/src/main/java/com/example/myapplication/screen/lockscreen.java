@@ -12,6 +12,7 @@ import com.example.myapplication.MainActivity;
 import com.example.myapplication.R;
 import com.example.myapplication.Utils;
 
+// 잠금화면
 public class lockscreen extends AppCompatActivity {
 
     private Button goingbtn;

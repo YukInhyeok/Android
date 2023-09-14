@@ -238,14 +238,12 @@ private void setData(HorizontalBarChart barChart) {
     fetchData(new MyInfo.FirestoreCallback() {
         @Override
         public void onDataLoaded(ArrayList<BarEntry> entries) {
-            // Update the index number for entries
             for (int i = 0; i < entries.size(); i++) {
                 entries.get(i).setX(i + 1);
             }
 
             BarDataSet dataSet = new BarDataSet(entries, "주간 데이터");
 
-            // Set colors for each bar
             List<Integer> colors = new ArrayList<>();
             colors.add(Color.BLUE); // 독해력
             colors.add(Color.GREEN); // 문해력
@@ -263,24 +261,20 @@ private void setData(HorizontalBarChart barChart) {
             xAxis.setDrawGridLines(false);
             xAxis.setValueFormatter(new IndexAxisValueFormatter(labels));
 
-            // Disable YAxis labels
             YAxis leftAxis = barChart.getAxisLeft();
             leftAxis.setGranularity(20f);
             leftAxis.setAxisMinimum(0f);
             leftAxis.setAxisMaximum(100f);
             leftAxis.setDrawGridLines(true);
 
-            // Y축 라벨이 0, 20, 40, 60, 80, 100 위치에만 표시되게 하려면 granulartiy를 설정하세요.
             leftAxis.setLabelCount(6, true);
 
             YAxis rightYAxis = barChart.getAxisRight();
             rightYAxis.setDrawLabels(false);
-            rightYAxis.setDrawGridLines(false); // 오른쪽 Y축 그리드 선을 숨깁니다.
+            rightYAxis.setDrawGridLines(false);
 
-            // Disable scaling
             barChart.setScaleEnabled(false);
 
-            // 추가된 코드: 범례 숨기기
             barChart.getLegend().setEnabled(false);
 
             solData(entries);
@@ -304,7 +298,6 @@ private void setData(HorizontalBarChart barChart) {
 
 //=============================== 권한 요청 메서드====================================================================
 
-
     // 다른 앱 위에 표시 권한
     private void showPermissionDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -326,7 +319,6 @@ private void setData(HorizontalBarChart barChart) {
                 finish();
             }
         });
-
         builder.show();
     }
 
@@ -364,6 +356,7 @@ private void setData(HorizontalBarChart barChart) {
 
 //====================================================================================================
 
+    // 뒤로가기 버튼 막기
     public void onBackPressed(){
 
     }
@@ -433,7 +426,6 @@ private void fetchData(MyInfo.FirestoreCallback callback) {
 
                         if (documentSnapshot != null && documentSnapshot.exists()) {
                             finishBooknum = documentSnapshot.getLong("booknum").intValue();
-                            // finishBooknum 값을 가져온 후 fetchWorkNum 메소드를 호출합니다.
                             fetchWorkNum();
                         }
                     }
@@ -521,7 +513,7 @@ private void fetchData(MyInfo.FirestoreCallback callback) {
     private long getAppUsageTime(Context context, String myapplication) {
         UsageStatsManager usageStatsManager = (UsageStatsManager) context.getSystemService(Context.USAGE_STATS_SERVICE);
 
-        // 오늘 자정 시간을 구합니다.
+        // 오늘 자정 시간 구하기
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.HOUR_OF_DAY, 0);
         calendar.set(Calendar.MINUTE, 0);
@@ -529,10 +521,10 @@ private void fetchData(MyInfo.FirestoreCallback callback) {
         calendar.set(Calendar.MILLISECOND, 0);
         long startTime = calendar.getTimeInMillis();
 
-        // 현재 시간을 구합니다.
+        // 현재 시간을 구하기
         long currentTime = System.currentTimeMillis();
 
-        // 설정한 기간의 앱 사용 정보를 가져옵니다.
+        // 시스템에서 앱 사용정보 가져오기
         List<UsageStats> usageStatsList = usageStatsManager.queryUsageStats(
                 UsageStatsManager.INTERVAL_DAILY,
                 startTime,
@@ -589,11 +581,9 @@ private void fetchData(MyInfo.FirestoreCallback callback) {
     }
 
     private void updateAppUsageTime() {
-//        TextView appUseTimeTextView = findViewById(R.id.app_use_time);
         long elapsedTime = System.currentTimeMillis() - appUsageTimeStart; // 어플 사용 시작 시간으로부터 경과한 시간 계산
         long appUsageTimeInMillis = getAppUsageTime(getApplicationContext(), getPackageName()) + elapsedTime; // 전체 사용 시간에 경과 시간 더하기
         formattedAppUsageTime = formatMillis(appUsageTimeInMillis);
-//        appUseTimeTextView.setText("총 시간: " + formattedAppUsageTime);
         Log.d("AppUsageTime", "App usage time: " + formattedAppUsageTime);
     }
     private final Runnable updateAppUsageTimeRunnable = new Runnable() {
