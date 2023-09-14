@@ -1,6 +1,7 @@
 package com.example.myapplication;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -29,6 +30,7 @@ import com.google.android.gms.tasks.Tasks;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -95,7 +97,7 @@ public class ChatGpt extends AppCompatActivity {
     // API
     public static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
     OkHttpClient client;
-    private static final String MY_SECRET_KEY = "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";
+    private static final String MY_SECRET_KEY = "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";
 
     //네비게이션바 설정
     private BottomNavigationView bottomNavigationView;
@@ -153,32 +155,42 @@ public class ChatGpt extends AppCompatActivity {
                             .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                                 @Override
                                 public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                    Integer currentValue = documentSnapshot.contains("value") ? documentSnapshot.getLong("value").intValue() : 0;
+                                    Integer ans = documentSnapshot.contains("ans") ? documentSnapshot.getLong("ans").intValue() : 0;
                                     Integer currentCount = documentSnapshot.contains("count") ? documentSnapshot.getLong("count").intValue() : 0;
+                                    Integer wrong_ans = documentSnapshot.contains("wrong_ans") ? documentSnapshot.getLong("wrong_ans").intValue() : 0;
                                     // 날짜 변경 여부 확인
                                     String last_updated = documentSnapshot.contains("last_updated") ? documentSnapshot.getString("last_updated") : "";
                                     String today = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
 
+                                    // 새로운 평균 계산
+//                                    currentCount = currentCount + 1;
+
+                                    float newValue = (float)ans / (currentCount) * 100;
+                                    Log.d("GPT", "Val_1: "+ newValue);
+
                                     // 날짜가 변경되었을 경우 count를 0으로 초기화
                                     if (!last_updated.equals(today)) {
+                                        Log.d("GPT","ability: "+ today);
+                                        Log.d("GPT","ability: "+ last_updated);
                                         currentCount = 0;
+                                        ans = 0;
+                                        wrong_ans = 0;
                                     }
-
-                                    // 새로운 평균 계산
-                                    int newValue = ((currentValue * currentCount) + lastScore) / (currentCount + 1);
-                                    currentCount = currentCount + 1;
-
+                                    Log.d("GPT", "Val_2: "+ newValue);
                                     // 데이터 갱신
                                     Map<String, Object> newData = new HashMap<>(documentSnapshot.getData());
                                     newData.put("value", newValue);
                                     newData.put("count", currentCount);
+                                    newData.put("ans", ans);
+                                    newData.put("wrong_ans", wrong_ans);
+                                    newData.put("last_updated", today); // 오늘 날짜 추가
                                     dateRef
                                             .set(newData)
                                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                 @Override
                                                 public void onSuccess(Void aVoid) {
                                                     Log.d("Firestore", "Value and count were successfully updated!");
-                                                    newData.put("last_updated", today); // 오늘 날짜 추가
+
                                                 }
                                             })
                                             .addOnFailureListener(new OnFailureListener() {
@@ -219,6 +231,7 @@ public class ChatGpt extends AppCompatActivity {
 
                 tv_welcome.setVisibility(View.GONE);
                 finishBtn.setVisibility(View.VISIBLE);
+                continueBtn.setVisibility(View.VISIBLE);
             }
         });
 
@@ -320,7 +333,6 @@ public class ChatGpt extends AppCompatActivity {
         continueBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                callAPI_V2("다음");
                 int ans = findLastScoreFromAssistantMsg_V2(assistantMessages);
                 Log.d("GPT","ANS: "+ ans);
 
@@ -355,9 +367,10 @@ public class ChatGpt extends AppCompatActivity {
                         Log.w("Firestore", "Error getting document", e);
                     }
                 });
-
-
+                callAPI_V2("다음문제를 내주세요");
+                continueBtn.setVisibility(View.GONE);
             }
+
         });
 
         // OkHttpClient 객체 생성
@@ -623,6 +636,7 @@ public class ChatGpt extends AppCompatActivity {
     //문제형 관련
     private int findLastScoreFromAssistantMsg_V2(JSONArray assistantMessages) {
         DocumentReference dateRef = db.collection("Chart").document(ability);
+
         for (int i = assistantMessages.length() - 1; i >= 0; i--) {
             try {
                 JSONObject msg = assistantMessages.getJSONObject(i);
@@ -643,11 +657,12 @@ public class ChatGpt extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
+
         return ans;
     }
 
     private void updateFirestoreField(DocumentReference docRef, String fieldName, int value) {
-        docRef.update(fieldName, value)
+        docRef.update(fieldName, FieldValue.increment(1))
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {

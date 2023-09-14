@@ -63,7 +63,9 @@
         android:layout_marginLeft="80dp"
         android:fontFamily="@font/omnigodic"
         android:text="다음문제"
-        android:textSize="20dp" />
+        android:textSize="20dp"
+        android:visibility="invisible"
+        />
     </LinearLayout>
 
     <TextView
