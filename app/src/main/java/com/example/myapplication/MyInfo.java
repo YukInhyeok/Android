@@ -3,8 +3,11 @@ package com.example.myapplication;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 import androidx.work.ExistingPeriodicWorkPolicy;
 import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkInfo;
 import androidx.work.WorkManager;
 
 import android.content.Context;
@@ -67,6 +70,8 @@ public class MyInfo extends AppCompatActivity {
 
     private static final String WEEKLY_RESET_PREF = "WeeklyResetAlarmPref";
     private static final String WEEKLY_RESET_ALARM_SET = "WeeklyResetAlarmSet";
+
+    private PeriodicWorkRequest resetWeeklyWorkRequest;
 
 
     @Override
@@ -132,7 +137,7 @@ public class MyInfo extends AppCompatActivity {
 
         if (!isAlarmSet) {
             long initialDelay = calculateDelayForNextMonday();
-            PeriodicWorkRequest resetWeeklyWorkRequest =
+             resetWeeklyWorkRequest =
                     new PeriodicWorkRequest.Builder(WeeklyResetWorker.class, 7, TimeUnit.DAYS)
                             .setInitialDelay(initialDelay, TimeUnit.MILLISECONDS)
                             .addTag("resetweeklydata")
@@ -145,6 +150,30 @@ public class MyInfo extends AppCompatActivity {
             SharedPreferences.Editor editor = preferences.edit();
             editor.putBoolean(WEEKLY_RESET_ALARM_SET, true);
             editor.apply();
+
+            Log.d("MY_APP_TAG", "제발 정상 작동좀 해라");
+        }
+        if (resetWeeklyWorkRequest != null) {
+            // WorkManager 상태 변경을 추적할 LiveData
+            LiveData<WorkInfo> workInfoLiveData = WorkManager.getInstance(this).getWorkInfoByIdLiveData(resetWeeklyWorkRequest.getId());
+
+            workInfoLiveData.observe(this, new Observer<WorkInfo>() {
+                @Override
+                public void onChanged(WorkInfo workInfo) {
+                    Log.d("MY_APP_TAG", "onChanged called: " + workInfo);
+                    if (workInfo != null) {
+                        if (workInfo.getState() == WorkInfo.State.SUCCEEDED) {
+                            // 작업이 성공적으로 완료되었을 때 수행할 동작을 여기에 추가하세요.
+                            // 예: 알림 표시 또는 작업 완료 메시지 표시
+                            Log.i("MY_APP_TAG", "주간 데이터 재설정이 완료되었습니다.");
+                        } else if (workInfo.getState() == WorkInfo.State.FAILED) {
+                            // 작업이 실패한 경우 수행할 동작을 여기에 추가하세요.
+                            // 예: 오류 메시지 표시 또는 재시도 로직 실행
+                            Log.e("MY_APP_TAG", "주간 데이터 재설정이 실패했습니다.");
+                        }
+                    }
+                }
+            });
         }
 
         // 목표 점수
@@ -268,7 +297,6 @@ public class MyInfo extends AppCompatActivity {
 
         return String.join("   ", dates);
     }
-
 
     private void fetchData(FirestoreCallback callback) {
         db.collection("WeekChart").orderBy("label")

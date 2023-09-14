@@ -26,7 +26,6 @@ public class WeeklyResetWorker extends Worker {
     public Result doWork() {
         // 주간 데이터 초기화 작업을 수행합니다.
         resetWeeklyData();
-
         // 작업이 성공적으로 완료되었음을 알립니다.
         return Result.success();
     }
