@@ -1,6 +1,5 @@
 package com.example.myapplication;
 
-import android.view.Gravity;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -27,9 +26,6 @@ import android.os.Looper;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -53,7 +49,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -61,10 +56,10 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
+
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
+
 import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity{
@@ -283,9 +278,6 @@ private void setData(HorizontalBarChart barChart) {
 }
 
 //=====================================================================================================================
-
-
-//===============================================================================================================
 
 
 //=====================================클릭 메소드==========================================================================

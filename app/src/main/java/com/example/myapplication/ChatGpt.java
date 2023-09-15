@@ -69,7 +69,6 @@ public class ChatGpt extends AppCompatActivity {
     TextView tv_welcome;
     EditText et_msg;
     ImageButton btn_send;
-
     Button InteractiveBtn;    // 대화형
     Button QuestionBtn;       // 문제형
     Button finishBtn;
@@ -97,7 +96,7 @@ public class ChatGpt extends AppCompatActivity {
     // API
     public static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
     OkHttpClient client;
-    private static final String MY_SECRET_KEY = "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";
+    private static final String MY_SECRET_KEY = "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";
 
     //네비게이션바 설정
     private BottomNavigationView bottomNavigationView;
@@ -259,7 +258,6 @@ public class ChatGpt extends AppCompatActivity {
                 } else {
                     addResponse("Failed to load or empty Questions. Please check the file.");
                 }
-//                VocabularyBtn.setVisibility(View.GONE);
                 InteractiveBtn.setVisibility(View.GONE);
                 QuestionBtn.setVisibility(View.GONE);
                 ability = "literacy";
