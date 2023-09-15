@@ -153,13 +153,13 @@ public class BookMainActivity extends AppCompatActivity implements OnDatabaseCal
     public void insert(String name, String author, String contents) {
         database.insertRecord(name, author, contents);
         updateBookCount();
-        Toast.makeText(getApplicationContext(), "책 정보를 추가했습니다.", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), "독후감 정보를 추가했습니다.", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public ArrayList<BookInfo> selectAll() {
         ArrayList<BookInfo> result = database.selectAll();
-        Toast.makeText(getApplicationContext(), "책 정보를 조회했습니다.", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), "독후감 정보를 조회했습니다.", Toast.LENGTH_SHORT).show();
         return result;
     }
 

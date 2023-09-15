@@ -1,7 +1,6 @@
 package com.example.myapplication;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -143,7 +142,7 @@ public class ChatGpt extends AppCompatActivity {
         finishBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int lastScore = findLastScoreFromAssistantMsg_V2(assistantMessages);
+                int lastScore = mark_question(assistantMessages);
                 Log.d("GPT","정답 개수: "+ ans);
                 Log.d("GPT","ability: "+ ability);
 
@@ -333,7 +332,7 @@ public class ChatGpt extends AppCompatActivity {
         continueBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int ans = findLastScoreFromAssistantMsg_V2(assistantMessages);
+                int ans = mark_question(assistantMessages);
                 Log.d("GPT","ANS: "+ ans);
 
                 DocumentReference dateRef = db.collection("Chart").document(ability);
@@ -612,7 +611,7 @@ public class ChatGpt extends AppCompatActivity {
     }
 
     // assistantMsg에서 점수 추출
-    private int findLastScoreFromAssistantMsg(JSONArray assistantMessages) {
+    private int mark_interactive(JSONArray assistantMessages) {
         int lastScore = -1;
         for (int i = assistantMessages.length() - 1; i >= 0; i--) {
             try {
@@ -634,7 +633,7 @@ public class ChatGpt extends AppCompatActivity {
 
 
     //문제형 관련
-    private int findLastScoreFromAssistantMsg_V2(JSONArray assistantMessages) {
+    private int mark_question(JSONArray assistantMessages) {
         DocumentReference dateRef = db.collection("Chart").document(ability);
 
         for (int i = assistantMessages.length() - 1; i >= 0; i--) {
@@ -700,6 +699,8 @@ public class ChatGpt extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 document.getReference().update("value", 0);
+                                document.getReference().update("ans", 0);
+                                document.getReference().update("wrong_ans", 0);
                             }
                         } else {
                             Log.w("Firestore", "Error getting documents.", task.getException());
