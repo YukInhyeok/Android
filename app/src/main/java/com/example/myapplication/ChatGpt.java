@@ -1,6 +1,7 @@
 package com.example.myapplication;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -687,6 +688,8 @@ public class ChatGpt extends AppCompatActivity {
         c.set(Calendar.SECOND, 0);
         c.set(Calendar.MILLISECOND, 0);
 
+        long test = c.getTimeInMillis() - System.currentTimeMillis();
+        Log.d("test", "남은시간: " + test);
         return c.getTimeInMillis() - System.currentTimeMillis();
     }
 

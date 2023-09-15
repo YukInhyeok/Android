@@ -292,6 +292,7 @@ public class MyInfo extends AppCompatActivity {
         return String.join("   ", dates);
     }
 
+    // 파이어베이스
     private void fetchData(FirestoreCallback callback) {
         db.collection("WeekChart").orderBy("label")
                 .get()
@@ -341,7 +342,7 @@ public class MyInfo extends AppCompatActivity {
                 });
     }
 
-    // 콜백 인터페이스 (RadarEntry에서 BarEntry로 변경)
+    // 콜백 인터페이스 추가
     public interface FirestoreCallback {
         void onDataLoaded(ArrayList<BarEntry> entries);
     }
