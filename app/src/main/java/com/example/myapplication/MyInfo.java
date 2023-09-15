@@ -434,12 +434,12 @@ public class MyInfo extends AppCompatActivity {
                 }
 
                 // 결과 출력
-                if (!labelsSmallerThanGoalScore.isEmpty()) {
-                    String labelsStr = String.join(", ", labelsSmallerThanGoalScore);
-                    Sol.setText("목표점수보다 낮은 유형은 " + labelsStr + " 입니다.");
-                } else {
-                    Sol.setText("축하합니다. 모두 목표점수보다 높습니다 ^^");
-                }
+//                if (!labelsSmallerThanGoalScore.isEmpty()) {
+//                    String labelsStr = String.join(", ", labelsSmallerThanGoalScore);
+//                    Sol.setText("목표점수보다 낮은 유형은 " + labelsStr + " 입니다.");
+//                } else {
+//                    Sol.setText("축하합니다. 모두 목표점수보다 높습니다 ^^");
+//                }
             }
         });
     }
