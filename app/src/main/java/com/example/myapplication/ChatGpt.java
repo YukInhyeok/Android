@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -69,6 +70,7 @@ public class ChatGpt extends AppCompatActivity {
     TextView tv_welcome;
     EditText et_msg;
     ImageButton btn_send;
+
     Button InteractiveBtn;    // 대화형
     Button QuestionBtn;       // 문제형
     Button finishBtn;
@@ -92,6 +94,8 @@ public class ChatGpt extends AppCompatActivity {
 
     private int ans = 0;
     private int wrong_ans = 0;
+
+    private int Switch = 0;
 
     // API
     public static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
@@ -142,78 +146,55 @@ public class ChatGpt extends AppCompatActivity {
         finishBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int lastScore = findLastScoreFromAssistantMsg_V2(assistantMessages);
-                Log.d("GPT","정답 개수: "+ ans);
-                Log.d("GPT","ability: "+ ability);
+                Log.d("GPT", "정답 개수: " + ans);
+                Log.d("GPT", "ability: " + ability);
 
                 DocumentReference dateRef = db.collection("Chart").document(ability);
 
-                if (lastScore != -1) {
-                    dateRef
-                            .get()
-                            .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                                @Override
-                                public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                    Integer ans = documentSnapshot.contains("ans") ? documentSnapshot.getLong("ans").intValue() : 0;
-                                    Integer currentCount = documentSnapshot.contains("count") ? documentSnapshot.getLong("count").intValue() : 0;
-                                    Integer wrong_ans = documentSnapshot.contains("wrong_ans") ? documentSnapshot.getLong("wrong_ans").intValue() : 0;
-                                    // 날짜 변경 여부 확인
-                                    String last_updated = documentSnapshot.contains("last_updated") ? documentSnapshot.getString("last_updated") : "";
-                                    String today = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+                dateRef
+                        .get()
+                        .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                            @Override
+                            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                Integer ans = documentSnapshot.contains("ans") ? documentSnapshot.getLong("ans").intValue() : 0;
+                                Integer currentCount = documentSnapshot.contains("count") ? documentSnapshot.getLong("count").intValue() : 0;
+                                Integer wrong_ans = documentSnapshot.contains("wrong_ans") ? documentSnapshot.getLong("wrong_ans").intValue() : 0;
 
-                                    float newValue = (float)ans / (currentCount) * 100;
-                                    Log.d("GPT", "Val_1: "+ newValue);
+                                float newValue = (float) ans / (currentCount) * 100;
+                                Log.d("GPT", "Val_1: " + newValue);
 
-                                    // 날짜가 변경되었을 경우 count를 0으로 초기화
-                                    if (!last_updated.equals(today)) {
-                                        Log.d("GPT","ability: "+ today);
-                                        Log.d("GPT","ability: "+ last_updated);
-                                        currentCount = 0;
-                                        ans = 0;
-                                        wrong_ans = 0;
-                                    }
-                                    // 새로운 평균 계산
-                                    currentCount += 1;
+                                Log.d("GPT", "Val_2: " + newValue);
+                                // 데이터 갱신
+                                Map<String, Object> newData = new HashMap<>(documentSnapshot.getData());
+                                newData.put("value",Math.round(newValue));
+                                newData.put("count", currentCount);
+                                newData.put("ans", ans);
+                                newData.put("wrong_ans", wrong_ans);
+                                dateRef
+                                        .set(newData)
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                Log.d("Firestore", "Value and count were successfully updated!");
+                                            }
+                                        })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Log.w("Firestore", "Error updating data", e);
+                                            }
+                                        });
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.w("Firestore", "Error getting document", e);
+                            }
+                        });
 
-                                    // 데이터 갱신
-                                    Map<String, Object> newData = new HashMap<>(documentSnapshot.getData());
-                                    newData.put("value", newValue);
-                                    newData.put("count", currentCount);
-                                    newData.put("ans", ans);
-                                    newData.put("wrong_ans", wrong_ans);
-                                    newData.put("last_updated", today); // 오늘 날짜 추가
-                                    dateRef
-                                            .set(newData)
-                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                @Override
-                                                public void onSuccess(Void aVoid) {
-                                                    Log.d("Firestore", "Value and count were successfully updated!");
-
-                                                }
-                                            })
-                                            .addOnFailureListener(new OnFailureListener() {
-                                                @Override
-                                                public void onFailure(@NonNull Exception e) {
-                                                    Log.w("Firestore", "Error updating data", e);
-                                                }
-                                            });
-                                }
-                            })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Log.w("Firestore", "Error getting document", e);
-                                }
-                            });
-
-                    Intent intent = new Intent(ChatGpt.this, MainActivity.class);
-                    startActivity(intent);
-
-                } else {
-                    // 점수를 찾지 못한 경우
-                    Log.d("test score", "점수를 찾지 못했습니다.");
-                    Toast.makeText(getApplicationContext(), "점수를 찾을 수 없습니다. 다시 시도해 주세요.", Toast.LENGTH_LONG).show();
-                }
+                Intent intent = new Intent(ChatGpt.this, MainActivity.class);
+                startActivity(intent);
                 saveWeeklyAverage();
             }
         });
@@ -221,47 +202,39 @@ public class ChatGpt extends AppCompatActivity {
         btn_send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String question = et_msg.getText().toString().trim();
-                addToChat(question, Message.SENT_BY_ME);
-                et_msg.setText("");
+                if (Switch == 0) {
+                    String question = et_msg.getText().toString().trim();
+                    addToChat(question, Message.SENT_BY_ME);
+                    et_msg.setText("");
 
-                callAPI(question);
+                    callAPI_V2(question);
 
-                tv_welcome.setVisibility(View.GONE);
-                finishBtn.setVisibility(View.VISIBLE);
-                continueBtn.setVisibility(View.VISIBLE);
+                    tv_welcome.setVisibility(View.GONE);
+                    finishBtn.setVisibility(View.VISIBLE);
+                    continueBtn.setVisibility(View.VISIBLE);
+                } else if (Switch == 1) {
+                    String question = et_msg.getText().toString().trim();
+                    addToChat(question, Message.SENT_BY_ME);
+                    et_msg.setText("");
+
+                    callAPI(question);
+
+                    tv_welcome.setVisibility(View.GONE);
+                    finishBtn.setVisibility(View.VISIBLE);
+                    continueBtn.setVisibility(View.VISIBLE);
+                }
             }
         });
 
 
         InteractiveBtn.setOnClickListener(new View.OnClickListener() {
-            JSONArray jsonArray = loadJsonArrayFromFile("Literacy.json");
             @Override
             public void onClick(View view) {
-                if (jsonArray != null && jsonArray.length() > 0) {
-                    // 랜덤 인덱스 생성
-                    Random random = new Random();
-                    int index = random.nextInt(jsonArray.length());
-
-                    try {
-                        JSONObject randomQuestion = jsonArray.getJSONObject(index);
-                        Log.d("question", "index: " + randomQuestion);
-
-                        String questionContent = randomQuestion.getString("content");
-                        addResponse("문제: " + questionContent);
-                        Log.d("question", "문제: " + questionContent);
-
-                        callAPI(questionContent);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                } else {
-                    addResponse("Failed to load or empty Questions. Please check the file.");
-                }
+                callAPI("그럼 지금부터 나랑 일상적인 대화를 통해서 내 언어능력을 평가해줘. 5마디의 대화가 끝나면 너는 반드시 나에게 언어능력 점수를 알려주어야 해");
                 InteractiveBtn.setVisibility(View.GONE);
                 QuestionBtn.setVisibility(View.GONE);
-                ability = "literacy";
-            }
+                Switch = 1;
+                }
         });
 
 
@@ -294,7 +267,7 @@ public class ChatGpt extends AppCompatActivity {
                         // 가장 낮은 점수의 과목 중 하나를 랜덤하게 선택하기
                         Random random = new Random();
 
-                        if(lowScoringSubjects.size()>0){
+                        if (lowScoringSubjects.size() > 0) {
                             String selectedSubjectFile = lowScoringSubjects.get(random.nextInt(lowScoringSubjects.size()));
 
                             // 선택된 파일에서 JSON 객체 로드하기
@@ -307,21 +280,22 @@ public class ChatGpt extends AppCompatActivity {
                                     JSONObject randomQuestion = jsonArray.getJSONObject(index);
                                     String questionContent = randomQuestion.getString("content");
                                     addResponse("문제: " + questionContent);
-                                    callAPI(questionContent);  // 이 내용을 GPT에게 전달하는 함수 호출
+                                    callAPI_V2(questionContent);  // 이 내용을 GPT에게 전달하는 함수 호출
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
                             } else {
                                 addResponse("Failed to load or empty Questions. Please check the file.");
                             }
-                            ability = selectedSubjectFile.replace(".json","").toLowerCase();
-                        }else{
+                            ability = selectedSubjectFile.replace(".json", "").toLowerCase();
+                        } else {
                             addResponse("'No subjects found with minimum score.");
                         }
 
                         // 버튼 감추기
                         InteractiveBtn.setVisibility(View.GONE);
                         QuestionBtn.setVisibility(View.GONE);
+                        Switch = 0;
                     }
                 });
             }
@@ -330,8 +304,8 @@ public class ChatGpt extends AppCompatActivity {
         continueBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int ans = findLastScoreFromAssistantMsg_V2(assistantMessages);
-                Log.d("GPT","ANS: "+ ans);
+                int ans = mark_question(assistantMessages);
+                Log.d("GPT", "ANS: " + ans);
 
                 DocumentReference dateRef = db.collection("Chart").document(ability);
 
@@ -364,7 +338,7 @@ public class ChatGpt extends AppCompatActivity {
                         Log.w("Firestore", "Error getting document", e);
                     }
                 });
-                callAPI_V2("다음문제를 내주세요");
+                callAPI("다음문제를 내주세요");
                 continueBtn.setVisibility(View.GONE);
             }
 
@@ -435,7 +409,7 @@ public class ChatGpt extends AppCompatActivity {
         try {
             //AI 속성설정
             baseAi.put("role", "user");
-            baseAi.put("content", "당신은 국어선생님 입니다. 주어진 지문을 가지고 객관식 문제 1문제를 출제해야합니다. 반드시 문제를 출제할 때에는 절대 답을 알려주어서는 안되고, 사용자가 답을 입력한 후에 정답을 알려줍니다. 사용자의 답이 정답과 다르다면 오답 처리를 해야합니다. 당신은 정답과 오답을 항상 '정답입니다.' 또는 '오답입니다.' 라는 문장으로만 판단할 수 있습니다.");
+            baseAi.put("content", "너 나랑 5마디 대화를 주고받으며 내 언어능력을 점수로 평가할 정도로 똑똑해? (점수는 100점 만점이야)");
             //유저 메세지
             userMsg.put("role", "user");
             userMsg.put("content", question);
@@ -609,7 +583,7 @@ public class ChatGpt extends AppCompatActivity {
     }
 
     // assistantMsg에서 점수 추출
-    private int findLastScoreFromAssistantMsg(JSONArray assistantMessages) {
+    private int mark_interactive(JSONArray assistantMessages) {
         int lastScore = -1;
         for (int i = assistantMessages.length() - 1; i >= 0; i--) {
             try {
@@ -631,7 +605,7 @@ public class ChatGpt extends AppCompatActivity {
 
 
     //문제형 관련
-    private int findLastScoreFromAssistantMsg_V2(JSONArray assistantMessages) {
+    private int mark_question(JSONArray assistantMessages) {
         DocumentReference dateRef = db.collection("Chart").document(ability);
 
         for (int i = assistantMessages.length() - 1; i >= 0; i--) {
@@ -644,7 +618,7 @@ public class ChatGpt extends AppCompatActivity {
                         updateFirestoreField(dateRef, "ans", ans);
                         break; // 내부 반복문 종료
 
-                    } else if(content.contains("오답")) { // 오답을 찾았을 때만 기록
+                    } else if (content.contains("오답")) { // 오답을 찾았을 때만 기록
                         wrong_ans += 1;
                         updateFirestoreField(dateRef, "wrong_ans", wrong_ans);
                         break; // 내부 반복문 종료
@@ -701,7 +675,7 @@ public class ChatGpt extends AppCompatActivity {
                                 document.getReference().update("value", 0);
                                 document.getReference().update("ans", 0);
                                 document.getReference().update("wrong_ans", 0);
-                                Log.d("test", "Successful init");
+                                document.getReference().update("count", 0);
                             }
                         } else {
                             Log.w("Firestore", "Error getting documents.", task.getException());
@@ -716,7 +690,6 @@ public class ChatGpt extends AppCompatActivity {
             @Override
             public void run() {
                 resetChartValues();
-                Log.d("test","Runnable is run");
                 mHandler.postDelayed(this, TimeUnit.DAYS.toMillis(1));
             }
         };
@@ -729,6 +702,7 @@ public class ChatGpt extends AppCompatActivity {
         int day = c.get(Calendar.DAY_OF_WEEK);
         return dayToString(day);
     }
+
     private String dayToString(int day) {
         switch (day) {
             case Calendar.MONDAY:
@@ -749,6 +723,7 @@ public class ChatGpt extends AppCompatActivity {
                 return "";
         }
     }
+
     private void saveWeeklyAverage() {
         db.collection("Chart")
                 .get()
@@ -770,7 +745,7 @@ public class ChatGpt extends AppCompatActivity {
                                 data.put("average", average);
 
                                 DocumentReference weekDocRef = db.collection("WeekChart").document(Week);
-                                    weekDocRef.update(data)
+                                weekDocRef.update(data)
                                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
                                             public void onSuccess(Void aVoid) {
