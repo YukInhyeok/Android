@@ -14,15 +14,6 @@
         android:layout_weight="1"
         android:layout_above="@+id/bottom_layout"/>
 
-<!--        <Button-->
-<!--            android:id="@+id/LiteracyBtn"-->
-<!--            android:layout_width="600px"-->
-<!--            android:layout_height="150px"-->
-<!--            android:fontFamily="@font/omnigodic"-->
-<!--            android:text="문해력"-->
-<!--            android:layout_marginLeft="85dp"-->
-<!--            android:layout_marginBottom="60dp"-->
-<!--            android:textSize="20sp" />-->
         <Button
             android:id="@+id/InteractiveBtn"
             android:layout_width="600px"

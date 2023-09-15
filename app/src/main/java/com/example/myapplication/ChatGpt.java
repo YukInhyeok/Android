@@ -162,9 +162,6 @@ public class ChatGpt extends AppCompatActivity {
                                     String last_updated = documentSnapshot.contains("last_updated") ? documentSnapshot.getString("last_updated") : "";
                                     String today = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
 
-                                    // 새로운 평균 계산
-//                                    currentCount = currentCount + 1;
-
                                     float newValue = (float)ans / (currentCount) * 100;
                                     Log.d("GPT", "Val_1: "+ newValue);
 
@@ -176,10 +173,8 @@ public class ChatGpt extends AppCompatActivity {
                                         ans = 0;
                                         wrong_ans = 0;
                                     }
-
                                     // 새로운 평균 계산
-                                    int newValue = ((currentValue * currentCount) + lastScore) / (currentCount + 1);
-                                    currentCount = currentCount + 1;
+                                    currentCount += 1;
 
                                     // 데이터 갱신
                                     Map<String, Object> newData = new HashMap<>(documentSnapshot.getData());
