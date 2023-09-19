@@ -78,8 +78,8 @@ public class ChatGpt extends AppCompatActivity {
 
     List<Message> messageList;
     MessageAdapter messageAdapter;
+    String jsonStr = "[{\"role\" : \"system\", \"content\" : \"당신은 사용자와의 일상적인 대화를 통해서 사용자의 한국어 어휘력 점수를 평가해야 합니다. 당신은 반드시 정확한 평가를 해야하며 당신이 점수를 내지 않는 경우는 없습니다. 어휘력 점수를 평가하는 방법은 사용자의 답변 중에 맞춤법이 틀린 부분이 있는지, 질문에 정확한 대답을 했는지 입니다.}]";
     JSONArray messages = new JSONArray();
-
     JSONArray assistantMessages = new JSONArray();
 
     // 독해, 문해, 어휘 저장 변수
@@ -100,7 +100,7 @@ public class ChatGpt extends AppCompatActivity {
     // API
     public static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
     OkHttpClient client;
-    private static final String MY_SECRET_KEY = "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";
+    private static final String MY_SECRET_KEY = "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";
 
     //네비게이션바 설정
     private BottomNavigationView bottomNavigationView;
@@ -202,7 +202,7 @@ public class ChatGpt extends AppCompatActivity {
         btn_send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (Switch == 0) {
+                if (Switch == 0) {                                                                      // 문제형
                     String question = et_msg.getText().toString().trim();
                     addToChat(question, Message.SENT_BY_ME);
                     et_msg.setText("");
@@ -212,7 +212,7 @@ public class ChatGpt extends AppCompatActivity {
                     tv_welcome.setVisibility(View.GONE);
                     finishBtn.setVisibility(View.VISIBLE);
                     continueBtn.setVisibility(View.VISIBLE);
-                } else if (Switch == 1) {
+                } else if (Switch == 1) {                                                               // 대화형
                     String question = et_msg.getText().toString().trim();
                     addToChat(question, Message.SENT_BY_ME);
                     et_msg.setText("");
@@ -221,7 +221,6 @@ public class ChatGpt extends AppCompatActivity {
 
                     tv_welcome.setVisibility(View.GONE);
                     finishBtn.setVisibility(View.VISIBLE);
-                    continueBtn.setVisibility(View.VISIBLE);
                 }
             }
         });
@@ -414,9 +413,11 @@ public class ChatGpt extends AppCompatActivity {
             userMsg.put("role", "user");
             userMsg.put("content", question);
 
-            if (messages.length() == 0)
+            if (messages.length() == 0) {
                 messages.put(baseAi);
-            messages.put(userMsg);
+                messages.put(userMsg);
+                Log.d("GPT", "messages: " + messages);
+            }
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }

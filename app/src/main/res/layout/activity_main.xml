@@ -109,17 +109,17 @@
             />
 
         <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="금일 솔루션"
-                android:fontFamily="@font/omnigodic"
-                android:textColor="#212529"
-                android:textSize="24sp"
-                android:layout_marginTop="30dp"
-                android:layout_marginStart="30dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/app_use_time"
-        />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="금일 솔루션"
+            android:fontFamily="@font/omnigodic"
+            android:textColor="#212529"
+            android:textSize="24sp"
+            android:layout_marginTop="30dp"
+            android:layout_marginStart="30dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/app_use_time"
+            />
 
 
 
