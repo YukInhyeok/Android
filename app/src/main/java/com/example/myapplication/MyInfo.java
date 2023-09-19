@@ -1,7 +1,16 @@
 package com.example.myapplication;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
@@ -9,26 +18,9 @@ import androidx.work.ExistingPeriodicWorkPolicy;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkInfo;
 import androidx.work.WorkManager;
-
-import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
-
-import android.graphics.Color;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-import android.widget.NumberPicker;
-import android.widget.TextView;
-
 import com.example.myapplication.aladdin.AladdinMainActivity;
 import com.example.myapplication.book.BookMainActivity;
-
 import com.github.mikephil.charting.charts.BarChart;
-
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
@@ -39,20 +31,13 @@ import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.api.LogDescriptor;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Logger;
 
 public class MyInfo extends AppCompatActivity {
 
@@ -62,8 +47,8 @@ public class MyInfo extends AppCompatActivity {
     private FirebaseFirestore db;
 
     // 주간 목표
-    private TextView Sol;
-    private TextView goalScoreText;
+//    private TextView Sol;
+//    private TextView goalScoreText;
 
     // 버튼
     private Button BookBtn;
@@ -95,8 +80,8 @@ public class MyInfo extends AppCompatActivity {
         //firebase
         db = FirebaseFirestore.getInstance();
 
-        int previousGoalScore = loadGoalScore();
-        goalScoreText = findViewById(R.id.goal_score);
+//        int previousGoalScore = loadGoalScore();
+//        goalScoreText = findViewById(R.id.goal_score);
 
 
         // BottomNavigationView 초기화
@@ -177,17 +162,17 @@ public class MyInfo extends AppCompatActivity {
         }
 
         // 목표 점수
-        goalScoreText = findViewById(R.id.goal_score);
-        goalScoreText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showGoalScorePopup();
-            }
-        });
-        if (previousGoalScore != 0) {
-            goalScoreText.setText("" + previousGoalScore);
-            updateChartWithGoalScore(previousGoalScore);
-        }
+//        goalScoreText = findViewById(R.id.goal_score);
+//        goalScoreText.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                showGoalScorePopup();
+//            }
+//        });
+//        if (previousGoalScore != 0) {
+//            goalScoreText.setText("" + previousGoalScore);
+//            updateChartWithGoalScore(previousGoalScore);
+//        }
 
         //버튼 메소드
         BookBtn.setOnClickListener(new View.OnClickListener() {
@@ -223,19 +208,21 @@ public class MyInfo extends AppCompatActivity {
                 barChart.setData(data);
                 barChart.invalidate();
 
-                String[] labels = {"", "월", "화", "수", "목", "금"};
+                String[] labels = {"", "Mon", "Tue", "Wed", "Thr", "Fri"};
 
                 XAxis xAxis = barChart.getXAxis();
                 xAxis.setValueFormatter(new IndexAxisValueFormatter(labels));
-                xAxis.setDrawAxisLine(false);
+                xAxis.setDrawAxisLine(true);
                 xAxis.setAxisMinimum(0f);
                 xAxis.setAxisMaximum(6f);
+                xAxis.setDrawGridLines(false);
+                xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
 
                 YAxis leftAxis = barChart.getAxisLeft();
                 leftAxis.setGranularity(20f);
                 leftAxis.setAxisMinimum(0f);
                 leftAxis.setAxisMaximum(100f);
-                leftAxis.setDrawGridLines(true);
+                leftAxis.setDrawGridLines(false);
 
                 leftAxis.setLabelCount(6, true);
 
@@ -245,8 +232,10 @@ public class MyInfo extends AppCompatActivity {
                 rightYAxis.setDrawGridLines(false);
 
                 barChart.setScaleEnabled(false);
-
+                barChart.getDescription().setEnabled(false);
                 barChart.getLegend().setEnabled(false);
+                barChart.animateY(800);
+
             }
         });
     }
@@ -362,77 +351,77 @@ public class MyInfo extends AppCompatActivity {
     }
 
     // 목표 점수 저장
-    private void saveGoalScore(int goalScore) {
-        SharedPreferences sharedPreferences = getSharedPreferences("GoalScorePrefs", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putInt("goalScore", goalScore);
-        editor.apply();
-    }
-    private int loadGoalScore() {
-        SharedPreferences sharedPreferences = getSharedPreferences("GoalScorePrefs", Context.MODE_PRIVATE);
-        return sharedPreferences.getInt("goalScore", 0);
-    }
+//    private void saveGoalScore(int goalScore) {
+//        SharedPreferences sharedPreferences = getSharedPreferences("GoalScorePrefs", Context.MODE_PRIVATE);
+//        SharedPreferences.Editor editor = sharedPreferences.edit();
+//        editor.putInt("goalScore", goalScore);
+//        editor.apply();
+//    }
+//    private int loadGoalScore() {
+//        SharedPreferences sharedPreferences = getSharedPreferences("GoalScorePrefs", Context.MODE_PRIVATE);
+//        return sharedPreferences.getInt("goalScore", 0);
+//    }
 
     //목표 점수
-    private void showGoalScorePopup() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(MyInfo.this);
-        LayoutInflater inflater = getLayoutInflater();
-        View popupView = inflater.inflate(R.layout.goal_score_popup, null);
-        builder.setView(popupView);
-
-        final NumberPicker numberPicker = popupView.findViewById(R.id.num_picker);
-
-        String[] values = new String[]{"0", "10", "20", "30", "40", "50", "60", "70", "80", "90", "100"};
-
-        for (int i = 0; i < values.length; i++) {
-            int value = Integer.parseInt(values[i]);
-            values[i] = (value / 10 * 10) + "";
-        }
-
-        numberPicker.setMinValue(0);
-        numberPicker.setMaxValue(values.length - 1);
-        numberPicker.setDisplayedValues(values);
-
-        Button goalScoreBtn = popupView.findViewById(R.id.btn);
-
-        final AlertDialog alertDialog = builder.create();
-        alertDialog.show();
-
-        goalScoreBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int selectedGoalScore = numberPicker.getValue() * 10;
-                goalScoreText.setText("" + selectedGoalScore);
-                alertDialog.dismiss();
-
-                // 목표 점수 저장
-                saveGoalScore(selectedGoalScore);
-                updateChartWithGoalScore(selectedGoalScore);
-            }
-        });
-    }
+//    private void showGoalScorePopup() {
+//        AlertDialog.Builder builder = new AlertDialog.Builder(MyInfo.this);
+//        LayoutInflater inflater = getLayoutInflater();
+//        View popupView = inflater.inflate(R.layout.goal_score_popup, null);
+//        builder.setView(popupView);
+//
+//        final NumberPicker numberPicker = popupView.findViewById(R.id.num_picker);
+//
+//        String[] values = new String[]{"0", "10", "20", "30", "40", "50", "60", "70", "80", "90", "100"};
+//
+//        for (int i = 0; i < values.length; i++) {
+//            int value = Integer.parseInt(values[i]);
+//            values[i] = (value / 10 * 10) + "";
+//        }
+//
+//        numberPicker.setMinValue(0);
+//        numberPicker.setMaxValue(values.length - 1);
+//        numberPicker.setDisplayedValues(values);
+//
+//        Button goalScoreBtn = popupView.findViewById(R.id.btn);
+//
+//        final AlertDialog alertDialog = builder.create();
+//        alertDialog.show();
+//
+//        goalScoreBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                int selectedGoalScore = numberPicker.getValue() * 10;
+//                goalScoreText.setText("" + selectedGoalScore);
+//                alertDialog.dismiss();
+//
+//                // 목표 점수 저장
+//                saveGoalScore(selectedGoalScore);
+//                updateChartWithGoalScore(selectedGoalScore);
+//            }
+//        });
+//    }
 
     // 솔루션
-    private void updateChartWithGoalScore(int goalScore) {
-        fetchtodayData(new FirestoreCallback() {
-            @Override
-            public void onDataLoaded(ArrayList<BarEntry> entries) {
-                // 사용자가 선택한 목표 점수보다 작은 값의 레이블 추출
-                List<String> labelsSmallerThanGoalScore = new ArrayList<>();
-
-                for (BarEntry entry : entries) {
-                    if (entry.getY() < goalScore) {
-                        int index = Math.round(entry.getX());
-                        if (index == 0) {
-                            labelsSmallerThanGoalScore.add("독해력");
-                        } else if (index == 1) {
-                            labelsSmallerThanGoalScore.add("문해력");
-                        } else if (index == 2) {
-                            labelsSmallerThanGoalScore.add("어휘력");
-                        }
-                    }
-                }
-
+//    private void updateChartWithGoalScore(int goalScore) {
+//        fetchtodayData(new FirestoreCallback() {
+//            @Override
+//            public void onDataLoaded(ArrayList<BarEntry> entries) {
+//                // 사용자가 선택한 목표 점수보다 작은 값의 레이블 추출
+//                List<String> labelsSmallerThanGoalScore = new ArrayList<>();
+//
+//                for (BarEntry entry : entries) {
+//                    if (entry.getY() < goalScore) {
+//                        int index = Math.round(entry.getX());
+//                        if (index == 0) {
+//                            labelsSmallerThanGoalScore.add("독해력");
+//                        } else if (index == 1) {
+//                            labelsSmallerThanGoalScore.add("문해력");
+//                        } else if (index == 2) {
+//                            labelsSmallerThanGoalScore.add("어휘력");
+//                        }
+//                    }
+//                }
+//
                 // 결과 출력
 //                if (!labelsSmallerThanGoalScore.isEmpty()) {
 //                    String labelsStr = String.join(", ", labelsSmallerThanGoalScore);
@@ -440,8 +429,7 @@ public class MyInfo extends AppCompatActivity {
 //                } else {
 //                    Sol.setText("축하합니다. 모두 목표점수보다 높습니다 ^^");
 //                }
-            }
-        });
-    }
-
+//            }
+//        });
+//    }
 }

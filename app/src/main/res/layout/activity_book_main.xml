@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#C7F9CC">
+    android:background="#F0F0F0">
 
     <FrameLayout
         android:id="@+id/container"
@@ -22,7 +22,7 @@
                 android:layout_height="wrap_content"
                 app:tabMode="fixed"
                 app:tabGravity="fill"
-                android:background="#C7F9CC"
+                android:background="#F0F0F0"
                 app:tabTextColor="?colorPrimary"
                 app:tabSelectedTextColor="?colorAccent"
                 android:elevation="1dp" />
@@ -37,6 +37,7 @@
         android:background="#fff"
         app:labelVisibilityMode="unlabeled"
         app:menu="@menu/bottom_nav_menu"
+        app:itemIconTint="@drawable/menu_selector_color"
         android:layout_alignParentBottom="true" />
 
 </RelativeLayout>

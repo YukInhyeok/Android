@@ -13,7 +13,7 @@
             android:layout_width="match_parent"
             android:layout_height="180px"
             android:layout_marginTop="180sp"
-            android:fontFamily="@font/omnigodic"
+            android:fontFamily="@font/pretendard"
             android:gravity="center"
             android:text="현재는 핸드폰을 사용할 수 없습니다."
             android:textColor="#FF0000"
@@ -23,7 +23,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="180px"
-            android:fontFamily="@font/omnigodic"
+            android:fontFamily="@font/pretendard"
             android:gravity="center"
             android:text="문제를 해결하도록 합시다."
             android:textSize="25sp"
@@ -34,7 +34,7 @@
             android:layout_width="381dp"
             android:layout_height="200px"
             android:layout_marginTop="250px"
-            android:fontFamily="@font/omnigodic"
+            android:fontFamily="@font/pretendard"
             android:gravity="center"
             android:text="앱으로 돌아가기"
             android:textSize="28sp"></Button>

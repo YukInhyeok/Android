@@ -1,22 +1,11 @@
 package com.example.myapplication;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-
 import android.app.AlarmManager;
 import android.app.AppOpsManager;
 import android.app.PendingIntent;
 import android.app.usage.UsageStats;
 import android.app.usage.UsageStatsManager;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.SharedPreferences;
+import android.content.*;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
@@ -25,41 +14,39 @@ import android.os.Handler;
 import android.os.Looper;
 import android.provider.Settings;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import com.example.myapplication.book.BookMainActivity;
 import com.example.myapplication.book.ResetCountReceiver;
 import com.example.myapplication.screen.MyForegroundService;
 import com.example.myapplication.screen.ScreenOnReceiver;
-import com.github.mikephil.charting.charts.HorizontalBarChart;
+import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
-import com.github.mikephil.charting.data.BarData;
-import com.github.mikephil.charting.data.BarDataSet;
-import com.github.mikephil.charting.data.BarEntry;
-import com.github.mikephil.charting.data.RadarEntry;
+import com.github.mikephil.charting.data.*;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
+import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.*;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-
 import java.util.List;
 import java.util.Locale;
-
 import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity{
@@ -89,6 +76,10 @@ public class MainActivity extends AppCompatActivity{
     // 앱 사용시간 전역변수
     private String formattedAppUsageTime;
     private TextView appUseTimeTextView;
+
+    //점수
+    private TextView score_textview;
+    private TextView jum;
 
     private int timeValue = 0;
 
@@ -150,7 +141,7 @@ public class MainActivity extends AppCompatActivity{
         bottomNavigationView.setSelectedItemId(R.id.menu_home);
 
         // 레이더 차트 추가
-        HorizontalBarChart barChart = findViewById(R.id.chart);
+        BarChart barChart = findViewById(R.id.chart);
         setData(barChart);
 
         //독후감 관련
@@ -164,6 +155,54 @@ public class MainActivity extends AppCompatActivity{
 
         //어플 사용 시간
         appUseTimeTextView = findViewById(R.id.app_use_time);
+
+//========================================= 차트 그래프 터치 ================================================
+        // 점수
+        score_textview = findViewById(R.id.score_textview);
+        jum = findViewById(R.id.jum);
+
+        barChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
+            @Override
+            public void onValueSelected(Entry e, Highlight h) {
+                if (e instanceof BarEntry) {
+                    BarEntry barEntry = (BarEntry) e;
+                    float value = barEntry.getY();
+                    int intValue = Math.round(value);
+                    jum.setVisibility(View.VISIBLE);
+
+                    if (intValue == 100) {
+                        score_textview.setTextSize(48);
+                        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) score_textview.getLayoutParams();
+                        params.topMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 50, getResources().getDisplayMetrics());
+                        score_textview.setLayoutParams(params);
+
+                        ViewGroup.MarginLayoutParams jumParams = (ViewGroup.MarginLayoutParams) jum.getLayoutParams();
+                        jumParams.topMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 50, getResources().getDisplayMetrics());
+                        jum.setLayoutParams(jumParams);
+
+                    }
+                    else{
+                        score_textview.setTextSize(68);
+                        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) score_textview.getLayoutParams();
+                        ViewGroup.MarginLayoutParams jumParams = (ViewGroup.MarginLayoutParams) jum.getLayoutParams();
+
+                        params.topMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 30, getResources().getDisplayMetrics());
+                        jumParams.topMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 30, getResources().getDisplayMetrics());
+
+                        score_textview.setLayoutParams(params);
+                        jum.setLayoutParams(jumParams);
+                    }
+                    // TextView에 값을 표시
+                    score_textview.setText(String.valueOf(intValue));
+                }
+            }
+
+            @Override
+            public void onNothingSelected() {
+                // 막대를 선택하지 않았을 때의 동작을 정의할 수 있습니다.
+            }
+        });
+//=========================================================================================================
 
         //앱 종료 확인
         ExitApp();
@@ -229,7 +268,7 @@ private void solData(ArrayList<BarEntry> entries) {
 //===============================================================================================================
 
 //=====================================레이더 차트==========================================================================
-private void setData(HorizontalBarChart barChart) {
+private void setData(BarChart barChart) {
     fetchData(new MyInfo.FirestoreCallback() {
         @Override
         public void onDataLoaded(ArrayList<BarEntry> entries) {
@@ -240,38 +279,48 @@ private void setData(HorizontalBarChart barChart) {
             BarDataSet dataSet = new BarDataSet(entries, "주간 데이터");
 
             List<Integer> colors = new ArrayList<>();
-            colors.add(Color.BLUE); // 독해력
-            colors.add(Color.GREEN); // 문해력
-            colors.add(Color.RED); // 어휘력
+            colors.add(Color.rgb(255, 0, 97));
             dataSet.setColors(colors);
 
             BarData data = new BarData(dataSet);
             data.setBarWidth(0.5f);
-            barChart.setData(data);
             barChart.invalidate();
+            barChart.setData(data);
 
             String[] labels = {"", "독해력", "문해력", "어휘력"};
 
             XAxis xAxis = barChart.getXAxis();
             xAxis.setDrawGridLines(false);
             xAxis.setValueFormatter(new IndexAxisValueFormatter(labels));
+            xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
 
             YAxis leftAxis = barChart.getAxisLeft();
             leftAxis.setGranularity(20f);
             leftAxis.setAxisMinimum(0f);
             leftAxis.setAxisMaximum(100f);
-            leftAxis.setDrawGridLines(true);
-
+            leftAxis.setDrawGridLines(false);
             leftAxis.setLabelCount(6, true);
+            leftAxis.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART);
+            leftAxis.setDrawLabels(false);
 
             YAxis rightYAxis = barChart.getAxisRight();
-            rightYAxis.setDrawLabels(false);
+            rightYAxis.setGranularity(20f);
+            rightYAxis.setAxisMinimum(0f);
+            rightYAxis.setAxisMaximum(100f);
             rightYAxis.setDrawGridLines(false);
+            leftAxis.setDrawAxisLine(false);
+            rightYAxis.setDrawAxisLine(false);
+            xAxis.setDrawAxisLine(false);
+            rightYAxis.setLabelCount(6, true);
+            rightYAxis.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART); // 값 레이블을 차트 바깥쪽에 표시
 
-            barChart.setScaleEnabled(false);
+            dataSet.setDrawValues(false); // 값 레이블 그리기 비활성화
 
             barChart.getLegend().setEnabled(false);
+            barChart.getDescription().setEnabled(false);
+            barChart.setScaleEnabled(false);
 
+            barChart.animateY(800);
             solData(entries);
         }
     });
@@ -442,8 +491,8 @@ private void fetchData(MyInfo.FirestoreCallback callback) {
                         if (documentSnapshot != null && documentSnapshot.exists()) {
                             String timeString = documentSnapshot.getString("time");
                             timeValue = convertTimeStringToMinutes(timeString);
-                            limitTime.setText("시간: " + formattedAppUsageTime +" / " + timeValue + " 분");
-                            appUseTimeTextView.setText("총 시간: " + usedTimeInMinutes + " 분");
+                            limitTime.setText(formattedAppUsageTime +" / " + timeValue + " Min");
+                            appUseTimeTextView.setText(usedTimeInMinutes + " Min");
 
                         }
                     }
