@@ -100,7 +100,7 @@ public class ChatGpt extends AppCompatActivity {
     // API
     public static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
     OkHttpClient client;
-    private static final String MY_SECRET_KEY = "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";
+    private static final String MY_SECRET_KEY = "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";
 
     //네비게이션바 설정
     private BottomNavigationView bottomNavigationView;
@@ -221,6 +221,7 @@ public class ChatGpt extends AppCompatActivity {
 
                     tv_welcome.setVisibility(View.GONE);
                     finishBtn.setVisibility(View.VISIBLE);
+                    continueBtn.setVisibility(View.VISIBLE);
                 }
             }
         });

@@ -1,20 +1,6 @@
 package com.example.myapplication;
 
-import android.graphics.Typeface;
-import android.util.TypedValue;
 import android.view.Gravity;
-
-import com.github.mikephil.charting.charts.BarChart;
-import com.github.mikephil.charting.components.MarkerView;
-import com.github.mikephil.charting.data.BarEntry;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.highlight.Highlight;
-import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
-import com.github.mikephil.charting.utils.MPPointF;
-
-import android.view.ViewGroup;
-import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -26,12 +12,7 @@ import android.app.AppOpsManager;
 import android.app.PendingIntent;
 import android.app.usage.UsageStats;
 import android.app.usage.UsageStatsManager;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.SharedPreferences;
+import android.content.*;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
@@ -40,48 +21,40 @@ import android.os.Handler;
 import android.os.Looper;
 import android.provider.Settings;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import com.example.myapplication.book.BookMainActivity;
 import com.example.myapplication.book.ResetCountReceiver;
-import com.example.myapplication.chart.RoundedBarChart;
 import com.example.myapplication.screen.MyForegroundService;
 import com.example.myapplication.screen.ScreenOnReceiver;
-import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.HorizontalBarChart;
-import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
-import com.github.mikephil.charting.data.BarData;
-import com.github.mikephil.charting.data.BarDataSet;
-import com.github.mikephil.charting.data.BarEntry;
-import com.github.mikephil.charting.data.RadarEntry;
+import com.github.mikephil.charting.data.*;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
+import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FieldValue;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.*;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity{
@@ -108,7 +81,6 @@ public class MainActivity extends AppCompatActivity{
     //추가
     private long lastUpdateTime;
     private long appUsageTimeStart;
-
     // 앱 사용시간 전역변수
     private String formattedAppUsageTime;
     private TextView appUseTimeTextView;
@@ -119,10 +91,12 @@ public class MainActivity extends AppCompatActivity{
 
     private int timeValue = 0;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.test);
+        setContentView(R.layout.activity_main);
 
         // 메뉴 하단바 삭제
         Utils.deleteMenuButton(this);
@@ -189,53 +163,6 @@ public class MainActivity extends AppCompatActivity{
 
         //어플 사용 시간
         appUseTimeTextView = findViewById(R.id.app_use_time);
-
-        // 점수
-        score_textview = findViewById(R.id.score_textview);
-        jum = findViewById(R.id.jum);
-
-        barChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
-            @Override
-            public void onValueSelected(Entry e, Highlight h) {
-                if (e instanceof BarEntry) {
-                    BarEntry barEntry = (BarEntry) e;
-                    float value = barEntry.getY();
-                    int intValue = Math.round(value);
-                    jum.setVisibility(View.VISIBLE);
-
-                    if (intValue == 100) {
-                        score_textview.setTextSize(48);
-                        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) score_textview.getLayoutParams();
-                        params.topMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 50, getResources().getDisplayMetrics());
-                        score_textview.setLayoutParams(params);
-
-                        ViewGroup.MarginLayoutParams jumParams = (ViewGroup.MarginLayoutParams) jum.getLayoutParams();
-                        jumParams.topMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 50, getResources().getDisplayMetrics());
-                        jum.setLayoutParams(jumParams);
-
-                    }
-                    else{
-                        score_textview.setTextSize(68);
-                        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) score_textview.getLayoutParams();
-                        ViewGroup.MarginLayoutParams jumParams = (ViewGroup.MarginLayoutParams) jum.getLayoutParams();
-
-                        params.leftMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 25, getResources().getDisplayMetrics());
-                        params.topMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 30, getResources().getDisplayMetrics());
-                        jumParams.topMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 30, getResources().getDisplayMetrics());
-
-                        score_textview.setLayoutParams(params);
-                        jum.setLayoutParams(jumParams);
-                    }
-                        // TextView에 값을 표시
-                        score_textview.setText(String.valueOf(intValue));
-                }
-            }
-
-            @Override
-            public void onNothingSelected() {
-                // 막대를 선택하지 않았을 때의 동작을 정의할 수 있습니다.
-            }
-        });
 
         //앱 종료 확인
         ExitApp();
@@ -362,16 +289,10 @@ private void setData(BarChart barChart) {
 //=====================================================================================================================
 
 
-//===============================================================================================================
-
-
 //=====================================클릭 메소드==========================================================================
     private void showMessage(String message) {
         Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
     }
-
-
-
 
 //===============================================================================================================
 
@@ -530,14 +451,14 @@ private void fetchData(MyInfo.FirestoreCallback callback) {
                         if (documentSnapshot != null && documentSnapshot.exists()) {
                             String timeString = documentSnapshot.getString("time");
                             timeValue = convertTimeStringToMinutes(timeString);
-                            limitTime.setText(formattedAppUsageTime +" / " + timeValue + " min");
-                            appUseTimeTextView.setText(usedTimeInMinutes + " min");
+                            limitTime.setText("시간: " + formattedAppUsageTime +" / " + timeValue + " 분");
+                            appUseTimeTextView.setText("총 시간: " + usedTimeInMinutes + " 분");
+
                         }
                     }
                 });
 
     }
-
 
     private int convertTimeStringToMinutes(String timeString) {
         String[] timeParts = timeString.split(":");

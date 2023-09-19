@@ -18,7 +18,7 @@
             android:id="@+id/InteractiveBtn"
             android:layout_width="600px"
             android:layout_height="150px"
-            android:fontFamily="@font/omnigodic"
+            android:fontFamily="@font/pretendard"
             android:text="대화형"
             android:layout_marginLeft="85dp"
             android:layout_marginBottom="60dp"
@@ -28,7 +28,7 @@
             android:layout_width="600px"
             android:layout_height="150px"
             android:text="문제형"
-            android:fontFamily="@font/omnigodic"
+            android:fontFamily="@font/pretendard"
             android:layout_marginLeft="85dp"
             android:layout_marginBottom="60dp"
             android:textSize="20sp"/>
@@ -43,7 +43,7 @@
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
-        android:fontFamily="@font/omnigodic"
+        android:fontFamily="@font/pretendard"
         android:text="종료"
         android:textSize="20dp" />
 
@@ -52,7 +52,7 @@
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="80dp"
-        android:fontFamily="@font/omnigodic"
+        android:fontFamily="@font/pretendard"
         android:text="다음문제"
         android:textSize="20dp"
         android:visibility="invisible"
@@ -99,6 +99,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#fff"
+        app:itemIconTint="@drawable/menu_selector_color"
         app:labelVisibilityMode="unlabeled"
         app:menu="@menu/bottom_nav_menu"/>
 
