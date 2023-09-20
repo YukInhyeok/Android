@@ -229,8 +229,4 @@ public class RoundedBarChart extends BarChart {
             }
         }
     }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> dc9180faa14c54077b55dbe0d7fb45d8e7894f6e

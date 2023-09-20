@@ -1,14 +1,19 @@
 package com.example.myapplication;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -26,8 +31,11 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
+import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -47,11 +55,15 @@ public class MyInfo extends AppCompatActivity {
     private FirebaseFirestore db;
 
     // 주간 목표
-//    private TextView Sol;
+    private TextView Sol;
 //    private TextView goalScoreText;
 
     // 버튼
-    private Button BookBtn;
+//    private Button BookBtn;
+
+    private TextView score_text, today_score, date_view, day_view;
+
+    private LinearLayout BookBtn;
 
     private static final String WEEKLY_RESET_PREF = "WeeklyResetAlarmPref";
     private static final String WEEKLY_RESET_ALARM_SET = "WeeklyResetAlarmSet";
@@ -67,16 +79,15 @@ public class MyInfo extends AppCompatActivity {
         // 메뉴 하단바 삭제
         Utils.deleteMenuButton(this);
 
-        TextView textView4 = findViewById(R.id.textView4);
-        textView4.setText(getCurrentMonthAndWeek());
+//        textView4.setText(getCurrentMonthAndWeek());
 
-        TextView textView5 = findViewById(R.id.textView5);
-        textView5.setText(getCurrentWeekDates());
+//        TextView textView5 = findViewById(R.id.textView5);
+//        textView5.setText(getCurrentWeekDates());
 
         //버튼
         BookBtn = findViewById(R.id.book_button);
 
-//        Sol = findViewById(R.id.textView7);
+        Sol = findViewById(R.id.Sol);
         //firebase
         db = FirebaseFirestore.getInstance();
 
@@ -161,6 +172,47 @@ public class MyInfo extends AppCompatActivity {
             });
         }
 
+        // ============================================== 오늘 점수 ================================================
+        today_score = findViewById(R.id.today_score);
+        fetchTodayDataAndCalculateAverage();
+
+        // ============================================== 오늘 날짜 ================================================
+        date_view = findViewById(R.id.date_view);
+        day_view = findViewById(R.id.day_view);
+
+        Date currentDate = new Date();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM.dd", Locale.getDefault());
+        String formattedDate = dateFormat.format(currentDate);
+        date_view.setText(formattedDate);
+
+        SimpleDateFormat dayFormat = new SimpleDateFormat("E", Locale.getDefault());
+        String formattedDay = dayFormat.format(currentDate);
+        String formattedDayWithParentheses = "(" + formattedDay + ")";
+        day_view.setText(formattedDayWithParentheses);
+
+        //========================================= 차트 그래프 터치 ================================================
+        // 점수
+        score_text = findViewById(R.id.score_text);
+
+        barChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
+            @Override
+            public void onValueSelected(Entry e, Highlight h) {
+                if (e instanceof BarEntry) {
+                    BarEntry barEntry = (BarEntry) e;
+                    float value = barEntry.getY();
+                    int intValue = Math.round(value);
+
+                    score_text.setTextSize(18);
+                    score_text.setText(String.valueOf(intValue));
+                }
+            }
+
+            @Override
+            public void onNothingSelected() {
+
+            }
+        });
+
         // 목표 점수
 //        goalScoreText = findViewById(R.id.goal_score);
 //        goalScoreText.setOnClickListener(new View.OnClickListener() {
@@ -174,7 +226,8 @@ public class MyInfo extends AppCompatActivity {
 //            updateChartWithGoalScore(previousGoalScore);
 //        }
 
-        //버튼 메소드
+        //버튼 메소
+
         BookBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -183,6 +236,8 @@ public class MyInfo extends AppCompatActivity {
             }
         });
     }
+
+
 
     // 파이어베이스에서 데이터 불러오기
     private void setData(BarChart barChart) {
@@ -196,10 +251,10 @@ public class MyInfo extends AppCompatActivity {
                 for (BarEntry entry : entries) {
                     BarDataSet dataSet = new BarDataSet(Arrays.asList(entry), "요일별 점수");
 
-                    int startColor = Color.parseColor("#FF5F6D");
-                    int endColor = Color.parseColor("#FFC371");
+                    int startColor = Color.parseColor("#FF003A");
+                    int endColor = Color.parseColor("#FF006D");
                     dataSet.setGradientColor(startColor, endColor);
-
+                    dataSet.setDrawValues(false);
                     dataSets.add(dataSet);
                 }
 
@@ -212,7 +267,7 @@ public class MyInfo extends AppCompatActivity {
 
                 XAxis xAxis = barChart.getXAxis();
                 xAxis.setValueFormatter(new IndexAxisValueFormatter(labels));
-                xAxis.setDrawAxisLine(true);
+                xAxis.setDrawAxisLine(false);
                 xAxis.setAxisMinimum(0f);
                 xAxis.setAxisMaximum(6f);
                 xAxis.setDrawGridLines(false);
@@ -223,13 +278,17 @@ public class MyInfo extends AppCompatActivity {
                 leftAxis.setAxisMinimum(0f);
                 leftAxis.setAxisMaximum(100f);
                 leftAxis.setDrawGridLines(false);
+                leftAxis.setDrawLabels(false);
+                leftAxis.setDrawAxisLine(false);
 
-                leftAxis.setLabelCount(6, true);
+                leftAxis.setLabelCount(0, true);
 
                 YAxis rightYAxis = barChart.getAxisRight();
                 rightYAxis.setDrawLabels(false);
                 // 오른쪽 Y축 그리드 선 없애기
                 rightYAxis.setDrawGridLines(false);
+                leftAxis.setDrawAxisLine(false);
+                rightYAxis.setDrawAxisLine(false);
 
                 barChart.setScaleEnabled(false);
                 barChart.getDescription().setEnabled(false);
@@ -400,36 +459,63 @@ public class MyInfo extends AppCompatActivity {
 //            }
 //        });
 //    }
+// 오늘의 점수 가져오기
+    private void fetchTodayDataAndCalculateAverage() {
+        fetchtodayData(new FirestoreCallback() {
+            @Override
+            public void onDataLoaded(ArrayList<BarEntry> entries) {
+                int totalValue = 0;
+                int dataCount = entries.size();
+
+                // 데이터에서 value 필드 값을 추출하고 총합 계산
+                for (BarEntry entry : entries) {
+                    totalValue += (int) entry.getY();
+                }
+
+                // 데이터가 없을 경우 0을 출력하거나 다른 처리를 수행할 수 있습니다.
+                if (dataCount == 0) {
+                    // 예: today_score.setText("데이터 없음");
+                } else {
+                    // 평균 계산
+                    int averageValue = totalValue / dataCount;
+
+                    // 평균 값을 today_score 텍스트뷰에 출력
+                    today_score.setText(String.valueOf(averageValue));
+                }
+            }
+        });
+    }
+
 
     // 솔루션
-//    private void updateChartWithGoalScore(int goalScore) {
-//        fetchtodayData(new FirestoreCallback() {
-//            @Override
-//            public void onDataLoaded(ArrayList<BarEntry> entries) {
-//                // 사용자가 선택한 목표 점수보다 작은 값의 레이블 추출
-//                List<String> labelsSmallerThanGoalScore = new ArrayList<>();
-//
-//                for (BarEntry entry : entries) {
-//                    if (entry.getY() < goalScore) {
-//                        int index = Math.round(entry.getX());
-//                        if (index == 0) {
-//                            labelsSmallerThanGoalScore.add("독해력");
-//                        } else if (index == 1) {
-//                            labelsSmallerThanGoalScore.add("문해력");
-//                        } else if (index == 2) {
-//                            labelsSmallerThanGoalScore.add("어휘력");
-//                        }
-//                    }
-//                }
-//
-                // 결과 출력
-//                if (!labelsSmallerThanGoalScore.isEmpty()) {
-//                    String labelsStr = String.join(", ", labelsSmallerThanGoalScore);
-//                    Sol.setText("목표점수보다 낮은 유형은 " + labelsStr + " 입니다.");
-//                } else {
-//                    Sol.setText("축하합니다. 모두 목표점수보다 높습니다 ^^");
-//                }
-//            }
-//        });
-//    }
+    private void updateChartWithGoalScore(int goalScore) {
+        fetchtodayData(new FirestoreCallback() {
+            @Override
+            public void onDataLoaded(ArrayList<BarEntry> entries) {
+                // 사용자가 선택한 목표 점수보다 작은 값의 레이블 추출
+                List<String> labelsSmallerThanGoalScore = new ArrayList<>();
+
+                for (BarEntry entry : entries) {
+                    if (entry.getY() < goalScore) {
+                        int index = Math.round(entry.getX());
+                        if (index == 0) {
+                            labelsSmallerThanGoalScore.add("독해력");
+                        } else if (index == 1) {
+                            labelsSmallerThanGoalScore.add("문해력");
+                        } else if (index == 2) {
+                            labelsSmallerThanGoalScore.add("어휘력");
+                        }
+                    }
+                }
+
+//                 결과 출력
+                if (!labelsSmallerThanGoalScore.isEmpty()) {
+                    String labelsStr = String.join(", ", labelsSmallerThanGoalScore);
+                    Sol.setText("목표점수보다 낮은 유형은 " + labelsStr + " 입니다.");
+                } else {
+                    Sol.setText("축하합니다. 모두 목표점수보다 높습니다 ^^");
+                }
+            }
+        });
+    }
 }

@@ -1,69 +1,85 @@
-<androidx.appcompat.widget.LinearLayoutCompat
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#F0F0F0"
-        android:orientation="vertical">
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+                                              xmlns:app="http://schemas.android.com/apk/res-auto"
+                                              xmlns:tools="http://schemas.android.com/tools"
+                                              android:layout_width="match_parent"
+                                              android:layout_height="match_parent"
+                                              android:background="#F0F0F0"
+                                              android:orientation="vertical">
 
     <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="80dp"
             android:paddingLeft="20dp"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            >
+
         <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="80dp">
             <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/pretendard"
+                    android:fontFamily="@font/gmarket_bold"
                     android:text="AI와 함께하는 생활"
                     android:textSize="35dp"
                     android:layout_marginTop="25dp"
-                    android:textColor="@color/black">
+                    android:textColor="#323232"
+                    >
+
             </TextView>
         </LinearLayout>
+
     </LinearLayout>
 
     <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="220dp"
-            android:gravity="center">
+            android:gravity="center"
+            >
+
         <LinearLayout
                 android:layout_width="330dp"
                 android:layout_height="205dp"
                 android:background="@drawable/roundstyle10dp"
                 android:backgroundTint="@color/white"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:elevation="50dp"
+                >
             <LinearLayout
                     android:layout_width="160dp"
                     android:layout_height="match_parent"
                     android:orientation="vertical"
-                    android:padding="15dp">
+                    android:padding="15dp"
+                    >
                 <TextView
                         android:id="@+id/username"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/pretendard"
+                        android:fontFamily="@font/preten_medium"
                         android:text="일일차트"
                         android:textColor="@color/black"
                         android:textSize="18sp" />
                 <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        >
+
                     <TextView
                             android:id="@+id/score_textview"
                             android:layout_width="90dp"
                             android:layout_height="90dp"
                             android:layout_marginLeft="18dp"
                             android:layout_marginTop="30dp"
-                            android:fontFamily="@font/pretendard"
+                            android:fontFamily="@font/preten_medium"
                             android:textColor="@color/black"
+                            android:text="-"
+                            android:gravity="center"
                             android:textSize="68sp">
+
                     </TextView>
+
                     <TextView
                             android:id="@+id/jum"
                             android:layout_width="wrap_content"
@@ -71,11 +87,13 @@
                             android:layout_marginTop="30dp"
                             android:textColor="@color/black"
                             android:textSize="20sp"
-                            android:fontFamily="@font/pretendard"
-                            android:text="점"
-                            android:visibility="invisible">
+                            android:fontFamily="@font/preten_medium"
+                            android:text="점">
+
                     </TextView>
+
                 </LinearLayout>
+
             </LinearLayout>
 
             <LinearLayout
@@ -85,7 +103,8 @@
                     android:paddingRight="15dp"
                     android:paddingBottom="15dp"
                     android:background="@drawable/roundstyle10dp"
-                    android:backgroundTint="@color/white">
+                    android:backgroundTint="@color/white"
+                    >
                 <com.example.myapplication.chart.RoundedBarChart
                         android:id="@+id/chart"
                         android:layout_width="150dp"
@@ -96,6 +115,7 @@
                         android:backgroundTint="@color/white"
                         tools:visibility="visible" />
             </LinearLayout>
+
         </LinearLayout>
     </LinearLayout>
 
@@ -103,7 +123,8 @@
             android:layout_width="match_parent"
             android:layout_height="180dp"
             android:padding="15dp"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            >
 
         <LinearLayout
                 android:id="@+id/layout_goal"
@@ -112,15 +133,19 @@
                 android:orientation="vertical"
                 android:padding="15dp"
                 android:background="@drawable/roundstyle10dp"
-                android:backgroundTint="@color/white">
+                android:backgroundTint="@color/white"
+                android:elevation="50dp"
+                >
+
             <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
+
                 <TextView
                         android:id="@+id/today"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/pretendard"
+                        android:fontFamily="@font/preten_medium"
                         android:text="오늘의 목표"
                         android:textColor="#212529"
                         android:textSize="18sp" />
@@ -130,12 +155,15 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:layout_marginTop="20dp">
+                    android:layout_marginTop="20dp"
+                    >
+
                 <ImageView
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:layout_marginTop="10dp"
                         android:src="@drawable/time">
+
                 </ImageView>
                 <TextView
                         android:id="@+id/limit_time"
@@ -143,16 +171,18 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
                         android:layout_marginTop="10dp"
-                        android:fontFamily="@font/pretendard"
+                        android:fontFamily="@font/preten_light"
                         android:text=" 0  / 120 min "
                         android:textColor="#999"
                         android:textSize="12sp">
+
                 </TextView>
             </LinearLayout>
             <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
+
                 <ImageView
                         android:layout_width="25dp"
                         android:layout_height="25dp"
@@ -165,13 +195,13 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="5dp"
                         android:layout_marginTop="15dp"
-                        android:fontFamily="@font/pretendard"
+                        android:fontFamily="@font/preten_light"
                         android:text="책 : 0 / 3 권 "
                         android:textColor="#999"
-                        android:textSize="12sp"/>
+                        android:textSize="12sp"
+                        />
             </LinearLayout>
         </LinearLayout>
-
         <LinearLayout
                 android:layout_width="140dp"
                 android:layout_height="match_parent"
@@ -179,7 +209,9 @@
                 android:backgroundTint="@color/white"
                 android:layout_marginLeft="20dp"
                 android:orientation="vertical"
-                android:padding="5dp">
+                android:padding="5dp"
+                android:elevation="50dp"
+                >
 
             <TextView
                     android:layout_width="wrap_content"
@@ -187,7 +219,7 @@
                     android:text="총 사용량"
                     android:layout_marginLeft="10dp"
                     android:layout_marginTop="10dp"
-                    android:fontFamily="@font/pretendard"
+                    android:fontFamily="@font/preten_medium"
                     android:textColor="@color/black"
                     android:textSize="18sp">
             </TextView>
@@ -195,34 +227,45 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
+
                 <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="36dp"
-                        android:src="@drawable/phone_2">
+                        android:src="@drawable/phone_2"
+                        >
+
                 </ImageView>
+
                 <TextView
                         android:id="@+id/app_use_time"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="45dp"
                         android:textColor="#999"
-                        android:fontFamily="@font/pretendard"
+                        android:fontFamily="@font/preten_medium"
                         android:textSize="20sp">
+
                 </TextView>
             </LinearLayout>
+
+
+
         </LinearLayout>
+
     </LinearLayout>
 
     <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="280dp"
+            android:layout_height="270dp"
             android:paddingLeft="15dp"
             android:paddingBottom="20dp"
             android:paddingRight="15dp"
             android:paddingTop="15dp"
             android:orientation="vertical"
-            android:layout_gravity="center">
+            android:layout_gravity="center"
+            android:elevation="50dp"
+            >
 
         <LinearLayout
                 android:layout_width="match_parent"
@@ -230,21 +273,23 @@
                 android:backgroundTint="@color/white"
                 android:background="@drawable/roundstyle10dp"
                 android:padding="20dp"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                >
             <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="일일 솔루션"
                     android:textSize="18sp"
                     android:textColor="@color/black"
-                    android:fontFamily="@font/pretendard">
+                    android:fontFamily="@font/preten_medium">
 
             </TextView>
+
             <TextView
                     android:id="@+id/today_sol"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:fontFamily="@font/pretendard"
+                    android:fontFamily="@font/preten_light"
                     android:gravity="center"
                     android:text="일일 솔루션"
                     android:textColor="#999"
@@ -252,22 +297,16 @@
                     android:textStyle="bold" />
         </LinearLayout>
     </LinearLayout>
-
-    <LinearLayout
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/bottomNavigationView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-        <com.google.android.material.bottomnavigation.BottomNavigationView
-                android:id="@+id/bottomNavigationView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/white"
-                app:labelVisibilityMode="unlabeled"
-                app:menu="@menu/bottom_nav_menu"
-                app:itemIconTint="@drawable/menu_selector_color"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"/>
-    </LinearLayout>
+            android:layout_height="100dp"
+            android:background="#fff"
+            app:labelVisibilityMode="unlabeled"
+            app:menu="@menu/bottom_nav_menu"
+            app:itemIconTint="@color/bottom_navigation_colors"
+            app:itemTextColor="@color/bottom_navigation_colors"
+            app:itemRippleColor="@color/black"
+            />
 
 </androidx.appcompat.widget.LinearLayoutCompat>
