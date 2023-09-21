@@ -170,13 +170,13 @@ public class MainActivity extends AppCompatActivity{
                     int intValue = Math.round(value);
 
                     if (intValue == 100) {
-                        score_textview.setTextSize(48);
+                        score_textview.setTextSize(50);
                         ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) score_textview.getLayoutParams();
-                        params.topMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 50, getResources().getDisplayMetrics());
+                        params.topMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 35, getResources().getDisplayMetrics());
                         score_textview.setLayoutParams(params);
 
                         ViewGroup.MarginLayoutParams jumParams = (ViewGroup.MarginLayoutParams) jum.getLayoutParams();
-                        jumParams.topMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 50, getResources().getDisplayMetrics());
+                        jumParams.topMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 40, getResources().getDisplayMetrics());
                         jum.setLayoutParams(jumParams);
                     }
                     else{
