@@ -49,6 +49,7 @@
                         android:fontFamily="@font/pretendard"
                         android:text="일일차트"
                         android:textColor="@color/black"
+                        android:textStyle="bold"
                         android:textSize="18sp" />
                 <LinearLayout
                         android:layout_width="match_parent"
@@ -107,7 +108,7 @@
 
         <LinearLayout
                 android:id="@+id/layout_goal"
-                android:layout_width="170dp"
+                android:layout_width="150dp"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
                 android:padding="15dp"
@@ -123,6 +124,7 @@
                         android:fontFamily="@font/pretendard"
                         android:text="오늘의 목표"
                         android:textColor="#212529"
+                        android:textStyle="bold"
                         android:textSize="18sp" />
             </LinearLayout>
 
@@ -173,11 +175,11 @@
         </LinearLayout>
 
         <LinearLayout
-                android:layout_width="140dp"
+                android:layout_width="150dp"
                 android:layout_height="match_parent"
                 android:background="@drawable/roundstyle10dp"
                 android:backgroundTint="@color/white"
-                android:layout_marginLeft="20dp"
+                android:layout_marginStart="29dp"
                 android:orientation="vertical"
                 android:padding="5dp">
 
@@ -189,6 +191,7 @@
                     android:layout_marginTop="10dp"
                     android:fontFamily="@font/pretendard"
                     android:textColor="@color/black"
+                    android:textStyle="bold"
                     android:textSize="18sp">
             </TextView>
             <LinearLayout
@@ -208,6 +211,7 @@
                         android:layout_marginTop="45dp"
                         android:textColor="#999"
                         android:fontFamily="@font/pretendard"
+                        android:text="10 min"
                         android:textSize="20sp">
                 </TextView>
             </LinearLayout>
@@ -235,7 +239,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="일일 솔루션"
-                    android:textSize="18sp"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
                     android:textColor="@color/black"
                     android:fontFamily="@font/pretendard">
 
@@ -248,8 +253,7 @@
                     android:gravity="center"
                     android:text="일일 솔루션"
                     android:textColor="#999"
-                    android:textSize="22sp"
-                    android:textStyle="bold" />
+                    android:textSize="22sp"/>
         </LinearLayout>
     </LinearLayout>
 

@@ -5,21 +5,17 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.myapplication.adapter.MessageAdapter;
-import com.example.myapplication.book.BookMainActivity;
 import com.example.myapplication.model.Message;
 import com.google.android.gms.tasks.*;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.*;
 import okhttp3.*;
 import org.json.JSONArray;
@@ -36,13 +32,12 @@ import java.util.regex.Pattern;
 
 public class ChatGpt extends AppCompatActivity {
     RecyclerView recycler_view;
-    TextView tv_welcome;
     EditText et_msg;
-    ImageButton btn_send;
+    Button btn_send;
 
     Button InteractiveBtn;    // 대화형
     Button QuestionBtn;       // 문제형
-    Button finishBtn;
+    ImageButton finishBtn;
     Button continueBtn;
 
     List<Message> messageList;
@@ -69,10 +64,9 @@ public class ChatGpt extends AppCompatActivity {
     // API
     public static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
     OkHttpClient client;
-    private static final String MY_SECRET_KEY = "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";
+    private static final String MY_SECRET_KEY = "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";
 
     //네비게이션바 설정
-    private BottomNavigationView bottomNavigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,7 +79,6 @@ public class ChatGpt extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
 
         recycler_view = findViewById(R.id.recycler_view);
-        tv_welcome = findViewById(R.id.tv_welcome);
         et_msg = findViewById(R.id.et_msg);
         btn_send = findViewById(R.id.btn_send);
         InteractiveBtn = findViewById(R.id.InteractiveBtn);
@@ -108,78 +101,78 @@ public class ChatGpt extends AppCompatActivity {
 
         // 주간 데이터
         Week = getDayOfWeek();
+        Log.d("GPT","Switch: " + Switch);
 
-        //종료 버튼 감추기
-        finishBtn.setVisibility(View.GONE);
 
         finishBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d("GPT", "정답 개수: " + ans);
-                Log.d("GPT", "ability: " + ability);
+                if (Switch == 1 || Switch == 2) {
+                    Log.d("GPT", "여기로 왔어요");
 
-                DocumentReference dateRef = db.collection("Chart").document(ability);
+                    DocumentReference dateRef = db.collection("Chart").document(ability);
 
-                dateRef
-                        .get()
-                        .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                            @Override
-                            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                Integer ans = documentSnapshot.contains("ans") ? documentSnapshot.getLong("ans").intValue() : 0;
-                                Integer currentCount = documentSnapshot.contains("count") ? documentSnapshot.getLong("count").intValue() : 0;
-                                Integer wrong_ans = documentSnapshot.contains("wrong_ans") ? documentSnapshot.getLong("wrong_ans").intValue() : 0;
+                    dateRef
+                            .get()
+                            .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                @Override
+                                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                    Integer ans = documentSnapshot.contains("ans") ? documentSnapshot.getLong("ans").intValue() : 0;
+                                    Integer currentCount = documentSnapshot.contains("count") ? documentSnapshot.getLong("count").intValue() : 0;
+                                    Integer wrong_ans = documentSnapshot.contains("wrong_ans") ? documentSnapshot.getLong("wrong_ans").intValue() : 0;
 
-                                float newValue = (float) ans / (currentCount) * 100;
-                                Log.d("GPT", "Val_1: " + newValue);
+                                    float newValue = (float) ans / (currentCount) * 100;
 
-                                Log.d("GPT", "Val_2: " + newValue);
-                                // 데이터 갱신
-                                Map<String, Object> newData = new HashMap<>(documentSnapshot.getData());
-                                newData.put("value",Math.round(newValue));
-                                newData.put("count", currentCount);
-                                newData.put("ans", ans);
-                                newData.put("wrong_ans", wrong_ans);
-                                dateRef
-                                        .set(newData)
-                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                            @Override
-                                            public void onSuccess(Void aVoid) {
-                                                Log.d("Firestore", "Value and count were successfully updated!");
-                                            }
-                                        })
-                                        .addOnFailureListener(new OnFailureListener() {
-                                            @Override
-                                            public void onFailure(@NonNull Exception e) {
-                                                Log.w("Firestore", "Error updating data", e);
-                                            }
-                                        });
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Log.w("Firestore", "Error getting document", e);
-                            }
-                        });
+                                    // 데이터 갱신
+                                    Map<String, Object> newData = new HashMap<>(documentSnapshot.getData());
+                                    newData.put("value", Math.round(newValue));
+                                    newData.put("count", currentCount);
+                                    newData.put("ans", ans);
+                                    newData.put("wrong_ans", wrong_ans);
+                                    dateRef
+                                            .set(newData)
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    Log.d("Firestore", "Value and count were successfully updated!");
+                                                    // 업데이트 후에 평균을 계산하고 저장
+                                                    saveWeeklyAverage();
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Log.w("Firestore", "Error updating data", e);
+                                                }
+                                            });
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.w("Firestore", "Error getting document", e);
+                                }
+                            });
 
-                Intent intent = new Intent(ChatGpt.this, MainActivity.class);
-                startActivity(intent);
-                saveWeeklyAverage();
+                    Intent intent = new Intent(ChatGpt.this, MainActivity.class);
+                    startActivity(intent);
+                } else{
+                    Intent intent = new Intent(ChatGpt.this, MainActivity.class);
+                    startActivity(intent);
+                }
             }
         });
+
 
         btn_send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (Switch == 0) {
+                if (Switch == 2) {
                     String question = et_msg.getText().toString().trim();
                     addToChat(question, Message.SENT_BY_ME);
                     et_msg.setText("");
 
                     callAPI_V2(question);
-
-                    tv_welcome.setVisibility(View.GONE);
-                    finishBtn.setVisibility(View.VISIBLE);
                     continueBtn.setVisibility(View.VISIBLE);
                 } else if (Switch == 1) {
                     String question = et_msg.getText().toString().trim();
@@ -187,9 +180,6 @@ public class ChatGpt extends AppCompatActivity {
                     et_msg.setText("");
 
                     callAPI(question);
-
-                    tv_welcome.setVisibility(View.GONE);
-                    finishBtn.setVisibility(View.VISIBLE);
                     continueBtn.setVisibility(View.INVISIBLE);
                 }
             }
@@ -265,7 +255,7 @@ public class ChatGpt extends AppCompatActivity {
                         // 버튼 감추기
                         InteractiveBtn.setVisibility(View.GONE);
                         QuestionBtn.setVisibility(View.GONE);
-                        Switch = 0;
+                        Switch = 2;
                     }
                 });
             }
@@ -274,9 +264,7 @@ public class ChatGpt extends AppCompatActivity {
         continueBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int ans = mark_question(assistantMessages);
-                Log.d("GPT", "ANS: " + ans);
-
+                mark_question(assistantMessages);
                 DocumentReference dateRef = db.collection("Chart").document(ability);
 
                 dateRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -308,7 +296,7 @@ public class ChatGpt extends AppCompatActivity {
                         Log.w("Firestore", "Error getting document", e);
                     }
                 });
-                callAPI("다음문제를 내주세요");
+                callAPI_V2("다음문제를 내주세요");
                 continueBtn.setVisibility(View.GONE);
             }
 
@@ -320,33 +308,6 @@ public class ChatGpt extends AppCompatActivity {
                 .writeTimeout(120, TimeUnit.SECONDS)
                 .readTimeout(60, TimeUnit.SECONDS)
                 .build();
-
-        // BottomNavigationView 초기화
-        bottomNavigationView = findViewById(R.id.bottomNavigationView);
-        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                // 네비게이션 아이템 클릭 이벤트 처리
-                int itemId = item.getItemId();
-
-                if (itemId == R.id.menu_home) {
-                    // "GPT" 아이템 클릭 시 동작
-                    Intent intent1 = new Intent(ChatGpt.this, MainActivity.class);
-                    startActivity(intent1);
-                } else if (itemId == R.id.menu_book) {
-                    // "Book" 아이템 클릭 시 동작
-                    Intent intent2 = new Intent(ChatGpt.this, BookMainActivity.class);
-                    startActivity(intent2);
-                } else if (itemId == R.id.menu_info) {
-                    // "정보확인" 아이템 클릭 시 동작
-                    Intent intent3 = new Intent(ChatGpt.this, MyInfo.class);
-                    startActivity(intent3);
-                }
-                return true;
-            }
-        });
-        // 초기 선택된 네비게이션 아이템 설정
-        bottomNavigationView.setSelectedItemId(R.id.menu_gpt);
     }
 
     // 대화 내용을 채팅창에 추가
@@ -707,12 +668,14 @@ public class ChatGpt extends AppCompatActivity {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 sum += document.getLong("value");
                                 count++;
+                                Log.d("GPT","sum: " + sum);
+                                Log.d("GPT","count: " + count);
                             }
 
                             if (count > 0) {
-                                int average = (int) sum / count;
+                                double average = (double) sum / count;
                                 Map<String, Object> data = new HashMap<>();
-                                data.put("average", average);
+                                data.put("average", Math.round(average));
 
                                 DocumentReference weekDocRef = db.collection("WeekChart").document(Week);
                                 weekDocRef.update(data)

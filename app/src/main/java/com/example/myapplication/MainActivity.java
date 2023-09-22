@@ -35,6 +35,7 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.*;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -42,11 +43,9 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.*;
+import com.google.firebase.firestore.EventListener;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity{
@@ -276,13 +275,20 @@ private void setData(BarChart barChart) {
                 entries.get(i).setX(i + 1);
             }
 
-            BarDataSet dataSet = new BarDataSet(entries, "주간 데이터");
+            ArrayList<IBarDataSet> dataSets = new ArrayList<>();
+            for (BarEntry entry : entries) {
+                BarDataSet dataSet = new BarDataSet(Arrays.asList(entry), "");
 
-            List<Integer> colors = new ArrayList<>();
-            colors.add(Color.rgb(255, 0, 97));
-            dataSet.setColors(colors);
+                int startColor = Color.parseColor("#ffc7ee");
+                int endColor = Color.parseColor("#a3ffeb");
+                dataSet.setGradientColor(startColor, endColor);
 
-            BarData data = new BarData(dataSet);
+                dataSet.setDrawValues(false); // 값 레이블 그리기 비활성화;
+
+                dataSets.add(dataSet);
+            }
+
+            BarData data = new BarData(dataSets);
             data.setBarWidth(0.5f);
             barChart.invalidate();
             barChart.setData(data);
@@ -313,8 +319,6 @@ private void setData(BarChart barChart) {
             xAxis.setDrawAxisLine(false);
             rightYAxis.setLabelCount(6, true);
             rightYAxis.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART); // 값 레이블을 차트 바깥쪽에 표시
-
-            dataSet.setDrawValues(false); // 값 레이블 그리기 비활성화
 
             barChart.getLegend().setEnabled(false);
             barChart.getDescription().setEnabled(false);
@@ -447,7 +451,7 @@ private void fetchData(MyInfo.FirestoreCallback callback) {
 
                         if (documentSnapshot != null && documentSnapshot.exists()) {
                             workNum = documentSnapshot.getLong("worknum").intValue();
-                            bookNum.setText("책: " + finishBooknum + " / " + workNum + " 권"); // TextView에 반영
+                            bookNum.setText(finishBooknum + " / " + workNum + " 권"); // TextView에 반영
                         }
                     }
                 });
@@ -491,8 +495,8 @@ private void fetchData(MyInfo.FirestoreCallback callback) {
                         if (documentSnapshot != null && documentSnapshot.exists()) {
                             String timeString = documentSnapshot.getString("time");
                             timeValue = convertTimeStringToMinutes(timeString);
-                            limitTime.setText(formattedAppUsageTime +" / " + timeValue + " Min");
-                            appUseTimeTextView.setText(usedTimeInMinutes + " Min");
+                            limitTime.setText(formattedAppUsageTime +" / " + timeValue + " min");
+                            appUseTimeTextView.setText(usedTimeInMinutes + " min");
 
                         }
                     }

@@ -1,106 +1,120 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".ChatGpt">
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="15dp"
+        android:orientation="vertical"
+        android:background="#BDCEE0"
+        tools:context=".ChatGpt">
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp">
+        <ImageButton
+                android:id="@+id/finish_Btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="#BDCEE0"
+                android:src="@drawable/close_2"/>
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="13dp"
+                android:layout_marginLeft="13dp"
+                android:textSize="18sp"
+                android:textColor="@color/black"
+                android:fontFamily="@font/pretendard"
+                android:text="GPT 선생님">
+
+        </TextView>
+
+    </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:layout_above="@+id/bottom_layout"/>
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginBottom="15dp"
+            android:layout_above="@+id/bottom_layout"/>
 
-        <Button
+    <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/InteractiveBtn"
             android:layout_width="600px"
             android:layout_height="150px"
             android:fontFamily="@font/pretendard"
             android:text="대화형"
-            android:layout_marginLeft="85dp"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_marginLeft="65dp"
             android:layout_marginBottom="60dp"
-            android:textSize="20sp" />
-        <Button
+            android:textColor="@color/black"
+            android:background="@drawable/roundstyle20dp"
+            android:textSize="20sp">
+    </androidx.appcompat.widget.AppCompatButton>
+    <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/QuestionBtn"
             android:layout_width="600px"
             android:layout_height="150px"
             android:text="문제형"
             android:fontFamily="@font/pretendard"
-            android:layout_marginLeft="85dp"
+            style="?android:attr/borderlessButtonStyle"
+            android:textColor="@color/black"
+            android:background="@drawable/roundstyle20dp"
+            android:layout_marginLeft="65dp"
             android:layout_marginBottom="60dp"
-            android:textSize="20sp"/>
+            android:textSize="20sp">
+    </androidx.appcompat.widget.AppCompatButton>
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        >
-
-    <Button
-        android:id="@+id/finish_Btn"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:fontFamily="@font/pretendard"
-        android:text="종료"
-        android:textSize="20dp" />
-
-    <Button
-        android:id="@+id/continue_Btn"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="80dp"
-        android:fontFamily="@font/pretendard"
-        android:text="다음문제"
-        android:textSize="20dp"
-        android:visibility="invisible"
-        />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+        <Button
+                android:id="@+id/continue_Btn"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/pretendard"
+                android:text="다음문제"
+                android:textSize="12dp"
+                android:textColor="@color/black"
+                android:layout_marginLeft="220dp"
+                android:layout_marginBottom="15dp"
+                android:visibility="gone"/>
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/tv_welcome"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:textSize="28sp" />
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:padding="8dp"
-        android:id="@+id/bottom_layout">
+    <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginBottom="20dp"
+            android:id="@+id/bottom_layout">
 
         <EditText
-            android:id="@+id/et_msg"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_toLeftOf="@+id/btn_send"
-            android:background="@drawable/rounded_corner"
-            android:hint="Write here"
-            android:padding="16dp" />
+                android:id="@+id/et_msg"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:background="@drawable/rounded_corner"
+                android:hint="답을 입력하세요"
+                android:textColor="@color/black"
+                android:padding="10dp"
+                android:layout_centerInParent="true"/>
 
-        <ImageButton
-            android:id="@+id/btn_send"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_alignParentRight="true"
-            android:layout_centerInParent="true"
-            android:layout_marginLeft="10dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:padding="8dp"
-            android:src="@drawable/ic_send" />
-    </RelativeLayout>
+        <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_send"
+                android:layout_width="54dp"
+                android:layout_height="41dp"
+                android:layout_marginLeft="270dp"
+                android:background="@drawable/roundstyle20dp"
+                android:text="전송"
+                android:textColor="@color/black"
+                android:layout_marginTop="5dp"
+                style="?android:attr/borderlessButtonStyle"
+                android:fontFamily="@font/pretendard"
+                android:textSize="16sp">
+        </androidx.appcompat.widget.AppCompatButton>
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottomNavigationView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#fff"
-        app:itemIconTint="@drawable/menu_selector_color"
-        app:labelVisibilityMode="unlabeled"
-        app:menu="@menu/bottom_nav_menu"/>
+    </FrameLayout>
 
 </LinearLayout>
