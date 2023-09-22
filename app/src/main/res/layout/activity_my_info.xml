@@ -193,51 +193,60 @@
 
 
         </LinearLayout>
-        <LinearLayout
+        <RelativeLayout
                 android:id="@+id/book_button"
                 android:layout_width="330dp"
                 android:layout_height="65dp"
                 android:layout_marginTop="15dp"
                 android:background="@drawable/roundstyle10dp"
-                android:backgroundTint="#F0F0F0"
-                android:orientation="horizontal"
-                android:padding="10dp">
+                android:backgroundTint="#F0F0F0">
+
             <ImageView
+                    android:id="@+id/imageView1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/aladin_image1">
-            </ImageView>
+                    android:src="@drawable/aladin_image1"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="10dp"/>
+
             <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:id="@+id/textView"
                     android:textSize="16sp"
                     android:fontFamily="@font/pretendard"
-                    android:layout_marginTop="13dp"
-                    android:layout_marginLeft="50dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
                     android:textColor="#888888"
-                    android:text="추천도서 바로가기">
-            </TextView>
+                    android:text="추천도서 바로가기"/>
+
             <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginLeft="68dp"
-                    android:src="@drawable/right">
+                    android:id="@+id/imageView2"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="5dp"
+                    android:src="@drawable/right"/>
 
-            </ImageView>
+        </RelativeLayout>
 
-        </LinearLayout>
     </LinearLayout>
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-            android:id="@+id/bottomNavigationView"
+    <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="100dp"
-            app:itemBackground="@android:color/white"
-            app:labelVisibilityMode="unlabeled"
-            app:itemIconTint="@drawable/menu_selector_color"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:menu="@menu/bottom_nav_menu" />
-
+            android:layout_height="match_parent">
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+                android:id="@+id/bottomNavigationView"
+                android:layout_width="match_parent"
+                android:layout_height="77dp"
+                android:background="@color/white"
+                android:layout_gravity="bottom"
+                app:labelVisibilityMode="unlabeled"
+                app:menu="@menu/bottom_nav_menu"
+                app:itemIconTint="@drawable/menu_selector_color"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"/>
+    </LinearLayout>
 </androidx.appcompat.widget.LinearLayoutCompat>
