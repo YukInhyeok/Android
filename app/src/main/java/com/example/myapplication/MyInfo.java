@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -208,21 +209,7 @@ public class MyInfo extends AppCompatActivity {
             }
         });
 
-        // 목표 점수
-//        goalScoreText = findViewById(R.id.goal_score);
-//        goalScoreText.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                showGoalScorePopup();
-//            }
-//        });
-//        if (previousGoalScore != 0) {
-//            goalScoreText.setText("" + previousGoalScore);
-//            updateChartWithGoalScore(previousGoalScore);
-//        }
-
-        //버튼 메소
-
+        //버튼 메소드
         BookBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -292,47 +279,6 @@ public class MyInfo extends AppCompatActivity {
 
             }
         });
-    }
-
-    private String getCurrentMonthAndWeek() {
-        Calendar calendar = Calendar.getInstance();
-
-        // 현재 월 가져오기
-        SimpleDateFormat monthFormat = new SimpleDateFormat("M", Locale.getDefault());
-        String month = monthFormat.format(calendar.getTime());
-
-        // 현재 주차 가져오기
-        int weekOfYear = calendar.get(Calendar.WEEK_OF_MONTH);
-
-        return month + "월 " + weekOfYear + "주차";
-    }
-
-    private String getCurrentWeekDates() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setFirstDayOfWeek(Calendar.SUNDAY);
-
-        int currentWeek = calendar.get(Calendar.WEEK_OF_MONTH);
-
-        // 현재 주의 시작일과 종료일 계산
-        calendar.set(Calendar.WEEK_OF_MONTH, currentWeek);
-        calendar.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
-        Date startDate = calendar.getTime();
-
-        calendar.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);
-        Date endDate = calendar.getTime();
-
-        // 날짜 형식 지정
-        SimpleDateFormat dateFormat = new SimpleDateFormat("d", Locale.getDefault());
-
-        // 해당 주의 날짜 목록 생성
-        List<String> dates = new ArrayList<>();
-        calendar.setTime(startDate);
-        while (!calendar.getTime().after(endDate)) {
-            dates.add(dateFormat.format(calendar.getTime()));
-            calendar.add(Calendar.DAY_OF_MONTH, 1);
-        }
-
-        return String.join("   ", dates);
     }
 
     // 파이어베이스
@@ -423,7 +369,9 @@ public class MyInfo extends AppCompatActivity {
                 } else {
                     // 평균 계산
                     int averageValue = totalValue / dataCount;
-
+                    if (averageValue ==100){
+                        today_score.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 50);
+                    }
                     // 평균 값을 today_score 텍스트뷰에 출력
                     today_score.setText(String.valueOf(averageValue));
                 }
