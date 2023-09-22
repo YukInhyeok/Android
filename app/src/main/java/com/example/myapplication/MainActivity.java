@@ -389,7 +389,9 @@ private void setData(BarChart barChart) {
 
     private void requestUsageStatsPermission() {
         if (!hasUsageStatsPermission(getApplicationContext())) {
-            startActivity(new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS));
+            Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS,
+                    Uri.parse("package:" + getPackageName()));
+            startActivityForResult(intent, 100);
         }
     }
 
