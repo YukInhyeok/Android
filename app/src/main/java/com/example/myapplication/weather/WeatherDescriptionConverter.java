@@ -1,4 +1,4 @@
-package com.example.myapplication.weater;
+package com.example.myapplication.weather;
 
 public class WeatherDescriptionConverter {
     private static final int[] wIdArr = {201, 200, 202, 210, 211, 212, 221, 230, 231, 232, 300, 301, 302, 310, 311, 312, 313, 314, 321, 500,

@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
-
 import com.google.firebase.firestore.FirebaseFirestore;
 
 // 휴대폰의 화면 꺼짐 및 켜짐 상태 확인하는 리시버
@@ -33,7 +32,7 @@ public class ScreenOnReceiver extends BroadcastReceiver {
                 context.startActivity(lockScreenIntent);
 
                 db.collection("Screen").document("Lock").update("state", 0);
-            }else{
+            } else {
                 db.collection("Screen").document("Lock").update("state", 1);
             }
         }

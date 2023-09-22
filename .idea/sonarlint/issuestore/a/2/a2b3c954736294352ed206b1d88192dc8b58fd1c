@@ -1,0 +1,9 @@
+
+f
+java:S1104"QMake Title a static final constant or non-public and provide accessors if needed.(úÃìp
+k
+java:S1104"PMake Link a static final constant or non-public and provide accessors if needed.(ëø‹Ùıÿÿÿÿ
+o
+java:S1104"TMake imageUrl a static final constant or non-public and provide accessors if needed.(¾îÎÎıÿÿÿÿ
+d	java:S116"PRename this field "Title" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(úÃìp
+i	java:S116"ORename this field "Link" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ëø‹Ùıÿÿÿÿ

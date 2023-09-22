@@ -1,25 +1,15 @@
 package com.example.myapplication.book;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
-
-import com.example.myapplication.ChatGpt;
-import com.example.myapplication.MainActivity;
-import com.example.myapplication.MyInfo;
-import com.example.myapplication.R;
-import com.example.myapplication.Utils;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import com.example.myapplication.*;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -30,7 +20,6 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Transaction;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 
 public class BookMainActivity extends AppCompatActivity implements OnDatabaseCallback{
 
@@ -145,7 +134,6 @@ public class BookMainActivity extends AppCompatActivity implements OnDatabaseCal
             database.close();
             database = null;
         }
-
         super.onDestroy();
     }
 
@@ -163,43 +151,46 @@ public class BookMainActivity extends AppCompatActivity implements OnDatabaseCal
         return result;
     }
 
-    //독후감 갯수 카운트
-    private void updateBookCount() {
-        Calendar calendar = Calendar.getInstance();
-        int currentDay = calendar.get(Calendar.DAY_OF_YEAR);
-        int lastUpdateDay = prefs.getInt(KEY_LAST_UPDATE, -1);
+//    //독후감 갯수 카운트
+private void updateBookCount() {
+    // final로 선언된 변수
+    final SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+    final FirebaseFirestore firestore = FirebaseFirestore.getInstance();
 
-        int savedBookCount = prefs.getInt(KEY_BOOK_COUNT, 0);
-        Integer[] bookCount = new Integer[]{savedBookCount};
-        if (currentDay != lastUpdateDay) { // 새로운 날짜인 경우, 카운터를 초기화하십시오.
-            bookCount[0] = 1;
-        } else {
-            bookCount[0]++;
+    // 독후감 갯수 가져오기
+    final int savedBookCount = prefs.getInt(KEY_BOOK_COUNT, 0);
+
+    // 독후감 갯수 1 증가
+    final int updatedBookCount = savedBookCount + 1;
+
+    // Firestore에 독후감 갯수 업데이트
+    DocumentReference docRef = firestore.collection("Book").document("finish");
+
+    firestore.runTransaction(new Transaction.Function<Void>() {
+        @Override
+        public Void apply(Transaction transaction) throws FirebaseFirestoreException {
+            transaction.update(docRef, "booknum", updatedBookCount);
+            return null;
         }
+    }).addOnSuccessListener(new OnSuccessListener<Void>() {
+        @Override
+        public void onSuccess(Void unused) {
+            Log.d(TAG, "Book count successfully updated in Firestore!");
+            // 독후감 갯수를 SharedPreferences에 저장
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putInt(KEY_BOOK_COUNT, updatedBookCount);
+            editor.apply();
+        }
+    }).addOnFailureListener(new OnFailureListener() {
+        @Override
+        public void onFailure(@NonNull Exception e) {
+            Log.w(TAG, "Error updating Book count", e);
+        }
+    });
+}
 
-        DocumentReference docRef = firestore.collection("Book").document("finish");
 
-        firestore.runTransaction(new Transaction.Function<Void>() {
-            @Override
-            public Void apply(Transaction transaction) throws FirebaseFirestoreException {
-                transaction.update(docRef, "booknum", bookCount[0]);
-                return null;
-            }
-        }).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void unused) {
-                Log.d(TAG, "Book count successfully updated in Firestore!");
-                SharedPreferences.Editor editor = prefs.edit();
-                editor.putInt(KEY_LAST_UPDATE, currentDay);
-                editor.putInt(KEY_BOOK_COUNT, bookCount[0]);
-                editor.apply();
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.w(TAG, "Error updating Book count", e);
-            }
-        });
-    }
+
+
 
 }

@@ -1,0 +1,76 @@
+
+k
+java:S1192À"MDefine a constant instead of duplicating this literal "MainActivity" 7 times.(÷‘³´8úĞ¹çª1
+k
+java:S1192À"MDefine a constant instead of duplicating this literal "listen:error" 3 times.(÷‘³´8®Ñ¹çª1
+M
+java:S1066ô"/Merge this if statement with the enclosing one.(ŞòÓ«8ÎÑ¹çª1
+M
+java:S1066€"/Merge this if statement with the enclosing one.(ŞòÓ«8ÚÑ¹çª1
+J
+java:S1604t"(Make this anonymous inner class a lambda(õßØµüÿÿÿÿ8›°¦æª1
+F
+java:S1604"(Make this anonymous inner class a lambda(¾ı»ï8çµİçª1
+K
+java:S1604à"(Make this anonymous inner class a lambda(İú‰¿ÿÿÿÿÿ8ŞÑ¹çª1
+F
+java:S1604è"(Make this anonymous inner class a lambda(øæ˜8ŞÑ¹çª1
+K
+java:S1604"(Make this anonymous inner class a lambda(¯‘àçúÿÿÿÿ8îÑ¹çª1
+F
+java:S1604»"(Make this anonymous inner class a lambda(Ğ±°Ô8öÑ¹çª1
+F
+java:S1604Ï"(Make this anonymous inner class a lambda(Ğ±°Ô8öÑ¹çª1
+F
+java:S1604ç"(Make this anonymous inner class a lambda(Ğ±°Ô8÷Ñ¹çª1
+F
+java:S1604"(Make this anonymous inner class a lambda(Ÿíé8÷Ñ¹çª1
+K
+java:S1604–"(Make this anonymous inner class a lambda(àëÈûÿÿÿÿ8÷Ñ¹çª1
+K
+java:S1604¶"(Make this anonymous inner class a lambda(Ïë£ùÿÿÿÿ8øÑ¹çª1
+K
+java:S1604¼"(Make this anonymous inner class a lambda(Ÿ ¹ÿÿÿÿÿ8øÑ¹çª1
+_
+java:S2184“"ACast one of the operands of this addition operation to a "float".(µ›ÓŞ8¢°¦æª1
+c
+java:S2184ı"FCast one of the operands of this multiplication operation to a "long".(ë€©8‡Ò¹çª1
+u	java:S1168"TRename this field "Today_Sol" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ŠúÔÒşÿÿÿÿ8†²¦æª1
+u	java:S116P"YRename this field "score_textview" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(••Ğİ8Á£¿æª1
+¤
+java:S1186•"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(œƒƒ©ùÿÿÿÿ8Õ¹çª1
+€
+java:S14505"cRemove the "bottomNavigationView" field and declare it as a local variable in the relevant methods.(ê¥ÎÚ8‘²¦æª1
+m
+java:S1874t"KRemove this use of "setOnNavigationItemSelectedListener"; it is deprecated.(õßØµüÿÿÿÿ8¦²¦æª1
+Y	java:S125"<This block of commented-out lines of code should be removed.(ËïçÏ8¯Õ¹çª1
+[
+java:S1874÷">Remove this use of "startActivityForResult"; it is deprecated.(Ö­Ìa8»Õ¹çª1
+T
+java:S1874"6Remove this use of "checkOpNoThrow"; it is deprecated.(£ƒóÔ8¾Õ¹çª1
+m
+java:S1874•"JDon't override a deprecated method or explicitly mark it as "@Deprecated".(œƒƒ©ùÿÿÿÿ8¿Õ¹çª1
+]
+java:S1161•":Add the "@Override" annotation above this method signature(œƒƒ©ùÿÿÿÿ8ÀÕ¹çª1
+X
+java:S3985³"5Remove this unused private "FirestoreCallback" class.(›°¨¸úÿÿÿÿ8ÅÕ¹çª1
+Y
+java:S1117¹"6Rename "db" which hides the field declared at line 58.(ôï¼ÿúÿÿÿÿ8ÆÕ¹çª1
+Y
+java:S1117Í"6Rename "db" which hides the field declared at line 58.(ôï¼ÿúÿÿÿÿ8ÉÕ¹çª1
+Y
+java:S1117ä"6Rename "db" which hides the field declared at line 58.(ôï¼ÿúÿÿÿÿ8ÒÕ¹çª1
+c
+java:S1117¥"@Rename "appUsageTime" which hides the field declared at line 67.(ßüëûÿÿÿÿÿ8àÕ¹çª1
+k	java:S100 "NRename this method name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ÿìí8’×¹çª1
+g
+java:S1117¢"IRename "formattedAppUsageTime" which hides the field declared at line 76.(‡ŒÉ‡8…³¦æª1
+d
+java:S1117£"ARename "finishBooknum" which hides the field declared at line 62.(ôÍŸÌùÿÿÿÿ8…³¦æª1
+`
+java:S1117¤"=Rename "timeValue" which hides the field declared at line 83.(íê…ªüÿÿÿÿ8—×¹çª1
+Y
+java:S1117¥";Rename "workNum" which hides the field declared at line 63.(ˆşÔ8§×¹çª1
+p	java:S100²"NRename this method name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(–Éüÿÿÿÿ8©×¹çª1
+N
+java:S1144Ñ"0Remove this unused private "showMessage" method.(ììÛé8­×¹çª1

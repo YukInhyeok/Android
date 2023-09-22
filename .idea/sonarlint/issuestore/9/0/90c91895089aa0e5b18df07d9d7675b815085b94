@@ -1,0 +1,18 @@
+
+k
+java:S1192ê"HDefine a constant instead of duplicating this literal "Picasso" 3 times.(Šüƒ–ÿÿÿÿÿ8îş¹«1
+F
+java:S1604ˆ"(Make this anonymous inner class a lambda(Å½÷ç8¶ÿ„º«1
+i	java:S101""MRename this class name to match the regular expression '^[A-Z][a-zA-Z0-9]*$'.(ß®ö8•¦¸«1
+Ÿ
+java:S1186ı"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(å…£ê8€ïş¹«1
+}
+java:S1450$"[Remove the "dateTextView" field and declare it as a local variable in the relevant methods.(£ùôÈıÿÿÿÿ8ü¦¸«1
+}
+java:S1450#"[Remove the "yearTextView" field and declare it as a local variable in the relevant methods.(–”Ÿıÿÿÿÿ8ü¦¸«1
+T
+java:S18747"7Remove this use of "FLAG_FULLSCREEN"; it is deprecated.(¡¼áÈ8§¸«1
+Z
+java:S18748"=Remove this use of "FLAG_SHOW_WHEN_LOCKED"; it is deprecated.(ŒŒüù8§¸«1
+_
+java:S18749"=Remove this use of "FLAG_DISMISS_KEYGUARD"; it is deprecated.(Ï°í¢ÿÿÿÿÿ8§¸«1

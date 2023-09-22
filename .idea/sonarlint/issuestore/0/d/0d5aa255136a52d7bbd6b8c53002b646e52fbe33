@@ -1,0 +1,40 @@
+
+\	java:S112º"FDefine and throw a dedicated exception instead of using a generic one.(õ¼ô÷
+p
+java:S2293»"YReplace the type specification in this constructor call with the diamond operator ("<>").(šË±š
+\
+java:S1192G"FDefine a constant instead of duplicating this literal "MyApp" 6 times.(¸¨¤ß
+f
+java:S1192G"PDefine a constant instead of duplicating this literal "ì˜ˆì™¸ ë°œìƒ: " 3 times.(¸¨¤ß
+>
+java:S1604>"(Make this anonymous inner class a lambda(ş¡ôš
+C
+java:S1604S"(Make this anonymous inner class a lambda(Š“ü¨úÿÿÿÿ
+C
+java:S1604L"(Make this anonymous inner class a lambda(Ø—°éşÿÿÿÿ
+_
+java:S2095h"IUse try-with-resources or close this "InputStream" in a "finally" clause.(›Ó€ê
+x
+java:S1450)"]Remove the "categoryButton" field and declare it as a local variable in the relevant methods.(ù¿¸ûÿÿÿÿ
+s
+java:S1450+"]Remove the "resultListView" field and declare it as a local variable in the relevant methods.(Úçÿú
+q
+java:S1450("[Remove the "searchButton" field and declare it as a local variable in the relevant methods.(”“ã®
+V	java:S125,"<This block of commented-out lines of code should be removed.(é©ºşÿÿÿÿ
+J
+java:S1874D"/Remove this use of "execute"; it is deprecated.(±ŸÁùÿÿÿÿ
+M
+java:S1135W"2Complete the task associated to this TODO comment.(Óéƒˆüÿÿÿÿ
+e
+java:S2674m"JCheck the return value of the "read" call to see how many bytes were read.(ë¥áïøÿÿÿÿ
+K
+java:S1874“"/Remove this use of "execute"; it is deprecated.(±ŸÁùÿÿÿÿ
+H
+java:S1874™"1Remove this use of "AsyncTask"; it is deprecated.(ŒÅç
+B
+java:S1168¦"+Return an empty collection instead of null.(¥¹ï
+f
+java:S1874ª"JDon't override a deprecated method or explicitly mark it as "@Deprecated".(—ıà´øÿÿÿÿ
+L
+java:S1874«"5Remove this use of "onPostExecute"; it is deprecated.(¡ü¬ô
+d	java:S100º"NRename this method name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(õ¼ô÷

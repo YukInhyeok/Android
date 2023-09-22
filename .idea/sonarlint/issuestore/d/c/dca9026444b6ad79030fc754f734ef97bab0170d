@@ -1,0 +1,119 @@
+
+h	java:S112‡"FDefine and throw a dedicated exception instead of using a generic one.(Ò‚Òéüÿÿÿÿ8•¯±äª1
+h	java:S112Ò"FDefine and throw a dedicated exception instead of using a generic one.(Ò‚Òéüÿÿÿÿ8–¯±äª1
+~
+java:S1192"`Define a constant instead of duplicating this literal "Failed to load response due to " 4 times.(©¤â„8£¯±äª1
+l
+java:S1192û"IDefine a constant instead of duplicating this literal "content" 11 times.(ã½ÕÇÿÿÿÿÿ8¥¯±äª1
+d
+java:S1192Š"FDefine a constant instead of duplicating this literal "value" 6 times.(ï ÏÍ8¥¯±äª1
+c
+java:S1192y"FDefine a constant instead of duplicating this literal "Chart" 8 times.(åƒŞ‹8¥¯±äª1
+h
+java:S1192‚"JDefine a constant instead of duplicating this literal "wrong_ans" 5 times.(„»Ïí8¥¯±äª1
+m
+java:S1192®"JDefine a constant instead of duplicating this literal "assistant" 4 times.(„¬Ş½ÿÿÿÿÿ8¥¯±äª1
+i
+java:S1192"FDefine a constant instead of duplicating this literal "count" 7 times.(‰‚—áúÿÿÿÿ8—Å¤äª1
+w
+java:S1192™"TDefine a constant instead of duplicating this literal "Error updating data" 3 times.(ûİ‚üÿÿÿÿ8¦¯±äª1
+n
+java:S1192“"KDefine a constant instead of duplicating this literal "Firestore" 13 times.(¼åú“şÿÿÿÿ8§¯±äª1
+{	java:S135Å"YReduce the total number of break and continue statements in this loop to use at most one.(·ïßûÿÿÿÿ8©¯±äª1
+X
+java:S1141­"5Extract this nested try block into a separate method.(¡»¢üùÿÿÿÿ8³¯±äª1
+X
+java:S1141ø"5Extract this nested try block into a separate method.(¡»¢üùÿÿÿÿ8¹¯±äª1
+n	java:S117‚"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(„»Ïí8Ã¯±äª1
+s	java:S117‹"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ãÍùÊÿÿÿÿÿ8Ä¯±äª1
+K
+java:S1604"(Make this anonymous inner class a lambda(Ïë£ùÿÿÿÿ8Å¯±äª1
+K
+java:S1604–"(Make this anonymous inner class a lambda(Ÿ ¹ÿÿÿÿÿ8Å¯±äª1
+E
+java:S1604}"(Make this anonymous inner class a lambda(ëòËØ8Æ¯±äª1
+K
+java:S1604"(Make this anonymous inner class a lambda(Ÿ ¹ÿÿÿÿÿ8Æ¯±äª1
+E
+java:S1604s"(Make this anonymous inner class a lambda(Øä¬Ü8Ç¯±äª1
+K
+java:S1604«"(Make this anonymous inner class a lambda(»Üøåıÿÿÿÿ8Ç¯±äª1
+E
+java:S1604Ç"(Make this anonymous inner class a lambda(ééèP8È¯±äª1
+F
+java:S1604İ"(Make this anonymous inner class a lambda(­Ú›…8È¯±äª1
+K
+java:S1604Ó"(Make this anonymous inner class a lambda(Ü÷½ûÿÿÿÿ8È¯±äª1
+K
+java:S1604¤"(Make this anonymous inner class a lambda(Ïë£ùÿÿÿÿ8Ò¯±äª1
+K
+java:S1604ª"(Make this anonymous inner class a lambda(Ÿ ¹ÿÿÿÿÿ8Ò¯±äª1
+E
+java:S1604š"(Make this anonymous inner class a lambda(ÒÚÕ8Ó¯±äª1
+K
+java:S1604±"(Make this anonymous inner class a lambda(œÁÈÌşÿÿÿÿ8Ó¯±äª1
+K
+java:S1604’"(Make this anonymous inner class a lambda(Ö…™£ùÿÿÿÿ8Ô¯±äª1
+K
+java:S1604Æ"(Make this anonymous inner class a lambda(õßØµüÿÿÿÿ8â¯±äª1
+K
+java:S1604â"(Make this anonymous inner class a lambda(˜ã¯şÿÿÿÿ8ñ¯±äª1
+K
+java:S1604ß"(Make this anonymous inner class a lambda(Ïë£ùÿÿÿÿ8…°±äª1
+K
+java:S1604å"(Make this anonymous inner class a lambda(Ÿ ¹ÿÿÿÿÿ8°±äª1
+K
+java:S1604€"(Make this anonymous inner class a lambda(¯‘àçúÿÿÿÿ8“°±äª1
+K
+java:S1604Ï"(Make this anonymous inner class a lambda(Ïë£ùÿÿÿÿ8˜°±äª1
+K
+java:S1604Õ"(Make this anonymous inner class a lambda(Ÿ ¹ÿÿÿÿÿ8Ÿ°±äª1
+K
+java:S1604¼"(Make this anonymous inner class a lambda(¯‘àçúÿÿÿÿ8¤°±äª1
+f
+java:S3518„"CMake sure this expression can't be zero before doing this division.(ïö¾’ûÿÿÿÿ8¤³±äª1
+g
+java:S2095"IUse try-with-resources or close this "InputStream" in a "finally" clause.(«Éå8¥³±äª1
+y	java:S116&"XRename this field "recycler_view" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(œ“÷İûÿÿÿÿ8±É¤äª1
+v	java:S116'"URename this field "tv_welcome" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ÏÜ¨™ÿÿÿÿÿ8±É¤äª1
+m	java:S116("QRename this field "et_msg" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ø¡Ø8±É¤äª1
+t	java:S116)"SRename this field "btn_send" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(È‚ûûøÿÿÿÿ8§³±äª1
+z	java:S116+"YRename this field "InteractiveBtn" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(”Û¹ùÿÿÿÿ8±É¤äª1
+r	java:S116,"VRename this field "QuestionBtn" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(š×¸À8§³±äª1
+p	java:S1169"ORename this field "Week" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¸Â¿ûÿÿÿÿ8¨³±äª1
+u	java:S116A"TRename this field "wrong_ans" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¤—åíşÿÿÿÿ8¨³±äª1
+m	java:S116C"QRename this field "Switch" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ÅŒ‡®8¨³±äª1
+€
+java:S1450K"cRemove the "bottomNavigationView" field and declare it as a local variable in the relevant methods.(ê¥ÎÚ8°³±äª1
+u
+java:S1450>"XRemove the "mRunnable" field and declare it as a local variable in the relevant methods.(çšµÈ8°³±äª1
+t
+java:S3776N"RRefactor this method to reduce its Cognitive Complexity from 43 to the 15 allowed.(¨Œşÿÿÿÿ8Â³±äª1
+U
+java:S1117€"7Rename "ans" which hides the field declared at line 64.(¢ÖÄå8Ë³±äª1
+[
+java:S1117‚"=Rename "wrong_ans" which hides the field declared at line 65.(„»Ïí8Í³±äª1
+^	java:S125§"<This block of commented-out lines of code should be removed.(§¬Úÿÿÿÿÿ8äÜ­«1
+Y
+java:S1117Ö"6Rename "db" which hides the field declared at line 59.(ôï¼ÿúÿÿÿÿ8à³±äª1
+;
+java:S2119î"Save and re-use this "Random".(¼İÅf8ğ³±äª1
+a
+java:S1155ğ">Use isEmpty() to check whether the collection is empty or not.(Ú¾şöÿÿÿÿÿ8ñ³±äª1
+Z
+java:S1117•"7Rename "ans" which hides the field declared at line 64.(éÀ€Çúÿÿÿÿ8õ³±äª1
+n
+java:S1874Æ"KRemove this use of "setOnNavigationItemSelectedListener"; it is deprecated.(õßØµüÿÿÿÿ8–´±äª1
+\
+java:S1155ï">Use isEmpty() to check whether the collection is empty or not.(·Ï†²8¥´±äª1
+k	java:S100À"NRename this method name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¨ıÖ÷8¼´±äª1
+m
+java:S2674"JCheck the return value of the "read" call to see how many bytes were read.(ë¥áïøÿÿÿÿ8ğ´±äª1
+k	java:S100¬"NRename this method name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(æÇöÆ8ù´±äª1
+p	java:S100Â"NRename this method name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ŠÔ›”ûÿÿÿÿ8ı´±äª1
+O
+java:S1172İ",Remove this unused method parameter "value".(º™˜ˆûÿÿÿÿ8€µ±äª1
+D
+java:S1905É"&Remove this unnecessary cast to "int".(Ø¼·8µ±äª1
+S
+java:S1144¬"5Remove this unused private "mark_interactive" method.(æÇöÆ8–µ±äª1

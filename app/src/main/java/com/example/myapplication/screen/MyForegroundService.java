@@ -1,28 +1,21 @@
 package com.example.myapplication.screen;
 
-import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.app.Service;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.SharedPreferences;
+import android.app.*;
+import android.content.*;
 import android.os.Build;
-import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.IBinder;
-import android.os.Looper;
 import android.os.SystemClock;
-
+import android.util.Log;
 import androidx.core.app.NotificationCompat;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-
+import androidx.work.ExistingWorkPolicy;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
 import com.example.myapplication.MainActivity;
 import com.example.myapplication.R;
 
+import java.util.Calendar;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 // 포그라운드
@@ -92,6 +85,12 @@ public class MyForegroundService extends Service {
             }
         };
 
+        // 자정에 실행될 코드를 추가합니다.
+        scheduleMidnightReset();
+        checkScheduledWork(getApplicationContext());
+
+
+
         IntentFilter filter = new IntentFilter();
         filter.addAction(Intent.ACTION_SCREEN_ON);
         filter.addAction(Intent.ACTION_SCREEN_OFF);
@@ -100,7 +99,60 @@ public class MyForegroundService extends Service {
         handler.post(updateAppUsageTimeRunnable);
     }
 
+    //자정 초기화 코드
+    private void scheduleMidnightReset() {
+        // WorkManager 초기화
+        WorkManager workManager = WorkManager.getInstance(getApplicationContext());
 
+        // 작업 요청 생성
+        OneTimeWorkRequest midnightResetWork = new OneTimeWorkRequest.Builder(MidnightResetWorker.class)
+                .setInitialDelay(calculateInitialDelay(), TimeUnit.MILLISECONDS)
+                .build();
+
+        // 작업 예약
+        workManager.enqueueUniqueWork(
+                "midnight_reset_work",  // 작업 이름 (고유해야 함)
+                ExistingWorkPolicy.REPLACE, // 작업 충돌 시 정책 설정
+                midnightResetWork); // 작업 요청
+    }
+
+    // 자정까지의 시간을 계산하여 초기 예약 지연을 설정합니다.
+    private long calculateInitialDelay() {
+        Calendar midnight = Calendar.getInstance();
+        midnight.set(Calendar.HOUR_OF_DAY, 0);
+        midnight.set(Calendar.MINUTE, 0);
+        midnight.set(Calendar.SECOND, 0);
+        long currentTimeMillis = System.currentTimeMillis();
+        long midnightMillis = midnight.getTimeInMillis();
+
+        if (midnightMillis <= currentTimeMillis) {
+            // 자정이 이미 지났으면 내일 자정까지 대기
+            midnight.add(Calendar.DAY_OF_YEAR, 1);
+            midnightMillis = midnight.getTimeInMillis();
+        }
+
+        return midnightMillis - currentTimeMillis;
+    }
+    // 워크매니저 예약 확인
+    private void checkScheduledWork(Context context) {
+        // WorkManager 초기화
+        WorkManager workManager = WorkManager.getInstance(context);
+
+        // 예약된 작업 조회
+        workManager.getWorkInfosForUniqueWork("midnight_reset_work")
+                .addListener(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.d("MyForegroundService", "Work scheduled");
+                    }
+                }, Executors.newSingleThreadExecutor());
+    }
+
+
+
+
+
+    //========================================================================================
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Notification notification = buildForegroundNotification();

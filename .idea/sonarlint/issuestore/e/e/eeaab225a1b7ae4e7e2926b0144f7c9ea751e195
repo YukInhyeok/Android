@@ -1,0 +1,35 @@
+
+i
+java:S1192‹"KDefine a constant instead of duplicating this literal "MY_APP_TAG" 4 times.(ÃÓ¹8äÑĞãª1
+d
+java:S1192"FDefine a constant instead of duplicating this literal "label" 4 times.(¶Äº8äÑĞãª1
+J
+java:S1604Y"(Make this anonymous inner class a lambda(õßØµüÿÿÿÿ8åÑĞãª1
+K
+java:S1604‘"(Make this anonymous inner class a lambda(£®»Ûùÿÿÿÿ8åÑĞãª1
+K
+java:S1604²"(Make this anonymous inner class a lambda(ˆÀøÿÿÿÿ8åÑĞãª1
+K
+java:S1604½"(Make this anonymous inner class a lambda(Í–ğùÿÿÿÿ8åÑĞãª1
+K
+java:S1604 "(Make this anonymous inner class a lambda(¯‘àçúÿÿÿÿ8åÑĞãª1
+K
+java:S1604¹"(Make this anonymous inner class a lambda(¯‘àçúÿÿÿÿ8åÑĞãª1
+_
+java:S2184Á"ACast one of the operands of this addition operation to a "float".(µ›ÓŞ8çÑĞãª1
+s	java:S1166"RRename this field "BookBtn" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(è‡“éùÿÿÿÿ8²ÒĞãª1
+x
+java:S14506"VRemove the "BookBtn" field and declare it as a local variable in the relevant methods.(è‡“éùÿÿÿÿ8¸ÒĞãª1
+€
+java:S1450,"cRemove the "bottomNavigationView" field and declare it as a local variable in the relevant methods.(ê¥ÎÚ8¹ÒĞãª1
+X	java:S1252"<This block of commented-out lines of code should be removed.(ÑâÂ°8½ÒĞãª1
+X	java:S125O"<This block of commented-out lines of code should be removed.(äÁ Ô8ÄÒĞãª1
+]	java:S125S"<This block of commented-out lines of code should be removed.(×Ëæôøÿÿÿÿ8ÅÒĞãª1
+m
+java:S1874Y"KRemove this use of "setOnNavigationItemSelectedListener"; it is deprecated.(õßØµüÿÿÿÿ8ÅÒĞãª1
+^	java:S125¥"<This block of commented-out lines of code should be removed.(Ñøıÿÿÿÿ8ÒÒĞãª1
+^	java:S125â"<This block of commented-out lines of code should be removed.(ºûı’øÿÿÿÿ8âÒĞãª1
+Y	java:S125î"<This block of commented-out lines of code should be removed.(æ÷„î8âÒĞãª1
+Y	java:S125•"<This block of commented-out lines of code should be removed.(§âÙÃ8âÒĞãª1
+Q
+java:S1144¶"3Remove this unused private "fetchtodayData" method.(Û˜ãÅ8âÒĞãª1
