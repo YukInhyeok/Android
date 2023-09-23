@@ -12,6 +12,8 @@
         android:id="@+id/searchEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:imeOptions="actionSearch"
+        android:inputType="text"
         android:hint="검색어를 입력하세요." />
 
     <ImageButton

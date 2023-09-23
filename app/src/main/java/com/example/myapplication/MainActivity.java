@@ -279,8 +279,8 @@ private void setData(BarChart barChart) {
             for (BarEntry entry : entries) {
                 BarDataSet dataSet = new BarDataSet(Arrays.asList(entry), "");
 
-                int startColor = Color.parseColor("#ffc7ee");
-                int endColor = Color.parseColor("#a3ffeb");
+                int startColor = Color.parseColor("#ff0844");
+                int endColor = Color.parseColor("#ffb199");
                 dataSet.setGradientColor(startColor, endColor);
 
                 dataSet.setDrawValues(false); // 값 레이블 그리기 비활성화;

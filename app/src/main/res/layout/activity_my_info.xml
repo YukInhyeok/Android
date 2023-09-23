@@ -5,7 +5,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#FFFFFF"
+        android:background="#F0F0F0"
         android:orientation="vertical">
 
     <LinearLayout
@@ -198,8 +198,7 @@
                 android:layout_width="330dp"
                 android:layout_height="65dp"
                 android:layout_marginTop="15dp"
-                android:background="@drawable/roundstyle10dp"
-                android:backgroundTint="#F0F0F0">
+                android:background="@drawable/glass_background">
 
             <ImageView
                     android:id="@+id/imageView1"
