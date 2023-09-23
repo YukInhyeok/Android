@@ -9,12 +9,14 @@
     tools:context=".aladdin.AladdinMainActivity">
 
     <EditText
-        android:id="@+id/searchEditText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="@color/black"
-        android:backgroundTint="#A9A9A9"
-        android:hint="검색어를 입력하세요." />
+            android:id="@+id/searchEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:backgroundTint="#A9A9A9"
+            android:imeOptions="actionSearch"
+            android:inputType="text"
+            android:hint="검색어를 입력하세요."/>
 
     <ImageButton
         android:id="@+id/searchButton"

@@ -2,17 +2,16 @@ package com.example.myapplication.aladdin;
 
 import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 
+import android.view.inputmethod.EditorInfo;
+import android.widget.*;
+import android.widget.TextView.OnEditorActionListener;
+import android.view.KeyEvent;
 import android.content.DialogInterface;
 import android.content.res.AssetManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.ListView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -63,14 +62,42 @@ public class AladdinMainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String searchWord = searchEditText.getText().toString();
-                try {
-                    String url = GetUrl(searchWord);
-                    new AladdinOpenAPIAsyncTask().execute(url);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Log.e("MyApp", "예외 발생: " + e.getMessage());
+                if(searchWord.isEmpty()){
+                    Toast.makeText(getApplicationContext(), "검색어를 입력하세요.", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    try {
+                        String url = GetUrl(searchWord);
+                        new AladdinOpenAPIAsyncTask().execute(url);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Log.e("MyApp", "예외 발생: " + e.getMessage());
+                    }
                 }
             }
+        });
+
+        searchEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    // 검색 동작을 실행하는 코드를 여기에 추가
+                    String searchWord = searchEditText.getText().toString();
+                    if (searchWord.isEmpty()) {
+                        Toast.makeText(getApplicationContext(), "검색어를 입력하세요.", Toast.LENGTH_SHORT).show();
+                    } else {
+                        try {
+                            String url = GetUrl(searchWord);
+                            new AladdinOpenAPIAsyncTask().execute(url);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            Log.e("MyApp", "예외 발생: " + e.getMessage());
+                        }
+                    }
+                        return true; // 이벤트가 처리되었음을 나타냄
+                    }
+                    return false; // 이벤트가 처리되지 않았음을 나타냄
+                }
         });
 
         categoryButton.setOnClickListener(new View.OnClickListener() {
@@ -177,8 +204,9 @@ public class AladdinMainActivity extends AppCompatActivity {
 
                 adapter.notifyDataSetChanged();  // ListView에 데이터 변경 알림
 
-            } else{
-                Log.e("MyApp", "검색 결과가 없습니다.");
+                if(items.size()==0){
+                    Toast.makeText(getApplicationContext(), "검색 결과가 없습니다.", Toast.LENGTH_SHORT).show();
+                }
             }
         }
     }
@@ -200,7 +228,6 @@ public class AladdinMainActivity extends AppCompatActivity {
             String val = hm.get(key);
             sb.append(key).append("=").append(val).append("&");
         }
-
         return BASE_URL + sb.toString();
     }
 }

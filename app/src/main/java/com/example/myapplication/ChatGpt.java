@@ -83,7 +83,7 @@ public class ChatGpt extends AppCompatActivity {
         btn_send = findViewById(R.id.btn_send);
         InteractiveBtn = findViewById(R.id.InteractiveBtn);
         QuestionBtn = findViewById(R.id.QuestionBtn);
-        finishBtn = findViewById(R.id.finish_Btn);
+//        finishBtn = findViewById(R.id.finish_Btn);
         continueBtn = findViewById(R.id.continue_Btn);
 
         recycler_view.setHasFixedSize(true);
