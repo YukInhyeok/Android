@@ -31,7 +31,6 @@
                 android:text="GPT 선생님">
 
         </TextView>
-
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
