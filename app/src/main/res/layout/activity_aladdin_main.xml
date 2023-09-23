@@ -5,12 +5,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp"
+                android:background="#FFF"
     tools:context=".aladdin.AladdinMainActivity">
 
     <EditText
         android:id="@+id/searchEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:backgroundTint="#A9A9A9"
         android:hint="검색어를 입력하세요." />
 
     <ImageButton
@@ -23,13 +26,18 @@
         android:background="@null"
         android:contentDescription="검색"
         android:onClick="onSearchButtonClick"/>
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/categoryButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="80dp"
+        android:layout_height="45dp"
         android:layout_marginTop="50dp"
+        android:background="@drawable/btn"
+        android:textColor="#FF006D"
+        android:fontFamily="@font/preten_medium"
         android:text="추천도서"
-        android:layout_alignParentRight="true" />
+        android:layout_alignParentRight="true">
+
+    </androidx.appcompat.widget.AppCompatButton>
 
     <ListView
         android:id="@+id/resultListView"

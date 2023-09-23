@@ -35,40 +35,31 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ChatGpt extends AppCompatActivity {
+    // API
+    public static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
+    private static final String MY_SECRET_KEY = "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";
     RecyclerView recycler_view;
     EditText et_msg;
     Button btn_send;
-
     Button InteractiveBtn;    // 대화형
     Button QuestionBtn;       // 문제형
     ImageButton finishBtn;
     Button continueBtn;
-
     List<Message> messageList;
     MessageAdapter messageAdapter;
     JSONArray messages = new JSONArray();
-
     JSONArray assistantMessages = new JSONArray();
-
+    OkHttpClient client;
     // 독해, 문해, 어휘 저장 변수
     private String ability;
     // 요일 변수
     private String Week;
-
     private FirebaseFirestore db;
-
     private Handler mHandler;
     private Runnable mRunnable;
-
     private int ans = 0;
     private int wrong_ans = 0;
-
     private int Switch = 0;
-
-    // API
-    public static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
-    OkHttpClient client;
-    private static final String MY_SECRET_KEY = "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";
 
     //네비게이션바 설정
 
@@ -105,14 +96,13 @@ public class ChatGpt extends AppCompatActivity {
 
         // 주간 데이터
         Week = getDayOfWeek();
-        Log.d("GPT","Switch: " + Switch);
+        Log.d("GPT", "Switch: " + Switch);
 
 
-            finishBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (Switch == 1 || Switch == 2) {
-                    Log.d("GPT", "여기로 왔어요");
+        finishBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (Switch == 1 || Switch == 2) {
 
                     DocumentReference dateRef = db.collection("Chart").document(ability);
 
@@ -160,12 +150,12 @@ public class ChatGpt extends AppCompatActivity {
 
                     Intent intent = new Intent(ChatGpt.this, MainActivity.class);
                     startActivity(intent);
-                } else{
-                        Intent intent = new Intent(ChatGpt.this, MainActivity.class);
-                        startActivity(intent);
-                    }
+                } else {
+                    Intent intent = new Intent(ChatGpt.this, MainActivity.class);
+                    startActivity(intent);
+                }
             }
-            });
+        });
 
 
         btn_send.setOnClickListener(new View.OnClickListener() {
@@ -184,7 +174,7 @@ public class ChatGpt extends AppCompatActivity {
                     et_msg.setText("");
 
                     callAPI(question);
-                    continueBtn.setVisibility(View.INVISIBLE);
+                    continueBtn.setVisibility(View.GONE);
                 }
             }
         });
@@ -196,7 +186,7 @@ public class ChatGpt extends AppCompatActivity {
                 callAPI("그럼 지금부터 나랑 일상적인 대화를 통해서 내 언어능력을 평가해줘. 5마디의 대화가 끝나면 너는 반드시 나에게 언어능력 점수를 알려주어야 해");
                 InteractiveBtn.setVisibility(View.GONE);
                 QuestionBtn.setVisibility(View.GONE);
-                continueBtn.setVisibility(View.INVISIBLE);
+                continueBtn.setVisibility(View.GONE);
                 Switch = 1;
             }
         });
@@ -327,7 +317,6 @@ public class ChatGpt extends AppCompatActivity {
     }
 
     // GPT의 응답을 채팅창에 추가
-
     void addResponse(String response) {
         if (messageList.size() > 0) {
             messageList.remove(messageList.size() - 1);
@@ -672,8 +661,8 @@ public class ChatGpt extends AppCompatActivity {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 sum += document.getLong("value");
                                 count++;
-                                Log.d("GPT","sum: " + sum);
-                                Log.d("GPT","count: " + count);
+                                Log.d("GPT", "sum: " + sum);
+                                Log.d("GPT", "count: " + count);
                             }
 
                             if (count > 0) {

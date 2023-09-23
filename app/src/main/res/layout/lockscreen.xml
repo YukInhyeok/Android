@@ -1,42 +1,114 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <LinearLayout
+<FrameLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center_horizontal"
-        android:orientation="vertical">
-
-        <TextView
+        android:layout_height="match_parent">
+    <ImageView
+            android:id="@+id/rain_img"
             android:layout_width="match_parent"
-            android:layout_height="180px"
-            android:layout_marginTop="180sp"
-            android:fontFamily="@font/pretendard"
-            android:gravity="center"
-            android:text="현재는 핸드폰을 사용할 수 없습니다."
-            android:textColor="#FF0000"
-            android:textSize="24sp"
-            android:textStyle="bold"></TextView>
+            android:layout_height="match_parent"
 
-        <TextView
+            android:src="@drawable/pika"
+            android:scaleType="fitXY" />
+    <androidx.appcompat.widget.LinearLayoutCompat
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/mainLayout"
             android:layout_width="match_parent"
-            android:layout_height="180px"
-            android:fontFamily="@font/pretendard"
-            android:gravity="center"
-            android:text="문제를 해결하도록 합시다."
-            android:textSize="25sp"
-            android:textStyle="bold"></TextView>
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-        <Button
-            android:id="@+id/going_btn"
-            android:layout_width="381dp"
-            android:layout_height="200px"
-            android:layout_marginTop="250px"
-            android:fontFamily="@font/pretendard"
-            android:gravity="center"
-            android:text="앱으로 돌아가기"
-            android:textSize="28sp"></Button>
-    </LinearLayout>
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="120dp">
+            <TextView
+                    android:id="@+id/year"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="년도"
+                    android:fontFamily="@font/pretendard"
+                    android:textStyle="bold"
+                    android:textSize="30sp"
+                    android:textColor="@color/white"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"/>
+            <TextView
+                    android:id="@+id/date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="월 일 (요일)"
+                    android:fontFamily="@font/pretendard"
+                    android:textSize="25sp"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
+                    android:layout_centerHorizontal="true"
+                    android:layout_alignParentBottom="true"/>
+        </RelativeLayout>
+        <LinearLayout
+                android:id="@+id/weater_layout"
+                android:layout_width="match_parent"
+                android:layout_height="130dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+            <DigitalClock
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:fontFamily="@font/pretendard"
+                    android:textStyle="bold"
+                    android:textColor="@color/white"
+                    android:textSize="40sp"/>
+        </LinearLayout>
+        <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+            <RelativeLayout
+                    android:layout_width="330dp"
+                    android:layout_height="90dp"
+                    android:background="@drawable/glass_background"
+                    android:layout_centerHorizontal="true"
+                    android:elevation="8dp">
+                <TextView
+                        android:id="@+id/weather_description"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="날씨 상태"
+                        android:fontFamily="@font/pretendard"
+                        android:textSize="15sp"
+                        android:textColor="@color/white"
+                        android:textStyle="bold"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginStart="90dp"/>
+                <TextView
+                        android:id="@+id/temperature"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/weather_description"
+                        android:text="온도"
+                        android:textColor="@color/white"
+                        android:fontFamily="@font/pretendard"
+                        android:textSize="10sp"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginStart="90dp" />
+                <TextView
+                        android:id="@+id/humidity"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/temperature"
+                        android:text="습도"
+                        android:textColor="@color/white"
+                        android:fontFamily="@font/pretendard"
+                        android:textSize="10sp"
+                        android:layout_marginStart="90dp" />
+                <ImageView
+                        android:id="@+id/weatherImageView"
+                        android:layout_width="52dp"
+                        android:layout_height="52dp"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginEnd="10dp"/>
+            </RelativeLayout>
+        </RelativeLayout>
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+</FrameLayout>

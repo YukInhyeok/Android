@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -63,7 +64,7 @@ public class MyInfo extends AppCompatActivity {
 
     private TextView score_text, today_score, date_view, day_view;
 
-    private LinearLayout BookBtn;
+    private RelativeLayout BookBtn;
 
     private static final String WEEKLY_RESET_PREF = "WeeklyResetAlarmPref";
     private static final String WEEKLY_RESET_ALARM_SET = "WeeklyResetAlarmSet";

@@ -362,6 +362,14 @@ public class MainActivity extends AppCompatActivity{
         builder.show();
     }
 
+    private void requestUsageStatsPermission() {
+        if (!hasUsageStatsPermission(getApplicationContext())) {
+            Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS,
+                    Uri.parse("package:" + getPackageName()));
+            startActivityForResult(intent, 100);
+        }
+    }
+
     private void requestOverlayPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (!Settings.canDrawOverlays(this)) {
@@ -379,12 +387,6 @@ public class MainActivity extends AppCompatActivity{
             if (!Settings.canDrawOverlays(this)) {
                 showPermissionDialog();
             }
-        }
-    }
-
-    private void requestUsageStatsPermission() {
-        if (!hasUsageStatsPermission(getApplicationContext())) {
-            startActivity(new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS));
         }
     }
 
@@ -542,7 +544,7 @@ public class MainActivity extends AppCompatActivity{
         @Override
         public void onReceive(Context context, Intent intent) {
             long appUsageTime = intent.getLongExtra(APP_USAGE_TIME_KEY, 0);
-            // 사용 시간 정보를 처리하는 코드를 여기에 작성하십시오.
+
             fetchLimitTime(appUsageTime);
         }
     };
