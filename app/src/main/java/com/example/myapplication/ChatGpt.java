@@ -83,7 +83,7 @@ public class ChatGpt extends AppCompatActivity {
         btn_send = findViewById(R.id.btn_send);
         InteractiveBtn = findViewById(R.id.InteractiveBtn);
         QuestionBtn = findViewById(R.id.QuestionBtn);
-//        finishBtn = findViewById(R.id.finish_Btn);
+        finishBtn = findViewById(R.id.finish_Btn);
         continueBtn = findViewById(R.id.continue_Btn);
 
         recycler_view.setHasFixedSize(true);
@@ -203,7 +203,9 @@ public class ChatGpt extends AppCompatActivity {
 
                     callAPI_V2(question);
                     continueBtn.setVisibility(View.VISIBLE);
-                } else if (Switch == 1) {
+                }
+                // 필요없는것 같음
+                else if (Switch == 1) {
                     String question = et_msg.getText().toString().trim();
                     addToChat(question, Message.SENT_BY_ME);
                     et_msg.setText("");
