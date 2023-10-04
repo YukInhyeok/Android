@@ -61,9 +61,9 @@ public class ChatGpt extends AppCompatActivity {
     private int wrong_ans = 0;
     private int Switch = 0;
 
-    private String prompt_lit = "안녕";
-    private String prompt_read = "Hello";
-    private String prompt_voc = "어휘력 문제 내줘";
+    private String prompt_lit = "나와 이야기 하며 문해력 점수를 판단해줘. 시작";
+    private String prompt_read = "나와 이야기 하며 독해력 점수를 판단해줘. 시작";
+    private String prompt_voc = "나와 이야기 하며 어휘력 점수를 판단해줘. 시작";
 
 
     //네비게이션바 설정
@@ -408,19 +408,44 @@ public class ChatGpt extends AppCompatActivity {
         //okhttp
         messageList.add(new Message("...", Message.SENT_BY_BOT));
 
-        JSONObject baseAi = new JSONObject();
-        JSONObject userMsg = new JSONObject();
         try {
-            //AI 속성설정
-            baseAi.put("role", "user");
-            baseAi.put("content", "");
-            //유저 메세지
+            // system message
+            JSONObject systemMessage = new JSONObject();
+            systemMessage.put("role", "system");
+            systemMessage.put("content", "당신은 한국어 선생님입니다. 당신은 모든 말에 명확한 대답을 할 수 있으며, 유저의 언어 구사력을 정확하게 판단할 수 있습니다. 유저가 채팅한 내용을 바탕으로 5마디가 끝나면 반드시 점수를 판단해서 알려주어야 합니다. 점수는 100점 만점 입니다.");
+
+            // user message
+            JSONObject userMessage1 = new JSONObject();
+            userMessage1.put("role", "user");
+            userMessage1.put("content", "시작");
+
+            // assistant message
+            JSONObject assistantMsg1 = new JSONObject();
+            assistantMsg1.put("role", "assistant");
+            assistantMsg1.put("content", "안녕하세요 오늘 날씨가 어때요?");
+
+            JSONObject userMessage2 = new JSONObject();
+            userMessage2.put("role", "user");
+            userMessage2.put("content", "오늘 날씨는 흐려. 곧 비가 올 것 같아");
+
+            JSONObject assistantMsg2 = new JSONObject();
+            assistantMsg2.put("role", "assistant");
+            assistantMsg2.put("content", "비가 오면 우산을 챙기는 게 좋겠네요. 사용자님은 비 오는 날씨를 어떻게 보내시나요?");
+
+
+            JSONObject userMsg = new JSONObject();
             userMsg.put("role", "user");
             userMsg.put("content", question);
 
-            if (messages.length() == 0)
-                messages.put(baseAi);
+            if (messages.length() == 0) {
+                messages.put(systemMessage);
+                messages.put(userMessage1);
+                messages.put(assistantMsg1);
+                messages.put(userMessage2);
+                messages.put(assistantMsg2);
+            }
             messages.put(userMsg);
+
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
