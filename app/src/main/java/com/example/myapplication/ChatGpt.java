@@ -1,6 +1,5 @@
 package com.example.myapplication;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -61,10 +60,15 @@ public class ChatGpt extends AppCompatActivity {
 
     private int Switch = 0;
 
+    //프롬프트
+    private String prompt_lit = "여우";
+    private String prompt_read = "말";
+    private String prompt_voc = "병아리";
+
     // API
     public static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
     OkHttpClient client;
-    private static final String MY_SECRET_KEY = "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";
+    private static final String MY_SECRET_KEY = "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";
 
     //네비게이션바 설정
 
@@ -107,31 +111,60 @@ public class ChatGpt extends AppCompatActivity {
         finishBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (Switch == 1 || Switch == 2) {
-                    Log.d("GPT", "여기로 왔어요");
-
+                if(Switch == 1){
+                    Log.d("GPT", "대화형 ability: " + ability);
+                    int score = mark_interactive(assistantMessages);
                     DocumentReference dateRef = db.collection("Chart").document(ability);
+                    dateRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                @Override
+                                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                    Integer value = documentSnapshot.contains("value") ? documentSnapshot.getLong("value").intValue() : 0;
+                                    Integer currentCount = documentSnapshot.contains("count") ? documentSnapshot.getLong("count").intValue() : 0;
 
-                    dateRef
-                            .get()
-                            .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                    long newValue = (score + value) / 2;
+                                    Map<String, Object> newData = new HashMap<>(documentSnapshot.getData());
+                                    newData.put("value", Math.round(newValue));
+                                    dateRef.set(newData).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    Log.d("Firestore", "Value and count were successfully updated!");
+                                                    // 업데이트 후에 평균을 계산하고 저장
+                                                    saveWeeklyAverage();
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Log.w("Firestore", "Error updating data", e);
+                                                }
+                                            });
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.w("Firestore", "Error getting document", e);
+                                }
+                            });
+                    finish();
+                }
+
+                else if (Switch == 2) {
+                    Log.d("GPT", "문제형 ability: " + ability);
+                    DocumentReference dateRef = db.collection("Chart").document(ability);
+                    dateRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                                 @Override
                                 public void onSuccess(DocumentSnapshot documentSnapshot) {
                                     Integer ans = documentSnapshot.contains("ans") ? documentSnapshot.getLong("ans").intValue() : 0;
                                     Integer currentCount = documentSnapshot.contains("count") ? documentSnapshot.getLong("count").intValue() : 0;
-                                    Integer wrong_ans = documentSnapshot.contains("wrong_ans") ? documentSnapshot.getLong("wrong_ans").intValue() : 0;
 
                                     float newValue = (float) ans / (currentCount) * 100;
 
                                     // 데이터 갱신
                                     Map<String, Object> newData = new HashMap<>(documentSnapshot.getData());
                                     newData.put("value", Math.round(newValue));
-                                    newData.put("count", currentCount);
-                                    newData.put("ans", ans);
-                                    newData.put("wrong_ans", wrong_ans);
-                                    dateRef
-                                            .set(newData)
-                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+
+                                    dateRef.set(newData).addOnSuccessListener(new OnSuccessListener<Void>() {
                                                 @Override
                                                 public void onSuccess(Void aVoid) {
                                                     Log.d("Firestore", "Value and count were successfully updated!");
@@ -154,11 +187,10 @@ public class ChatGpt extends AppCompatActivity {
                                 }
                             });
 
-                    Intent intent = new Intent(ChatGpt.this, MainActivity.class);
-                    startActivity(intent);
-                } else{
-                    Intent intent = new Intent(ChatGpt.this, MainActivity.class);
-                    startActivity(intent);
+                    finish();
+                } else {
+
+                    finish();
                 }
             }
         });
@@ -189,11 +221,52 @@ public class ChatGpt extends AppCompatActivity {
         InteractiveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                callAPI("그럼 지금부터 나랑 일상적인 대화를 통해서 내 언어능력을 평가해줘. 5마디의 대화가 끝나면 너는 반드시 나에게 언어능력 점수를 알려주어야 해");
-                InteractiveBtn.setVisibility(View.GONE);
-                QuestionBtn.setVisibility(View.GONE);
-                continueBtn.setVisibility(View.INVISIBLE);
-                Switch = 1;
+                FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+                // 각 과목별 점수 읽기
+                Task<DocumentSnapshot> taskVocabulary = db.collection("Chart").document("vocabulary").get();
+                Task<DocumentSnapshot> taskLiteracy = db.collection("Chart").document("literacy").get();
+                Task<DocumentSnapshot> taskReading = db.collection("Chart").document("read").get();
+
+                Tasks.whenAllSuccess(taskVocabulary, taskLiteracy, taskReading).addOnSuccessListener(new OnSuccessListener<List<Object>>() {
+                    @Override
+                    public void onSuccess(List<Object> objects) {
+                        int vocabularyScore = ((DocumentSnapshot) objects.get(0)).getLong("value").intValue();
+                        int literacyScore = ((DocumentSnapshot) objects.get(1)).getLong("value").intValue();
+                        int readingScore = ((DocumentSnapshot) objects.get(2)).getLong("value").intValue();
+
+                        // 가장 낮은 점수 찾기
+                        int minScore = Math.min(vocabularyScore, Math.min(literacyScore, readingScore));
+
+                        List<String> lowScoringSubjects = new ArrayList<>();
+
+                        if (vocabularyScore == minScore) lowScoringSubjects.add(prompt_voc);
+                        if (literacyScore == minScore) lowScoringSubjects.add(prompt_lit);
+                        if (readingScore == minScore) lowScoringSubjects.add(prompt_read);
+
+                        InteractiveBtn.setVisibility(View.GONE);
+                        QuestionBtn.setVisibility(View.GONE);
+                        continueBtn.setVisibility(View.GONE);
+                        Switch = 1;
+
+                        if (lowScoringSubjects.size() > 0) {
+                            // 랜덤하게 선택한 과목의 문제를 출제
+                            Random random = new Random();
+                            int randomIndex = random.nextInt(lowScoringSubjects.size());
+                            String selectedPrompt = lowScoringSubjects.get(randomIndex);
+                            callAPI(selectedPrompt);
+
+                            // 선택된 과목을 ability 변수에 할당
+                            if (selectedPrompt.equals(prompt_voc)) {
+                                ability = "vocabulary";
+                            } else if (selectedPrompt.equals(prompt_lit)) {
+                                ability = "literacy";
+                            } else if (selectedPrompt.equals(prompt_read)) {
+                                ability = "read";
+                            }
+                        }
+                    }
+                });
             }
         });
 
@@ -333,21 +406,65 @@ public class ChatGpt extends AppCompatActivity {
 
     void callAPI(String question) {
         //okhttp
+//        messageList.add(new Message("...", Message.SENT_BY_BOT));
+//
+//        JSONObject baseAi = new JSONObject();
+//        JSONObject userMsg = new JSONObject();
+//        try {
+//            //AI 속성설정
+//            baseAi.put("role", "user");
+//            baseAi.put("content", "너 나랑 5마디 대화를 주고받으며 내 언어능력을 점수로 평가할 정도로 똑똑해? (점수는 100점 만점이야)");
+//            //유저 메세지
+//            userMsg.put("role", "user");
+//            userMsg.put("content", question);
+//
+//            if (messages.length() == 0)
+//                messages.put(baseAi);
+//            messages.put(userMsg);
+//        } catch (JSONException e) {
+//            throw new RuntimeException(e);
+//        }
+
+        //okhttp
         messageList.add(new Message("...", Message.SENT_BY_BOT));
 
-        JSONObject baseAi = new JSONObject();
-        JSONObject userMsg = new JSONObject();
         try {
-            //AI 속성설정
-            baseAi.put("role", "user");
-            baseAi.put("content", "너 나랑 5마디 대화를 주고받으며 내 언어능력을 점수로 평가할 정도로 똑똑해? (점수는 100점 만점이야)");
-            //유저 메세지
+            // system message
+            JSONObject systemMessage = new JSONObject();
+            systemMessage.put("role", "system");
+            systemMessage.put("content", "동물 소리를 내줘");
+
+            // user message
+            JSONObject userMessage1 = new JSONObject();
+            userMessage1.put("role", "user");
+            userMessage1.put("content", "강아지");
+
+            // assistant message
+            JSONObject assistantMsg = new JSONObject();
+            assistantMsg.put("role", "assistant");
+            assistantMsg.put("content", "멍멍");
+
+            JSONObject userMessage2 = new JSONObject();
+            userMessage2.put("role", "user");
+            userMessage2.put("content", "고양이");
+
+            JSONObject assistantMsg1 = new JSONObject();
+            assistantMsg1.put("role", "assistant");
+            assistantMsg1.put("content", "야옹");
+
+            // second user message (question from the method parameter)
+            JSONObject userMsg = new JSONObject();
             userMsg.put("role", "user");
             userMsg.put("content", question);
 
             if (messages.length() == 0)
-                messages.put(baseAi);
+                messages.put(systemMessage);
+            messages.put(userMessage1);
+            messages.put(userMessage2);
+            messages.put(assistantMsg);
+            messages.put(assistantMsg1);
             messages.put(userMsg);
+
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
@@ -357,6 +474,9 @@ public class ChatGpt extends AppCompatActivity {
             //모델명
             object.put("model", "gpt-3.5-turbo");
             object.put("messages", messages);
+            object.put("max_tokens", 150);
+            object.put("temperature", 0.9);
+            object.put("top_p", 0.8);
 
         } catch (JSONException e) {
             e.printStackTrace();
