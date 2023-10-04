@@ -61,7 +61,7 @@ public class ChatGpt extends AppCompatActivity {
     private int Switch = 0;
 
     //프롬프트
-    private String prompt_lit = "여우";
+    private String prompt_lit = "삼";
     private String prompt_read = "말";
     private String prompt_voc = "병아리";
 
@@ -432,37 +432,38 @@ public class ChatGpt extends AppCompatActivity {
             // system message
             JSONObject systemMessage = new JSONObject();
             systemMessage.put("role", "system");
-            systemMessage.put("content", "동물 소리를 내줘");
+            systemMessage.put("content", "내 말을 이어서 사자성어를 말해줘");
 
             // user message
             JSONObject userMessage1 = new JSONObject();
             userMessage1.put("role", "user");
-            userMessage1.put("content", "강아지");
+            userMessage1.put("content", "일");
 
             // assistant message
             JSONObject assistantMsg = new JSONObject();
             assistantMsg.put("role", "assistant");
-            assistantMsg.put("content", "멍멍");
+            assistantMsg.put("content", "일취월장");
 
             JSONObject userMessage2 = new JSONObject();
             userMessage2.put("role", "user");
-            userMessage2.put("content", "고양이");
+            userMessage2.put("content", "이");
 
             JSONObject assistantMsg1 = new JSONObject();
             assistantMsg1.put("role", "assistant");
-            assistantMsg1.put("content", "야옹");
+            assistantMsg1.put("content", "이이제이");
 
             // second user message (question from the method parameter)
             JSONObject userMsg = new JSONObject();
             userMsg.put("role", "user");
             userMsg.put("content", question);
 
-            if (messages.length() == 0)
+            if (messages.length() == 0) {
                 messages.put(systemMessage);
-            messages.put(userMessage1);
-            messages.put(userMessage2);
-            messages.put(assistantMsg);
-            messages.put(assistantMsg1);
+                messages.put(userMessage1);
+                messages.put(userMessage2);
+                messages.put(assistantMsg);
+                messages.put(assistantMsg1);
+            }
             messages.put(userMsg);
 
         } catch (JSONException e) {
@@ -474,7 +475,7 @@ public class ChatGpt extends AppCompatActivity {
             //모델명
             object.put("model", "gpt-3.5-turbo");
             object.put("messages", messages);
-            object.put("max_tokens", 150);
+            object.put("max_tokens", 4096);
             object.put("temperature", 0.9);
             object.put("top_p", 0.8);
 
