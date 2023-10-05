@@ -7,61 +7,60 @@
             android:id="@+id/rain_img"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-
-            android:src="@drawable/pika"
+            android:src="@drawable/rain"
             android:scaleType="fitXY" />
-    <androidx.appcompat.widget.LinearLayoutCompat
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/mainLayout"
+<androidx.appcompat.widget.LinearLayoutCompat
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/mainLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="120dp">
+        <TextView
+                android:id="@+id/year"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="년도"
+                android:fontFamily="@font/pretendard"
+                android:textStyle="bold"
+                android:textSize="30sp"
+                android:textColor="@color/white"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"/>
+        <TextView
+                android:id="@+id/date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="월 일 (요일)"
+                android:fontFamily="@font/pretendard"
+                android:textSize="25sp"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:layout_centerHorizontal="true"
+                android:layout_alignParentBottom="true"/>
+    </RelativeLayout>
+    <LinearLayout
+            android:id="@+id/weater_layout"
+            android:layout_width="match_parent"
+            android:layout_height="130dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+        <DigitalClock
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:fontFamily="@font/pretendard"
+                android:textStyle="bold"
+                android:textColor="@color/white"
+                android:textSize="40sp"/>
+    </LinearLayout>
+    <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
-
-        <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="120dp">
-            <TextView
-                    android:id="@+id/year"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="년도"
-                    android:fontFamily="@font/pretendard"
-                    android:textStyle="bold"
-                    android:textSize="30sp"
-                    android:textColor="@color/white"
-                    android:layout_centerHorizontal="true"
-                    android:layout_centerVertical="true"/>
-            <TextView
-                    android:id="@+id/date"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="월 일 (요일)"
-                    android:fontFamily="@font/pretendard"
-                    android:textSize="25sp"
-                    android:textColor="@color/white"
-                    android:textStyle="bold"
-                    android:layout_centerHorizontal="true"
-                    android:layout_alignParentBottom="true"/>
-        </RelativeLayout>
-        <LinearLayout
-                android:id="@+id/weater_layout"
-                android:layout_width="match_parent"
-                android:layout_height="130dp"
-                android:gravity="center"
-                android:orientation="horizontal">
-            <DigitalClock
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:fontFamily="@font/pretendard"
-                    android:textStyle="bold"
-                    android:textColor="@color/white"
-                    android:textSize="40sp"/>
-        </LinearLayout>
-        <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
+            android:orientation="horizontal">
             <RelativeLayout
                     android:layout_width="330dp"
                     android:layout_height="90dp"
@@ -108,7 +107,7 @@
                         android:layout_marginStart="20dp"
                         android:layout_marginEnd="10dp"/>
             </RelativeLayout>
-        </RelativeLayout>
+    </RelativeLayout>
 
-    </androidx.appcompat.widget.LinearLayoutCompat>
+</androidx.appcompat.widget.LinearLayoutCompat>
 </FrameLayout>

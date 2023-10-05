@@ -1,8 +1,6 @@
 package com.example.myapplication;
 
-import android.app.AlarmManager;
 import android.app.AppOpsManager;
-import android.app.PendingIntent;
 import android.app.usage.UsageStats;
 import android.app.usage.UsageStatsManager;
 import android.content.*;
@@ -18,6 +16,7 @@ import android.util.TypedValue;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
@@ -25,8 +24,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import com.example.myapplication.aladdin.AladdinMainActivity;
 import com.example.myapplication.book.BookMainActivity;
-import com.example.myapplication.book.ResetCountReceiver;
 import com.example.myapplication.screen.MyForegroundService;
 import com.example.myapplication.screen.ScreenOnReceiver;
 import com.github.mikephil.charting.charts.BarChart;
@@ -35,18 +34,17 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.*;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.*;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity{
@@ -83,6 +81,12 @@ public class MainActivity extends AppCompatActivity{
 
     private int timeValue = 0;
 
+    private long totalTime = 0;
+
+    //알라딘
+    private RelativeLayout aladdinLayout;
+
+    private BarChart barChart;
 
 
     @Override
@@ -98,11 +102,18 @@ public class MainActivity extends AppCompatActivity{
         IntentFilter screenOnFilter = new IntentFilter(Intent.ACTION_SCREEN_ON);
         registerReceiver(screenOnReceiver, screenOnFilter);
 
+        // 앱 사용시간 자정 초기화
+        initializeAppUsageTimeAtMidnight();
+        Log.d("MainActivity","앱 사용시간 초기화 예약 성공");
+
         //일일 솔루션
         Today_Sol = findViewById(R.id.today_sol);
 
         //firebase
         db = FirebaseFirestore.getInstance();
+
+        //알라딘 버튼
+        aladdinLayout = findViewById(R.id.book_button);
 
         //Foreground 설정
         Intent serviceIntent = new Intent(this, MyForegroundService.class);
@@ -141,12 +152,11 @@ public class MainActivity extends AppCompatActivity{
         bottomNavigationView.setSelectedItemId(R.id.menu_home);
 
         // 레이더 차트 추가
-        BarChart barChart = findViewById(R.id.chart);
+        barChart = findViewById(R.id.chart);
         setData(barChart);
 
         //독후감 관련
         bookNum = findViewById(R.id.book_text);
-        setAlarmToResetCount();
         fetchFinishBookNum();
 
         // 제한 시간
@@ -197,10 +207,17 @@ public class MainActivity extends AppCompatActivity{
 
             @Override
             public void onNothingSelected() {
-
+                // 막대를 선택하지 않았을 때의 동작을 정의
             }
         });
-//=========================================================================================================
+
+//        aladdinLayout.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent intent = new Intent(MainActivity.this, AladdinMainActivity.class);
+//                startActivity(intent);
+//            }
+//        });
 
         //앱 종료 확인
         ExitApp();
@@ -514,26 +531,6 @@ public class MainActivity extends AppCompatActivity{
         // BroadcastReceiver 해제
         unregisterReceiver(appUsageTimeReceiver);
     }
-
-    private void setAlarmToResetCount() {
-        AlarmManager alarmMgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(this, ResetCountReceiver.class);
-
-        PendingIntent alarmIntent;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            alarmIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-        } else {
-            alarmIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        }
-
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(System.currentTimeMillis());
-        calendar.set(Calendar.HOUR_OF_DAY, 0);
-        calendar.add(Calendar.DAY_OF_YEAR, 1);
-
-        alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
-                AlarmManager.INTERVAL_DAY, alarmIntent);
-    }
 //===============================================================================================================
 
 
@@ -572,8 +569,6 @@ public class MainActivity extends AppCompatActivity{
                 startTime,
                 currentTime
         );
-
-        long totalTime = 0;
 
         if (usageStatsList != null) {
             for (UsageStats usageStats : usageStatsList) {
@@ -621,6 +616,8 @@ public class MainActivity extends AppCompatActivity{
     private void requestOrCheckPermission() {
         updateAppUsageTime();
     }
+
+    // 어플 사용시간 가져오기
 
     private void updateAppUsageTime() {
         long elapsedTime = System.currentTimeMillis() - appUsageTimeStart; // 어플 사용 시작 시간으로부터 경과한 시간 계산
@@ -700,5 +697,27 @@ public class MainActivity extends AppCompatActivity{
                         Log.e("MainActivity", "Error updating app usage time", e);
                     }
                 });
+    }
+    // 추가: 자정까지 남은 시간을 계산하고 초기화를 수행하는 메서드
+    private void initializeAppUsageTimeAtMidnight() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+
+        // 자정까지 남은 시간을 계산합니다.
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        long timeUntilMidnight = calendar.getTimeInMillis() + 24 * 60 * 60 * 1000 - System.currentTimeMillis();
+
+        // 계산된 시간만큼 대기 후 초기화를 수행합니다.
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                // 초기화 작업을 수행합니다.
+                totalTime = 0;
+                Log.d("MainActivity", "Total time reset to 0 at midnight.");
+            }
+        }, timeUntilMidnight);
     }
 }

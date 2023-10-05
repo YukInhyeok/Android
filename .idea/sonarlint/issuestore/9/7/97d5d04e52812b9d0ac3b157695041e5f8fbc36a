@@ -1,0 +1,86 @@
+
+j
+java:S1192i"MDefine a constant instead of duplicating this literal "MainActivity" 9 times.(ÈÚ’8•ËˆÎ¯1
+k
+java:S1192Ò"MDefine a constant instead of duplicating this literal "listen:error" 3 times.(÷‘³´8•ËˆÎ¯1
+M
+java:S1066„"/Merge this if statement with the enclosing one.(ŞòÓ«8›ËˆÎ¯1
+M
+java:S1066"/Merge this if statement with the enclosing one.(ŞòÓ«8›ËˆÎ¯1
+J
+java:S1604~"(Make this anonymous inner class a lambda(õßØµüÿÿÿÿ8ŸËˆÎ¯1
+F
+java:S1604Ö"(Make this anonymous inner class a lambda(Š’Ñ¼8¥µ”Î¯1
+F
+java:S1604Ÿ"(Make this anonymous inner class a lambda(¾ı»ï8¡ËˆÎ¯1
+K
+java:S1604ğ"(Make this anonymous inner class a lambda(İú‰¿ÿÿÿÿÿ8£ËˆÎ¯1
+F
+java:S1604ø"(Make this anonymous inner class a lambda(øæ˜8¥ËˆÎ¯1
+K
+java:S1604¯"(Make this anonymous inner class a lambda(¯‘àçúÿÿÿÿ8§ËˆÎ¯1
+F
+java:S1604Í"(Make this anonymous inner class a lambda(Ğ±°Ô8©ËˆÎ¯1
+F
+java:S1604á"(Make this anonymous inner class a lambda(Ğ±°Ô8«ËˆÎ¯1
+F
+java:S1604ù"(Make this anonymous inner class a lambda(Ğ±°Ô8­ËˆÎ¯1
+F
+java:S1604Œ"(Make this anonymous inner class a lambda(Ÿíé8¯ËˆÎ¯1
+K
+java:S1604”"(Make this anonymous inner class a lambda(àëÈûÿÿÿÿ8·ËˆÎ¯1
+K
+java:S1604´"(Make this anonymous inner class a lambda(Ïë£ùÿÿÿÿ8¹ËˆÎ¯1
+K
+java:S1604º"(Make this anonymous inner class a lambda(Ÿ ¹ÿÿÿÿÿ8»ËˆÎ¯1
+F
+java:S1604Î"(Make this anonymous inner class a lambda(„ÑñŒ8¼ËˆÎ¯1
+_
+java:S2184£"ACast one of the operands of this addition operation to a "float".(µ›ÓŞ8ÅËˆÎ¯1
+c
+java:S2184û"FCast one of the operands of this multiplication operation to a "long".(ë€©8ÊËˆÎ¯1
+u	java:S1167"TRename this field "Today_Sol" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ŠúÔÒşÿÿÿÿ8ºŞÎ¯1
+u	java:S116O"YRename this field "score_textview" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(••Ğİ8ºŞÎ¯1
+¤
+java:S1186§"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(œƒƒ©ùÿÿÿÿ8ÁŞÎ¯1
+~
+java:S1450W"\Remove the "aladdinLayout" field and declare it as a local variable in the relevant methods.(šÔÅ¹ıÿÿÿÿ8ÅŞÎ¯1
+€
+java:S14504"cRemove the "bottomNavigationView" field and declare it as a local variable in the relevant methods.(ê¥ÎÚ8ÆŞÎ¯1
+m
+java:S1874~"KRemove this use of "setOnNavigationItemSelectedListener"; it is deprecated.(õßØµüÿÿÿÿ8ÜŞÎ¯1
+Y	java:S125®"<This block of commented-out lines of code should be removed.(ËïçÏ8ëŞÎ¯1
+[
+java:S1874‡">Remove this use of "startActivityForResult"; it is deprecated.(Ö­Ìa8öŞÎ¯1
+\
+java:S1874š">Remove this use of "startActivityForResult"; it is deprecated.(›ôüš8øŞÎ¯1
+T
+java:S1874 "6Remove this use of "checkOpNoThrow"; it is deprecated.(£ƒóÔ8ùŞÎ¯1
+m
+java:S1874§"JDon't override a deprecated method or explicitly mark it as "@Deprecated".(œƒƒ©ùÿÿÿÿ8úŞÎ¯1
+]
+java:S1161§":Add the "@Override" annotation above this method signature(œƒƒ©ùÿÿÿÿ8ûŞÎ¯1
+X
+java:S3985Å"5Remove this unused private "FirestoreCallback" class.(›°¨¸úÿÿÿÿ8ÿŞÎ¯1
+Y
+java:S1117Ë"6Rename "db" which hides the field declared at line 57.(ôï¼ÿúÿÿÿÿ8€ßÎ¯1
+Y
+java:S1117ß"6Rename "db" which hides the field declared at line 57.(ôï¼ÿúÿÿÿÿ8…ßÎ¯1
+Y
+java:S1117ö"6Rename "db" which hides the field declared at line 57.(ôï¼ÿúÿÿÿÿ8‰ßÎ¯1
+c
+java:S1117£"@Rename "appUsageTime" which hides the field declared at line 66.(ßüëûÿÿÿÿÿ8˜ßÎ¯1
+k	java:S100"NRename this method name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ÿìí8¤ßÎ¯1
+g
+java:S1117 "IRename "formattedAppUsageTime" which hides the field declared at line 75.(‡ŒÉ‡8¥ßÎ¯1
+d
+java:S1117¡"ARename "finishBooknum" which hides the field declared at line 61.(ôÍŸÌùÿÿÿÿ8ºÏˆÎ¯1
+`
+java:S1117¢"=Rename "timeValue" which hides the field declared at line 82.(íê…ªüÿÿÿÿ8ºÏˆÎ¯1
+Y
+java:S1117£";Rename "workNum" which hides the field declared at line 62.(ˆşÔ8»ÏˆÎ¯1
+p	java:S100°"NRename this method name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(–Éüÿÿÿÿ8§ßÎ¯1
+M
+java:S1874Î"/Remove this use of "Handler"; it is deprecated.(„ÑñŒ8¯ßÎ¯1
+N
+java:S1144á"0Remove this unused private "showMessage" method.(ììÛé8°ßÎ¯1

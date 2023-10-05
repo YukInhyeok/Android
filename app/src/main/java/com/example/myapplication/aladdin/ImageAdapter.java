@@ -22,6 +22,7 @@ public class ImageAdapter extends ArrayAdapter<Item> {
         super(context, R.layout.my_list_item_layout, items);
         this.context = context;
         this.items = items;
+
     }
 
     @Override

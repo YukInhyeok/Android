@@ -10,21 +10,17 @@
 
 
     <application
-            android:allowBackup="true"
-            android:dataExtractionRules="@xml/data_extraction_rules"
-            android:fullBackupContent="@xml/backup_rules"
-            android:icon="@mipmap/ic_launcher"
-            android:label="AI와 함께하는 생활"
-            android:roundIcon="@mipmap/ic_launcher_round"
-            android:supportsRtl="true"
-            android:theme="@style/Theme.MyApplication"
-            android:usesCleartextTraffic="true"
-            android:enableOnBackInvokedCallback="true"
-            tools:targetApi="31">
-        <receiver android:name=".book.ResetCountReceiver"
-                  android:enabled="true"
-                  android:exported="true">
-        </receiver>
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="AI와 함께하는 생활"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.MyApplication"
+        android:usesCleartextTraffic="true"
+        android:enableOnBackInvokedCallback="true"
+        tools:targetApi="31">
         <receiver
                 android:name=".screen.ScreenOnReceiver"
                 android:exported="true">

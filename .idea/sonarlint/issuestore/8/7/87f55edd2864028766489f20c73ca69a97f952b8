@@ -1,0 +1,33 @@
+
+k
+java:S1192?"IUse already-defined constant 'TAG' instead of duplicating its value here.(òäËÅúÿÿÿÿ8Œÿ—Ü«1
+J
+java:S1604d"(Make this anonymous inner class a lambda(õßØµüÿÿÿÿ8ÿ—Ü«1
+K
+java:S1604¯"(Make this anonymous inner class a lambda(â’âßøÿÿÿÿ8ÁœÜ«1
+K
+java:S1604¸"(Make this anonymous inner class a lambda(œÁÈÌşÿÿÿÿ8ÁœÜ«1
+€
+java:S1450"cRemove the "bottomNavigationView" field and declare it as a local variable in the relevant methods.(ê¥ÎÚ8¦ÿ—Ü«1
+z
+java:S1450'"XRemove the "firestore" field and declare it as a local variable in the relevant methods.(ñ ±³ûÿÿÿÿ8æœÜ«1
+v
+java:S1450("TRemove the "prefs" field and declare it as a local variable in the relevant methods.(©¿Ëˆıÿÿÿÿ8çœÜ«1
+]
+java:S1874;"@Remove this use of "setOnTabSelectedListener"; it is deprecated.(ì‘½À8·ÿ—Ü«1
+£
+java:S1186K"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(½Ä³ïşÿÿÿÿ8·ÿ—Ü«1
+
+java:S1186P"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(¦›Í8·ÿ—Ü«1
+m
+java:S1874d"KRemove this use of "setOnNavigationItemSelectedListener"; it is deprecated.(õßØµüÿÿÿÿ8ºÿ—Ü«1
+X
+java:S1161„":Add the "@Override" annotation above this method signature(ÍÙ÷¢8Æÿ—Ü«1
+\
+java:S1117"9Rename "prefs" which hides the field declared at line 40.(›ï–üÿÿÿÿ8”œÜ«1
+`
+java:S1117"=Rename "firestore" which hides the field declared at line 39.(ÁÙÌŸùÿÿÿÿ8”œÜ«1
+O
+java:S1068$"3Remove this unused "KEY_LAST_UPDATE" private field.(…ºÕ38Ìÿ—Ü«1
+K
+java:S1068(")Remove this unused "prefs" private field.(©¿Ëˆıÿÿÿÿ8šœÜ«1

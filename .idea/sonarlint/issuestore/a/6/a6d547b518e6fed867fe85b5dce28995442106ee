@@ -1,0 +1,15 @@
+
+P
+java:S1118":Add a private constructor to hide the implicit public one.(¼Øûì
+S
+java:S1874	"=Remove this use of "getSystemUiVisibility"; it is deprecated.(âçÏŠ
+]
+java:S1874"GRemove this use of "SYSTEM_UI_FLAG_IMMERSIVE_STICKY"; it is deprecated.(íñ×Æ
+a
+java:S1874"FRemove this use of "SYSTEM_UI_FLAG_HIDE_NAVIGATION"; it is deprecated.(¼¥ˆïþÿÿÿÿ
+\
+java:S1874"ARemove this use of "SYSTEM_UI_FLAG_FULLSCREEN"; it is deprecated.(¥Òû¼ÿÿÿÿÿ
+b
+java:S1874"GRemove this use of "SYSTEM_UI_FLAG_IMMERSIVE_STICKY"; it is deprecated.(ø¿—êÿÿÿÿÿ
+X
+java:S1874"=Remove this use of "setSystemUiVisibility"; it is deprecated.(”Ï‰òþÿÿÿÿ

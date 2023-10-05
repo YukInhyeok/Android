@@ -40,7 +40,6 @@ public class AladdinMainActivity extends AppCompatActivity {
     private Button categoryButton;
 
     private ListView resultListView;
-    //    private ArrayAdapter<String> adapter;
     private ImageAdapter adapter;
 
     private List<Item> searchResults = new ArrayList<>();

@@ -32,11 +32,8 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
-import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
-import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
-import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -134,7 +131,7 @@ public class MyInfo extends AppCompatActivity {
 
         if (!isAlarmSet) {
             long initialDelay = calculateDelayForNextMonday();
-             resetWeeklyWorkRequest =
+            resetWeeklyWorkRequest =
                     new PeriodicWorkRequest.Builder(WeeklyResetWorker.class, 7, TimeUnit.DAYS)
                             .setInitialDelay(initialDelay, TimeUnit.MILLISECONDS)
                             .addTag("resetweeklydata")
@@ -238,8 +235,6 @@ public class MyInfo extends AppCompatActivity {
         });
     }
 
-
-
     // 파이어베이스에서 데이터 불러오기
     private void setData(BarChart barChart) {
         fetchData(new FirestoreCallback() {
@@ -255,7 +250,7 @@ public class MyInfo extends AppCompatActivity {
                     int startColor = Color.parseColor("#000000");
                     int endColor = Color.parseColor("#202C73");
                     dataSet.setGradientColor(startColor, endColor);
-                    dataSet.setDrawValues(false);
+
                     dataSets.add(dataSet);
                 }
 
@@ -298,47 +293,6 @@ public class MyInfo extends AppCompatActivity {
 
             }
         });
-    }
-
-    private String getCurrentMonthAndWeek() {
-        Calendar calendar = Calendar.getInstance();
-
-        // 현재 월 가져오기
-        SimpleDateFormat monthFormat = new SimpleDateFormat("M", Locale.getDefault());
-        String month = monthFormat.format(calendar.getTime());
-
-        // 현재 주차 가져오기
-        int weekOfYear = calendar.get(Calendar.WEEK_OF_MONTH);
-
-        return month + "월 " + weekOfYear + "주차";
-    }
-
-    private String getCurrentWeekDates() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setFirstDayOfWeek(Calendar.SUNDAY);
-
-        int currentWeek = calendar.get(Calendar.WEEK_OF_MONTH);
-
-        // 현재 주의 시작일과 종료일 계산
-        calendar.set(Calendar.WEEK_OF_MONTH, currentWeek);
-        calendar.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
-        Date startDate = calendar.getTime();
-
-        calendar.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);
-        Date endDate = calendar.getTime();
-
-        // 날짜 형식 지정
-        SimpleDateFormat dateFormat = new SimpleDateFormat("d", Locale.getDefault());
-
-        // 해당 주의 날짜 목록 생성
-        List<String> dates = new ArrayList<>();
-        calendar.setTime(startDate);
-        while (!calendar.getTime().after(endDate)) {
-            dates.add(dateFormat.format(calendar.getTime()));
-            calendar.add(Calendar.DAY_OF_MONTH, 1);
-        }
-
-        return String.join("   ", dates);
     }
 
     // 파이어베이스

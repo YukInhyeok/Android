@@ -1,0 +1,45 @@
+
+c	java:S112Ì"FDefine and throw a dedicated exception instead of using a generic one.(õ¼ô÷8ó‘„É¯1
+w
+java:S2293Í"YReplace the type specification in this constructor call with the diamond operator ("<>").(šË±š8ô‘„É¯1
+c
+java:S1192?"FDefine a constant instead of duplicating this literal "MyApp" 7 times.(¸¨¤ß8ô‘„É¯1
+m
+java:S1192?"PDefine a constant instead of duplicating this literal "ì˜ˆì™¸ ë°œìƒ: " 4 times.(¸¨¤ß8ô‘„É¯1
+E
+java:S16043"(Make this anonymous inner class a lambda(ş¡ôš8ö‘„É¯1
+J
+java:S1604E"(Make this anonymous inner class a lambda(çÏÛûÿÿÿÿ8ö‘„É¯1
+J
+java:S1604b"(Make this anonymous inner class a lambda(Š“ü¨úÿÿÿÿ8ö‘„É¯1
+J
+java:S1604["(Make this anonymous inner class a lambda(Ø—°éşÿÿÿÿ8ö‘„É¯1
+f
+java:S2095w"IUse try-with-resources or close this "InputStream" in a "finally" clause.(›Ó€ê8Ò’„É¯1
+
+java:S1450"]Remove the "categoryButton" field and declare it as a local variable in the relevant methods.(ù¿¸ûÿÿÿÿ8Û’„É¯1
+z
+java:S1450!"]Remove the "resultListView" field and declare it as a local variable in the relevant methods.(Úçÿú8Û’„É¯1
+x
+java:S1450"[Remove the "searchButton" field and declare it as a local variable in the relevant methods.(”“ã®8Ü’„É¯1
+t
+java:S3776'"RRefactor this method to reduce its Cognitive Complexity from 16 to the 15 allowed.(¨Œşÿÿÿÿ8ç’„É¯1
+Q
+java:S1874<"/Remove this use of "execute"; it is deprecated.(±ŸÁùÿÿÿÿ8ì’„É¯1
+Q
+java:S1874O"/Remove this use of "execute"; it is deprecated.(±ŸÁùÿÿÿÿ8ï’„É¯1
+T
+java:S1135f"2Complete the task associated to this TODO comment.(Óéƒˆüÿÿÿÿ8õ’„É¯1
+l
+java:S2674|"JCheck the return value of the "read" call to see how many bytes were read.(ë¥áïøÿÿÿÿ8ø’„É¯1
+R
+java:S1874¢"/Remove this use of "execute"; it is deprecated.(±ŸÁùÿÿÿÿ8ı’„É¯1
+O
+java:S1874¨"1Remove this use of "AsyncTask"; it is deprecated.(ŒÅç8ş’„É¯1
+I
+java:S1168µ"+Return an empty collection instead of null.(¥¹ï8“„É¯1
+m
+java:S1874¹"JDon't override a deprecated method or explicitly mark it as "@Deprecated".(—ıà´øÿÿÿÿ8“„É¯1
+S
+java:S1874º"5Remove this use of "onPostExecute"; it is deprecated.(¡ü¬ô8‚“„É¯1
+k	java:S100Ì"NRename this method name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(õ¼ô÷8ƒ“„É¯1
