@@ -38,9 +38,7 @@ It is to solve the problem in Korean using GPT.<br><br>
 The GPT will be evaluated if the conversation with GPT or the problems it presents are matched. The score appears as a graph on the home screen and in the My Information window and comments are made according to the score. <br><br>
 Use the Parent App (Administrator) to control your child's phone. Parents can give their children a mission by specifying the number of book reports and the time they use the app, and if they do not finish the mission, the application on the child's phone will be forced to run.<br><br>
 The child can increase the time spent using the application by talking to GPT or solving problems, and if you clear the mission by writing a book report, the application will be unlocked.<br><br>
-※ Please note that GPT's evaluation may not be accurate.<br><br><br><br>
-
-
+※ Please note that GPT's evaluation may not be accurate.<br><br>
 ---
 GPT를 이용한 한국어 문제풀이 어플리케이션 입니다. <br><br>
 GPT와의 대화 혹은 GPT가 내는 문제를 맞추면 GPT의 평가가 이루어집니다. 그 점수는 홈 화면과 내정보 창에 그래프로 나타나게 되며 점수에 따른 코멘트를 해줍니다. <br><br>
