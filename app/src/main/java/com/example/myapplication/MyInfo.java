@@ -250,8 +250,8 @@ public class MyInfo extends AppCompatActivity {
                 for (BarEntry entry : entries) {
                     BarDataSet dataSet = new BarDataSet(Arrays.asList(entry), "요일별 점수");
 
-                    int startColor = Color.parseColor("#FF003A");
-                    int endColor = Color.parseColor("#FF006D");
+                    int startColor = Color.parseColor("#000000");
+                    int endColor = Color.parseColor("#202C73");
                     dataSet.setGradientColor(startColor, endColor);
                     dataSet.setDrawValues(false);
                     dataSets.add(dataSet);

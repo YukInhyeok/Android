@@ -25,8 +25,8 @@
                     app:tabGravity="fill"
                     android:background="#FFF"
                     app:tabTextColor="#AAA"
-                    app:tabIndicatorColor="#FF006D"
-                    app:tabSelectedTextColor="#FF006D"
+                    app:tabIndicatorColor="#202C73"
+                    app:tabSelectedTextColor="#202C73"
                     android:elevation="1dp"/>
         </com.google.android.material.appbar.AppBarLayout>
 

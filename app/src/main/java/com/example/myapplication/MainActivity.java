@@ -294,8 +294,8 @@ public class MainActivity extends AppCompatActivity{
                 BarDataSet dataSet = new BarDataSet(entries, "주간 데이터");
 
                 List<Integer> colors = new ArrayList<>();
-                int startColor = Color.parseColor("#FF003A");
-                int endColor = Color.parseColor("#FF006D");
+                int startColor = Color.parseColor("#000000");
+                int endColor = Color.parseColor("#202C73");
                 dataSet.setGradientColor(startColor, endColor);
 
                 BarData data = new BarData(dataSet);
