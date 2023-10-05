@@ -37,13 +37,14 @@ import java.util.regex.Pattern;
 public class ChatGpt extends AppCompatActivity {
     // API
     public static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
-    private static final String MY_SECRET_KEY = "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";
+    private static final String MY_SECRET_KEY = "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";
     RecyclerView recycler_view;
     EditText et_msg;
     Button btn_send;
     Button InteractiveBtn;    // 대화형
     Button QuestionBtn;       // 문제형
     ImageButton finishBtn;
+    TextView interactiveText, questionText;
     Button continueBtn;
     List<Message> messageList;
     MessageAdapter messageAdapter;
@@ -85,6 +86,8 @@ public class ChatGpt extends AppCompatActivity {
         QuestionBtn = findViewById(R.id.QuestionBtn);
         finishBtn = findViewById(R.id.finish_Btn);
         continueBtn = findViewById(R.id.continue_Btn);
+        interactiveText = findViewById(R.id.InteractiveText);
+        questionText = findViewById(R.id.QuestionText);
 
         recycler_view.setHasFixedSize(true);
         LinearLayoutManager manager = new LinearLayoutManager(this);
@@ -102,7 +105,6 @@ public class ChatGpt extends AppCompatActivity {
         // 주간 데이터
         Week = getDayOfWeek();
         Log.d("GPT", "Switch: " + Switch);
-
 
         finishBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -246,6 +248,8 @@ public class ChatGpt extends AppCompatActivity {
                         InteractiveBtn.setVisibility(View.GONE);
                         QuestionBtn.setVisibility(View.GONE);
                         continueBtn.setVisibility(View.GONE);
+                        interactiveText.setVisibility(View.GONE);
+                        questionText.setVisibility(View.GONE);
                         Switch = 1;
 
                         if (lowScoringSubjects.size() > 0) {
@@ -329,6 +333,8 @@ public class ChatGpt extends AppCompatActivity {
                         // 버튼 감추기
                         InteractiveBtn.setVisibility(View.GONE);
                         QuestionBtn.setVisibility(View.GONE);
+                        interactiveText.setVisibility(View.GONE);
+                        questionText.setVisibility(View.GONE);
                         Switch = 2;
                     }
                 });

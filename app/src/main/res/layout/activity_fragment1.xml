@@ -64,7 +64,7 @@
         android:fontFamily="@font/pretendard"
         android:text="저장"
         android:background="@drawable/btn"
-        android:textColor="#FF006D"
+        android:textColor="#172943"
         android:textSize="18dp">
 
     </androidx.appcompat.widget.AppCompatButton>
