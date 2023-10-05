@@ -16,6 +16,7 @@ import android.util.TypedValue;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
@@ -23,6 +24,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import com.example.myapplication.aladdin.AladdinMainActivity;
 import com.example.myapplication.book.BookMainActivity;
 import com.example.myapplication.screen.MyForegroundService;
 import com.example.myapplication.screen.ScreenOnReceiver;
@@ -81,6 +83,11 @@ public class MainActivity extends AppCompatActivity{
 
     private long totalTime = 0;
 
+    //알라딘
+    private RelativeLayout aladdinLayout;
+
+    private BarChart barChart;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,6 +111,9 @@ public class MainActivity extends AppCompatActivity{
 
         //firebase
         db = FirebaseFirestore.getInstance();
+
+        //알라딘 버튼
+        aladdinLayout = findViewById(R.id.book_button);
 
         //Foreground 설정
         Intent serviceIntent = new Intent(this, MyForegroundService.class);
@@ -142,7 +152,7 @@ public class MainActivity extends AppCompatActivity{
         bottomNavigationView.setSelectedItemId(R.id.menu_home);
 
         // 레이더 차트 추가
-        BarChart barChart = findViewById(R.id.chart);
+        barChart = findViewById(R.id.chart);
         setData(barChart);
 
         //독후감 관련
@@ -199,7 +209,15 @@ public class MainActivity extends AppCompatActivity{
 
             @Override
             public void onNothingSelected() {
-                // 막대를 선택하지 않았을 때의 동작을 정의할 수 있습니다.
+                // 막대를 선택하지 않았을 때의 동작을 정의
+            }
+        });
+
+        aladdinLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, AladdinMainActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -432,7 +450,8 @@ private void fetchData(MyInfo.FirestoreCallback callback) {
                 }
             });
 }
-//===============================================================================================================
+
+    //===============================================================================================================
     // 콜백 인터페이스 추가
     private interface FirestoreCallback {
         void onDataLoaded(ArrayList<RadarEntry> entries);
