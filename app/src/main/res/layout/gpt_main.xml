@@ -48,18 +48,18 @@
             android:fontFamily="@font/pretendard"
             android:text="대화형"
             style="?android:attr/borderlessButtonStyle"
-            android:layout_marginBottom="10dp"
+            android:layout_marginBottom="50dp"
             android:textColor="@color/black"
             android:background="@drawable/roundstyle20dp"
             android:textSize="20sp">
     </androidx.appcompat.widget.AppCompatButton>
-    <TextView
-            android:id="@+id/InteractiveText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            android:text="AI와 대화하며 언어 능력을 기릅니다."
-            android:layout_marginBottom="50dp"/>
+<!--    <TextView-->
+<!--            android:id="@+id/InteractiveText"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:textColor="@color/black"-->
+<!--            android:text="AI와 대화하며 언어 능력을 기릅니다."-->
+<!--            android:layout_marginBottom="50dp"/>-->
 
     <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/QuestionBtn"
@@ -70,16 +70,16 @@
             style="?android:attr/borderlessButtonStyle"
             android:textColor="@color/black"
             android:background="@drawable/roundstyle20dp"
-            android:layout_marginBottom="10dp"
+            android:layout_marginBottom="60dp"
             android:textSize="20sp">
     </androidx.appcompat.widget.AppCompatButton>
-    <TextView
-            android:id="@+id/QuestionText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            android:text="AI가 내주는 문제를 풀며 언어능력을 평가합니다."
-            android:layout_marginBottom="50dp"/>
+<!--    <TextView-->
+<!--            android:id="@+id/QuestionText"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:textColor="@color/black"-->
+<!--            android:text="AI가 내주는 문제를 풀며 언어능력을 평가합니다."-->
+<!--            android:layout_marginBottom="50dp"/>-->
     <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
