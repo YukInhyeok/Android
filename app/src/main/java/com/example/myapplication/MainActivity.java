@@ -211,13 +211,13 @@ public class MainActivity extends AppCompatActivity{
             }
         });
 
-//        aladdinLayout.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Intent intent = new Intent(MainActivity.this, AladdinMainActivity.class);
-//                startActivity(intent);
-//            }
-//        });
+        aladdinLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, AladdinMainActivity.class);
+                startActivity(intent);
+            }
+        });
 
         //앱 종료 확인
         ExitApp();
@@ -294,8 +294,8 @@ public class MainActivity extends AppCompatActivity{
                 BarDataSet dataSet = new BarDataSet(entries, "주간 데이터");
 
                 List<Integer> colors = new ArrayList<>();
-                int startColor = Color.parseColor("#000000");
-                int endColor = Color.parseColor("#202C73");
+                int startColor = Color.parseColor("#FF003A");
+                int endColor = Color.parseColor("#FF006D");
                 dataSet.setGradientColor(startColor, endColor);
 
                 BarData data = new BarData(dataSet);

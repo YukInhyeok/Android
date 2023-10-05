@@ -87,7 +87,7 @@ public class lockscreen extends AppCompatActivity {
         updateWeatherInfo();
 
         ImageView gifImageView = findViewById(R.id.rain_img);
-        Glide.with(this).load(R.drawable.rain2).into(gifImageView);
+        Glide.with(this).load(R.drawable.yamero).into(gifImageView);
     }
 
     @Override

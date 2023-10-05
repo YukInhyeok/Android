@@ -32,8 +32,11 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
+import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -247,10 +250,10 @@ public class MyInfo extends AppCompatActivity {
                 for (BarEntry entry : entries) {
                     BarDataSet dataSet = new BarDataSet(Arrays.asList(entry), "요일별 점수");
 
-                    int startColor = Color.parseColor("#000000");
-                    int endColor = Color.parseColor("#202C73");
+                    int startColor = Color.parseColor("#FF003A");
+                    int endColor = Color.parseColor("#FF006D");
                     dataSet.setGradientColor(startColor, endColor);
-
+                    dataSet.setDrawValues(false);
                     dataSets.add(dataSet);
                 }
 

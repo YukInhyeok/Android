@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -39,7 +40,7 @@ public class ChatGpt extends AppCompatActivity {
     Button InteractiveBtn;    // 대화형
     Button QuestionBtn;       // 문제형
     ImageButton finishBtn;
-    TextView interactiveText, questionText;
+//    TextView interactiveText, questionText;
     Button continueBtn;
     List<Message> messageList;
     MessageAdapter messageAdapter;
@@ -81,8 +82,8 @@ public class ChatGpt extends AppCompatActivity {
         QuestionBtn = findViewById(R.id.QuestionBtn);
         finishBtn = findViewById(R.id.finish_Btn);
         continueBtn = findViewById(R.id.continue_Btn);
-        interactiveText = findViewById(R.id.InteractiveText);
-        questionText = findViewById(R.id.QuestionText);
+//        interactiveText = findViewById(R.id.InteractiveText);
+//        questionText = findViewById(R.id.QuestionText);
 
         recycler_view.setHasFixedSize(true);
         LinearLayoutManager manager = new LinearLayoutManager(this);
@@ -243,8 +244,8 @@ public class ChatGpt extends AppCompatActivity {
                         InteractiveBtn.setVisibility(View.GONE);
                         QuestionBtn.setVisibility(View.GONE);
                         continueBtn.setVisibility(View.GONE);
-                        interactiveText.setVisibility(View.GONE);
-                        questionText.setVisibility(View.GONE);
+//                        interactiveText.setVisibility(View.GONE);
+//                        questionText.setVisibility(View.GONE);
                         Switch = 1;
 
                         if (lowScoringSubjects.size() > 0) {
@@ -328,8 +329,8 @@ public class ChatGpt extends AppCompatActivity {
                         // 버튼 감추기
                         InteractiveBtn.setVisibility(View.GONE);
                         QuestionBtn.setVisibility(View.GONE);
-                        interactiveText.setVisibility(View.GONE);
-                        questionText.setVisibility(View.GONE);
+//                        interactiveText.setVisibility(View.GONE);
+//                        questionText.setVisibility(View.GONE);
                         Switch = 2;
                     }
                 });

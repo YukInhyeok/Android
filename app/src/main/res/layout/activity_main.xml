@@ -14,13 +14,12 @@
             android:paddingTop="15dp"
             android:paddingLeft="15dp"
             android:paddingRight="15dp"
-            android:paddingBottom="15dp"
             android:gravity="top"
             android:orientation="vertical">
 
         <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
+                android:layout_height="45dp"
                 android:paddingLeft="5dp"
                 android:orientation="vertical"
                 >
@@ -277,7 +276,6 @@
         <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingBottom="30dp"
                 android:paddingTop="15dp"
                 android:orientation="vertical"
                 android:layout_gravity="center"
@@ -286,7 +284,7 @@
 
             <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="190dp"
+                    android:layout_height="140dp"
                     android:backgroundTint="@color/white"
                     android:background="@drawable/roundstyle10dp"
                     android:padding="20dp"
@@ -315,6 +313,55 @@
                         android:textStyle="bold"/>
             </LinearLayout>
         </LinearLayout>
+        <RelativeLayout
+                android:id="@+id/ButtonLayout"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:orientation="horizontal"
+                android:layout_above="@+id/bottomLayout">
+            <RelativeLayout
+                    android:id="@+id/book_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="25dp"
+                    android:layout_centerVertical="true"
+                    android:layout_centerHorizontal="true"
+                    android:background="@drawable/roundstyle10dp"
+                    android:backgroundTint="@color/white">
+
+                <ImageView
+                        android:id="@+id/imageView1"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:src="@drawable/aladin_image1"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="10dp"/>
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/textView"
+                        android:textSize="16sp"
+                        android:fontFamily="@font/pretendard"
+                        android:layout_centerHorizontal="true"
+                        android:layout_centerVertical="true"
+                        android:textColor="#888888"
+                        android:text="추천도서 바로가기"/>
+
+                <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:id="@+id/imageView2"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="5dp"
+                        android:src="@drawable/right"/>
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
     </LinearLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
