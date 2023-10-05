@@ -33,7 +33,7 @@
 <img width="15%" src="https://github.com/YukInhyeok/Android/assets/72872676/1671064d-e26b-437d-b279-8e9eaf1509d2"/>
 <img width="15%" src="https://github.com/YukInhyeok/Android/assets/72872676/fd7629fd-ba50-467e-aa7a-95afcfea387d"/>
 <img width="15%" src="https://github.com/YukInhyeok/Android/assets/72872676/4e875f18-a8e4-4783-9880-99a1ecec0a48"/>
-<img width="15%" src="https://github.com/YukInhyeok/Android/assets/72872676/6b17dad6-2af0-4e3e-9597-d5af58635abc"/><br><br>
+<img width="15%" src="https://github.com/YukInhyeok/Android/assets/72872676/eac0d789-d101-4238-917d-147e43762fef"/><br><br>
 It is to solve the problem in Korean using GPT.<br><br>
 The GPT will be evaluated if the conversation with GPT or the problems it presents are matched. The score appears as a graph on the home screen and in the My Information window and comments are made according to the score. <br><br>
 Use the Parent App (Administrator) to control your child's phone. Parents can give their children a mission by specifying the number of book reports and the time they use the app, and if they do not finish the mission, the application on the child's phone will be forced to run.<br><br>
