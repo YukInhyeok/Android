@@ -34,11 +34,11 @@
 <img width="15%" src="https://github.com/YukInhyeok/Android/assets/72872676/fd7629fd-ba50-467e-aa7a-95afcfea387d"/>
 <img width="15%" src="https://github.com/YukInhyeok/Android/assets/72872676/4e875f18-a8e4-4783-9880-99a1ecec0a48"/>
 <img width="15%" src="https://github.com/YukInhyeok/Android/assets/72872676/eac0d789-d101-4238-917d-147e43762fef"/><br><br>
-It is to solve the problem in Korean using GPT.<br><br>
-The GPT will be evaluated if the conversation with GPT or the problems it presents are matched. The score appears as a graph on the home screen and in the My Information window and comments are made according to the score. <br><br>
-Use the Parent App (Administrator) to control your child's phone. Parents can give their children a mission by specifying the number of book reports and the time they use the app, and if they do not finish the mission, the application on the child's phone will be forced to run.<br><br>
-The child can increase the time spent using the application by talking to GPT or solving problems, and if you clear the mission by writing a book report, the application will be unlocked.<br><br>
-※ Please note that GPT's evaluation may not be accurate.<br><br>
+This is a Korean language problem solving application using GPT.<br><br>
+If you talk with GPT or guess the questions that GPT presents, GPT will be evaluated. The score is displayed graphically on the home screen and my information window, and comments are made according to the score. <br><br>
+Use the parent app (administrator) to control your child's cell phone. Parents can assign missions to their children by specifying the number of reading comments and how long they use the app, and if they do not complete the mission, the app installed on their children's mobile phones will be forced to run. <br><br>
+Children can spend more time using the app while talking to GPT or solving problems, and the app will be unlocked when they complete the mission by writing a book report.<br><br>
+※ Please note that GPT evaluation may not be accurate.<br><br>
 
 ---
 
