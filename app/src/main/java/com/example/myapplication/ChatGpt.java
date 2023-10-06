@@ -33,7 +33,7 @@ import java.util.regex.Pattern;
 public class ChatGpt extends AppCompatActivity {
     // API
     public static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
-    private static final String MY_SECRET_KEY = "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";
+    private static final String MY_SECRET_KEY = "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";
     RecyclerView recycler_view;
     EditText et_msg;
     Button btn_send;
@@ -375,7 +375,6 @@ public class ChatGpt extends AppCompatActivity {
                 callAPI_V2("다음문제를 내주세요");
                 continueBtn.setVisibility(View.GONE);
             }
-
         });
 
         // OkHttpClient 객체 생성
