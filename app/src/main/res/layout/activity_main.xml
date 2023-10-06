@@ -309,7 +309,7 @@
                         android:gravity="center"
                         android:text="일일 솔루션"
                         android:textColor="#999"
-                        android:textSize="22sp"
+                        android:textSize="18sp"
                         android:textStyle="bold"/>
             </LinearLayout>
         </LinearLayout>

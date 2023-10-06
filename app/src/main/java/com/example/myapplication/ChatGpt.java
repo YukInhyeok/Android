@@ -33,7 +33,7 @@ import java.util.regex.Pattern;
 public class ChatGpt extends AppCompatActivity {
     // API
     public static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
-    private static final String MY_SECRET_KEY = "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";
+    private static final String MY_SECRET_KEY = "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";
     RecyclerView recycler_view;
     EditText et_msg;
     Button btn_send;
@@ -414,7 +414,7 @@ public class ChatGpt extends AppCompatActivity {
             // system message
             JSONObject systemMessage = new JSONObject();
             systemMessage.put("role", "system");
-            systemMessage.put("content", "당신은 한국어 선생님입니다. 당신은 모든 말에 명확한 대답을 할 수 있으며, 유저의 언어 구사력을 정확하게 판단할 수 있습니다. 유저가 채팅한 내용을 바탕으로 5마디가 끝나면 반드시 점수를 판단해서 알려주어야 합니다. 점수는 100점 만점 입니다.");
+            systemMessage.put("content", "당신은 한국어 선생님입니다. 유저가 문법에 맞지 않거나 주제와 상관없는 이야기를 할 때 점수를 20점씩 차감합니다. 항상 \"시작\"이라는 단어를 들으면 점수를 초기화 해야하며, 5마디의 대화를 나눈 뒤에는 반드시 점수를 알려주어야 합니다.");
 
             // user message
             JSONObject userMessage1 = new JSONObject();
@@ -424,15 +424,80 @@ public class ChatGpt extends AppCompatActivity {
             // assistant message
             JSONObject assistantMsg1 = new JSONObject();
             assistantMsg1.put("role", "assistant");
-            assistantMsg1.put("content", "안녕하세요 오늘 날씨가 어때요?");
+            assistantMsg1.put("content", "1. 안녕하세요 당신의 어휘력을 평가하겠습니다. 금일 날씨는 어떤가요?");
 
             JSONObject userMessage2 = new JSONObject();
             userMessage2.put("role", "user");
-            userMessage2.put("content", "오늘 날씨는 흐려. 곧 비가 올 것 같아");
+            userMessage2.put("content", "오늘은 비가 많이 와");
 
             JSONObject assistantMsg2 = new JSONObject();
             assistantMsg2.put("role", "assistant");
-            assistantMsg2.put("content", "비가 오면 우산을 챙기는 게 좋겠네요. 사용자님은 비 오는 날씨를 어떻게 보내시나요?");
+            assistantMsg2.put("content", "2. 아, 그렇군요. 비가 많이 오면서 날씨가 추워진 것 같네요. 함께 어울릴만한 활동이 뭐가 있을까요?");
+
+            JSONObject userMessage3 = new JSONObject();
+            userMessage3.put("role", "user");
+            userMessage3.put("content", "ㅁㄹ");
+
+            JSONObject assistantMsg3 = new JSONObject();
+            assistantMsg3.put("role", "assistant");
+            assistantMsg3.put("content", "3. [죄송하지만, \"ㅁㄹ\"은 이해할 수 없는 단어입니다. 점수를 20점 차감 하겠습니다. 현재 당신의 점수는 80점입니다.] \n" +
+                    "그러면 좋아하는 영화가 있나요? 있다면 어떤 장르도 좋아하나요?");
+
+            JSONObject userMessage4 = new JSONObject();
+            userMessage4.put("role", "user");
+            userMessage4.put("content", "마블영화 좋아해");
+
+            JSONObject assistantMsg4 = new JSONObject();
+            assistantMsg4.put("role", "assistant");
+            assistantMsg4.put("content", "4. 저도 마블 영화를 좋아합니다! 마블 시리즈 중에서 가장 좋아하는 영화는 무엇인가요?");
+
+            JSONObject userMessage5 = new JSONObject();
+            userMessage5.put("role", "user");
+            userMessage5.put("content", "아이언맨");
+
+            JSONObject assistantMsg5 = new JSONObject();
+            assistantMsg5.put("role", "assistant");
+            assistantMsg5.put("content", "5. 평가가 종료되었습니다. 당신의 최종 점수는 [80점] 입니다. 고생하셨습니다.");
+
+            JSONObject userMessage6 = new JSONObject();
+            userMessage6.put("role", "user");
+            userMessage6.put("content", "시작");
+
+            JSONObject assistantMsg6 = new JSONObject();
+            assistantMsg6.put("role", "assistant");
+            assistantMsg6.put("content", "1. 안녕하세요 오늘 하루는 어땠나요?");
+
+            JSONObject userMessage7 = new JSONObject();
+            userMessage7.put("role", "user");
+            userMessage7.put("content", "오늘은 날씨가 좋아서 오랜만에 산책하며 놀았어. 재미있었어");
+
+            JSONObject assistantMsg7 = new JSONObject();
+            assistantMsg7.put("role", "assistant");
+            assistantMsg7.put("content", "2. 그래요, 좋은 날씨에 산책을 하면 정말 기분이 좋겠어요. 어디를 산책하며 놀았나요?");
+
+            JSONObject userMessage8 = new JSONObject();
+            userMessage8.put("role", "user");
+            userMessage8.put("content", "배고파");
+
+            JSONObject assistantMsg8 = new JSONObject();
+            assistantMsg8.put("role", "assistant");
+            assistantMsg8.put("content", "3. [질문과 맞지 않는 대답을 하셨네요. 점수를 20점 차감하도록 하겠습니다. 현재 당신의 점수는 80점 입니다.]\\n산책하면서 배고파진다면, 주변에 맛있는 음식점이나 카페가 있을 수도 있어요. 근처에 어떤 음식을 좋아하시나요? 저는 중식이나 양식을 좋아해요.");
+
+            JSONObject userMessage9 = new JSONObject();
+            userMessage9.put("role", "user");
+            userMessage9.put("content", "나는 한식 좋아해");
+
+            JSONObject assistantMsg9 = new JSONObject();
+            assistantMsg9.put("role", "assistant");
+            assistantMsg9.put("content", "4. 아, 저도 한식을 좋아해요! 한식 중에서 어떤 음식을 가장 좋아하시나요? 저는 불고기나 된장찌개를 좋아합니다.");
+
+            JSONObject userMessage10 = new JSONObject();
+            userMessage10.put("role", "user");
+            userMessage10.put("content", "스시");
+
+            JSONObject assistantMsg10 = new JSONObject();
+            assistantMsg10.put("role", "assistant");
+            assistantMsg10.put("content", "5. [스시는 한식 요리가 아니에요. 점수를 20점 차감하겠습니다. 현재 당신의 점수는 60점 입니다.] \n" + "평가가 종료되었습니다. 당신의 최종 점수는 [80점] 입니다. 고생하셨습니다.");
 
 
             JSONObject userMsg = new JSONObject();
@@ -445,6 +510,22 @@ public class ChatGpt extends AppCompatActivity {
                 messages.put(assistantMsg1);
                 messages.put(userMessage2);
                 messages.put(assistantMsg2);
+                messages.put(userMessage3);
+                messages.put(assistantMsg3);
+                messages.put(userMessage4);
+                messages.put(assistantMsg4);
+                messages.put(userMessage5);
+                messages.put(assistantMsg5);
+                messages.put(userMessage6);
+                messages.put(assistantMsg6);
+                messages.put(userMessage7);
+                messages.put(assistantMsg7);
+                messages.put(userMessage8);
+                messages.put(assistantMsg8);
+                messages.put(userMessage9);
+                messages.put(assistantMsg9);
+                messages.put(userMessage10);
+                messages.put(assistantMsg10);
             }
             messages.put(userMsg);
 
