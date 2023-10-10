@@ -102,10 +102,6 @@ public class MainActivity extends AppCompatActivity{
         IntentFilter screenOnFilter = new IntentFilter(Intent.ACTION_SCREEN_ON);
         registerReceiver(screenOnReceiver, screenOnFilter);
 
-        // 앱 사용시간 자정 초기화
-        initializeAppUsageTimeAtMidnight();
-        Log.d("MainActivity","앱 사용시간 초기화 예약 성공");
-
         //일일 솔루션
         Today_Sol = findViewById(R.id.today_sol);
 
@@ -569,16 +565,18 @@ public class MainActivity extends AppCompatActivity{
                 startTime,
                 currentTime
         );
+        long dailyUsageTime = 0; // 일일 앱 사용 시간을 저장할 변수
 
         if (usageStatsList != null) {
             for (UsageStats usageStats : usageStatsList) {
                 if (myapplication.equals(usageStats.getPackageName())) {
-                    totalTime += usageStats.getTotalTimeInForeground();
+                    dailyUsageTime += usageStats.getTotalTimeInForeground();
                 }
             }
         }
-        return totalTime;
+        return dailyUsageTime;
     }
+
 
 
     private String formatMillis(long millis) {
@@ -617,7 +615,7 @@ public class MainActivity extends AppCompatActivity{
         updateAppUsageTime();
     }
 
-    // 어플 사용시간 가져오기
+//     어플 사용시간 가져오기
 
     private void updateAppUsageTime() {
         long elapsedTime = System.currentTimeMillis() - appUsageTimeStart; // 어플 사용 시작 시간으로부터 경과한 시간 계산
@@ -697,27 +695,5 @@ public class MainActivity extends AppCompatActivity{
                         Log.e("MainActivity", "Error updating app usage time", e);
                     }
                 });
-    }
-    // 추가: 자정까지 남은 시간을 계산하고 초기화를 수행하는 메서드
-    private void initializeAppUsageTimeAtMidnight() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(System.currentTimeMillis());
-
-        // 자정까지 남은 시간을 계산합니다.
-        calendar.set(Calendar.HOUR_OF_DAY, 0);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
-        long timeUntilMidnight = calendar.getTimeInMillis() + 24 * 60 * 60 * 1000 - System.currentTimeMillis();
-
-        // 계산된 시간만큼 대기 후 초기화를 수행합니다.
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                // 초기화 작업을 수행합니다.
-                totalTime = 0;
-                Log.d("MainActivity", "Total time reset to 0 at midnight.");
-            }
-        }, timeUntilMidnight);
     }
 }
