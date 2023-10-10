@@ -6,8 +6,9 @@ import retrofit2.http.Query;
 
 public interface WeatherApi {
     @GET("weather")
-    Call<WeatherResponse> getWeatherData(
-            @Query("q") String cityName,  // 도시 이름
+    Call<WeatherResponse> getOneCall(
+            @Query("lat") double lat,
+            @Query("lon") double lon,
             @Query("appid") String apiKey  // OpenWeatherMap API 키
     );
 }

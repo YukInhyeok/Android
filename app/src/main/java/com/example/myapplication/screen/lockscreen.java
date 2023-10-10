@@ -1,8 +1,10 @@
 package com.example.myapplication.screen;
 
-import android.content.Context;
+import android.Manifest;
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -12,6 +14,7 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import com.bumptech.glide.Glide;
 import com.example.myapplication.MainActivity;
 import com.example.myapplication.R;
@@ -19,17 +22,19 @@ import com.example.myapplication.Utils;
 import com.example.myapplication.weather.WeatherApi;
 import com.example.myapplication.weather.WeatherDescriptionConverter;
 import com.example.myapplication.weather.WeatherResponse;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.squareup.picasso.Picasso;
-import okhttp3.OkHttpClient;
-import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 
 // 잠금화면
@@ -39,10 +44,13 @@ public class lockscreen extends AppCompatActivity {
     private TextView weatherDescTextView;
     private TextView temperatureTextView;
     private TextView humidityTextView;
+    private TextView weatherlocationTextView;
     private ImageView weatherImageView;
     private static final String API_KEY = "9bc00b8817211dc754226b2faae450bc";
 
     private GestureDetector gestureDetector;
+
+    private FusedLocationProviderClient fusedLocationProviderClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,12 +90,15 @@ public class lockscreen extends AppCompatActivity {
         temperatureTextView = findViewById(R.id.temperature);
         humidityTextView = findViewById(R.id.humidity);
         weatherImageView = findViewById(R.id.weatherImageView);
+        weatherlocationTextView = findViewById(R.id.weather_location);
 
         // 날씨 정보 업데이트 메서드 호출
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         updateWeatherInfo();
 
         ImageView gifImageView = findViewById(R.id.rain_img);
-        Glide.with(this).load(R.drawable.requiem).into(gifImageView);
+        Glide.with(this).load(R.drawable.rain2).into(gifImageView);
+
     }
 
     @Override
@@ -145,7 +156,7 @@ public class lockscreen extends AppCompatActivity {
                             // 다른 액티비티로 전환하는 코드 추가
                             Intent intent = new Intent(lockscreen.this, MainActivity.class);
                             startActivity(intent);
-                            lockscreenexit();
+//                            lockscreenexit();
                             finish();
                             overridePendingTransition(0, 0);
                         }
@@ -173,68 +184,83 @@ public class lockscreen extends AppCompatActivity {
             animateActivityTransition(0, translationY);
         }
     }
-    private void lockscreenexit(){
-        SharedPreferences sharedPreferences = getSharedPreferences("AppData", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean("isLockscreenDisplayed", false);
-        editor.apply();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        lockscreenexit();
-    }
 
     //===================================================================================
     private void updateWeatherInfo() {
-        // Retrofit 빌더 생성
-        Retrofit.Builder retrofitBuilder = new Retrofit.Builder()
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(lockscreen.this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+            return;
+        }
+
+        fusedLocationProviderClient.getLastLocation()
+                .addOnSuccessListener(this, location -> {
+                    if (location != null) {
+                        double lat = location.getLatitude();
+                        double lon = location.getLongitude();
+
+                        Geocoder geocoder = new Geocoder(lockscreen.this, Locale.getDefault());
+                        try{
+                            List<Address> addresses = geocoder.getFromLocation(lat, lon, 1);
+                            if (addresses != null && addresses.size() > 0) {
+                                Address address = addresses.get(0);
+
+                                String adminArea = address.getAdminArea();
+                                String subLocality = address.getSubLocality();
+                                String thoroughfare = address.getThoroughfare();
+
+                                StringBuilder locationTextBuilder = new StringBuilder();
+                                if (adminArea != null) {
+                                    locationTextBuilder.append(adminArea);
+                                    Log.d("location1", "주소1: " + adminArea);
+                                }
+                                if (subLocality != null) {
+                                    locationTextBuilder.append(" ").append(subLocality);
+                                }
+                                if (thoroughfare != null) {
+                                    locationTextBuilder.append(" ").append(thoroughfare);
+                                }
+                                String locationText = locationTextBuilder.toString();
+
+                                weatherlocationTextView.setText(locationText);
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        getWeatherData(lat, lon);
+                    }
+                });
+    }
+
+    private void getWeatherData(double lat, double lon){
+        Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://api.openweathermap.org/data/2.5/")
-                .addConverterFactory(GsonConverterFactory.create());
-
-        // OkHttp 클라이언트 생성 및 로깅 인터셉터 추가
-        HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
-        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY); // 로그 레벨 설정 (BASIC, HEADERS, BODY 등)
-
-        OkHttpClient okHttpClient = new OkHttpClient.Builder()
-                .addInterceptor(loggingInterceptor) // 로깅 인터셉터 추가
+                .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-        // Retrofit에 OkHttp 클라이언트 설정
-        Retrofit retrofit = retrofitBuilder.client(okHttpClient).build();
-
-        // WeatherApi 인터페이스 생성
         WeatherApi weatherApi = retrofit.create(WeatherApi.class);
 
-        // 도시 이름 설정
-        String cityName = "Daejeon";  // 원하는 도시 이름으로 변경
+        Call<WeatherResponse> call = weatherApi.getOneCall(lat, lon, API_KEY);
 
-        Call<WeatherResponse> call = weatherApi.getWeatherData(cityName, API_KEY);
+        Log.d("Retrofit", "URL: " + call.request().url());
 
         call.enqueue(new Callback<WeatherResponse>() {
             @Override
             public void onResponse(Call<WeatherResponse> call, Response<WeatherResponse> response) {
                 if (response.isSuccessful()) {
                     WeatherResponse weatherData = response.body();
-                    // 날씨 정보를 처리하고 UI에 표시
                     updateWeatherUI(weatherData);
-                } else {
-                    // 오류 처리
-                    // response.code()를 사용하여 HTTP 응답 코드 확인 가능
-                    Log.e("WeatherApp", "API 요청 실패. HTTP 응답 코드: " + response.code());
-                }
+                } else { /*...*/ }
             }
 
             @Override
-            public void onFailure(Call<WeatherResponse> call, Throwable t) {
-                // 네트워크 오류 또는 예외 처리
-                Log.e("WeatherApp", "API 요청 실패. 예외 메시지: " + t.getMessage());
-            }
+            public void onFailure(Call<WeatherResponse> call, Throwable t) { /*...*/ }
         });
     }
 
-// updateWeatherUI 메서드 내부에 이미지 로드 코드 추가
+    // updateWeatherUI 메서드 내부에 이미지 로드 코드 추가
     private void updateWeatherUI(WeatherResponse weatherData) {
         int weatherId = weatherData.getWeather().get(0).getId();
         String weatherDescription = WeatherDescriptionConverter.convertToKorean(weatherId);
