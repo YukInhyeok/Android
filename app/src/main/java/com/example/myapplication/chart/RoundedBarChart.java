@@ -188,6 +188,8 @@ public class RoundedBarChart extends BarChart {
                     break;
 
                 if (!isSingleColor) {
+                    // Set the color for the currently drawn value. If the index
+                    // is out of bounds, reuse colors.
                     mRenderPaint.setColor(dataSet.getColor(j / 4));
                 }
 

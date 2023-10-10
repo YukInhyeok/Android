@@ -1,17 +1,24 @@
 package com.example.myapplication.aladdin;
 
+import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
+
+import android.view.inputmethod.EditorInfo;
+import android.widget.*;
+import android.widget.TextView.OnEditorActionListener;
+import android.view.KeyEvent;
 import android.content.DialogInterface;
 import android.content.res.AssetManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
-import android.widget.*;
+
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.myapplication.MainActivity;
 import com.example.myapplication.R;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -20,9 +27,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
-
-import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 public class AladdinMainActivity extends AppCompatActivity {
     private static final String BASE_URL = "http://www.aladdin.co.kr/ttb/api/ItemSearch.aspx?";
@@ -52,9 +61,10 @@ public class AladdinMainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String searchWord = searchEditText.getText().toString();
-                if (searchWord.isEmpty()) {
-                    Toast.makeText(getApplicationContext(), "검색어를 입력해주세요", Toast.LENGTH_SHORT).show();
-                } else {
+                if(searchWord.isEmpty()){
+                    Toast.makeText(getApplicationContext(), "검색어를 입력하세요.", Toast.LENGTH_SHORT).show();
+                }
+                else {
                     try {
                         String url = GetUrl(searchWord);
                         new AladdinOpenAPIAsyncTask().execute(url);
@@ -70,9 +80,10 @@ public class AladdinMainActivity extends AppCompatActivity {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    // 검색 동작을 실행하는 코드를 여기에 추가
                     String searchWord = searchEditText.getText().toString();
                     if (searchWord.isEmpty()) {
-                        Toast.makeText(getApplicationContext(), "검색어를 입력해주세요", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "검색어를 입력하세요.", Toast.LENGTH_SHORT).show();
                     } else {
                         try {
                             String url = GetUrl(searchWord);
@@ -82,10 +93,10 @@ public class AladdinMainActivity extends AppCompatActivity {
                             Log.e("MyApp", "예외 발생: " + e.getMessage());
                         }
                     }
-                    return true; // 이벤트가 처리되었음을 나타냄
+                        return true; // 이벤트가 처리되었음을 나타냄
+                    }
+                    return false; // 이벤트가 처리되지 않았음을 나타냄
                 }
-                return false; // 이벤트가 처리되지 않았음을 나타냄
-            }
         });
 
         categoryButton.setOnClickListener(new View.OnClickListener() {
@@ -192,11 +203,9 @@ public class AladdinMainActivity extends AppCompatActivity {
 
                 adapter.notifyDataSetChanged();  // ListView에 데이터 변경 알림
 
-                if(items.isEmpty()){
+                if(items.size()==0){
                     Toast.makeText(getApplicationContext(), "검색 결과가 없습니다.", Toast.LENGTH_SHORT).show();
                 }
-            } else{
-                Log.e("MyApp", "검색 결과가 없습니다.");
             }
         }
     }
@@ -218,7 +227,6 @@ public class AladdinMainActivity extends AppCompatActivity {
             String val = hm.get(key);
             sb.append(key).append("=").append(val).append("&");
         }
-
         return BASE_URL + sb.toString();
     }
 }

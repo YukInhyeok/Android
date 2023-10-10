@@ -5,16 +5,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp"
-    android:background="#F0F0F0"
+                android:background="#FFF"
     tools:context=".aladdin.AladdinMainActivity">
 
     <EditText
-        android:id="@+id/searchEditText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:imeOptions="actionSearch"
-        android:inputType="text"
-        android:hint="검색어를 입력하세요." />
+            android:id="@+id/searchEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:backgroundTint="#A9A9A9"
+            android:imeOptions="actionSearch"
+            android:inputType="text"
+            android:hint="검색어를 입력하세요."/>
 
     <ImageButton
         android:id="@+id/searchButton"
@@ -27,15 +29,17 @@
         android:contentDescription="검색"
         android:onClick="onSearchButtonClick"/>
     <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/categoryButton"
-            android:layout_width="80dp"
-            android:layout_height="45dp"
-            android:layout_marginTop="50dp"
-            android:background="@drawable/btn"
-            android:textColor="#FF006D"
-            android:fontFamily="@font/pretendard"
-            android:text="추천도서"
-            android:layout_alignParentRight="true"/>
+        android:id="@+id/categoryButton"
+        android:layout_width="80dp"
+        android:layout_height="45dp"
+        android:layout_marginTop="50dp"
+        android:background="@drawable/btn"
+        android:textColor="#202C73"
+        android:fontFamily="@font/preten_medium"
+        android:text="추천도서"
+        android:layout_alignParentRight="true">
+
+    </androidx.appcompat.widget.AppCompatButton>
 
     <ListView
         android:id="@+id/resultListView"

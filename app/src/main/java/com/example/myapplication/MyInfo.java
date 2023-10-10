@@ -1,5 +1,6 @@
 package com.example.myapplication;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -8,7 +9,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
@@ -196,7 +201,21 @@ public class MyInfo extends AppCompatActivity {
             }
         });
 
-        //버튼 메소드
+        // 목표 점수
+//        goalScoreText = findViewById(R.id.goal_score);
+//        goalScoreText.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                showGoalScorePopup();
+//            }
+//        });
+//        if (previousGoalScore != 0) {
+//            goalScoreText.setText("" + previousGoalScore);
+//            updateChartWithGoalScore(previousGoalScore);
+//        }
+
+        //버튼 메소
+
         BookBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -205,8 +224,6 @@ public class MyInfo extends AppCompatActivity {
             }
         });
     }
-
-
 
     // 파이어베이스에서 데이터 불러오기
     private void setData(BarChart barChart) {
@@ -220,8 +237,8 @@ public class MyInfo extends AppCompatActivity {
                 for (BarEntry entry : entries) {
                     BarDataSet dataSet = new BarDataSet(Arrays.asList(entry), "요일별 점수");
 
-                    int startColor = Color.parseColor("#FF003A");
-                    int endColor = Color.parseColor("#FF006D");
+                    int startColor = Color.parseColor("#000000");
+                    int endColor = Color.parseColor("#202C73");
                     dataSet.setGradientColor(startColor, endColor);
                     dataSet.setDrawValues(false);
                     dataSets.add(dataSet);
@@ -337,6 +354,56 @@ public class MyInfo extends AppCompatActivity {
         return nextMonday.getTimeInMillis() - now.getTimeInMillis();
     }
 
+    // 목표 점수 저장
+//    private void saveGoalScore(int goalScore) {
+//        SharedPreferences sharedPreferences = getSharedPreferences("GoalScorePrefs", Context.MODE_PRIVATE);
+//        SharedPreferences.Editor editor = sharedPreferences.edit();
+//        editor.putInt("goalScore", goalScore);
+//        editor.apply();
+//    }
+//    private int loadGoalScore() {
+//        SharedPreferences sharedPreferences = getSharedPreferences("GoalScorePrefs", Context.MODE_PRIVATE);
+//        return sharedPreferences.getInt("goalScore", 0);
+//    }
+
+    //목표 점수
+//    private void showGoalScorePopup() {
+//        AlertDialog.Builder builder = new AlertDialog.Builder(MyInfo.this);
+//        LayoutInflater inflater = getLayoutInflater();
+//        View popupView = inflater.inflate(R.layout.goal_score_popup, null);
+//        builder.setView(popupView);
+//
+//        final NumberPicker numberPicker = popupView.findViewById(R.id.num_picker);
+//
+//        String[] values = new String[]{"0", "10", "20", "30", "40", "50", "60", "70", "80", "90", "100"};
+//
+//        for (int i = 0; i < values.length; i++) {
+//            int value = Integer.parseInt(values[i]);
+//            values[i] = (value / 10 * 10) + "";
+//        }
+//
+//        numberPicker.setMinValue(0);
+//        numberPicker.setMaxValue(values.length - 1);
+//        numberPicker.setDisplayedValues(values);
+//
+//        Button goalScoreBtn = popupView.findViewById(R.id.btn);
+//
+//        final AlertDialog alertDialog = builder.create();
+//        alertDialog.show();
+//
+//        goalScoreBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                int selectedGoalScore = numberPicker.getValue() * 10;
+//                goalScoreText.setText("" + selectedGoalScore);
+//                alertDialog.dismiss();
+//
+//                // 목표 점수 저장
+//                saveGoalScore(selectedGoalScore);
+//                updateChartWithGoalScore(selectedGoalScore);
+//            }
+//        });
+//    }
 // 오늘의 점수 가져오기
     private void fetchTodayDataAndCalculateAverage() {
         fetchtodayData(new FirestoreCallback() {
@@ -356,9 +423,7 @@ public class MyInfo extends AppCompatActivity {
                 } else {
                     // 평균 계산
                     int averageValue = totalValue / dataCount;
-                    if (averageValue ==100){
-                        today_score.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 50);
-                    }
+
                     // 평균 값을 today_score 텍스트뷰에 출력
                     today_score.setText(String.valueOf(averageValue));
                 }

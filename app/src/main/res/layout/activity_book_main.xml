@@ -3,29 +3,31 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F0F0F0">
+    android:background="#FFFFFF">
 
     <FrameLayout
-        android:id="@+id/container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/bottomNavigationView">
+            android:id="@+id/container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/bottomNavigationView"
+            android:layout_marginBottom="2dp">
 
         <com.google.android.material.appbar.AppBarLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
             <com.google.android.material.tabs.TabLayout
-                android:id="@+id/tabs"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:tabMode="fixed"
-                app:tabGravity="fill"
-                android:background="#F0F0F0"
-                app:tabTextColor="?colorPrimary"
-                app:tabSelectedTextColor="?colorAccent"
-                android:elevation="1dp" />
+                    android:id="@+id/tabs"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:tabMode="fixed"
+                    app:tabGravity="fill"
+                    android:background="#FFF"
+                    app:tabTextColor="#AAA"
+                    app:tabIndicatorColor="#202C73"
+                    app:tabSelectedTextColor="#202C73"
+                    android:elevation="1dp"/>
         </com.google.android.material.appbar.AppBarLayout>
 
     </FrameLayout>
@@ -33,7 +35,7 @@
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="100dp"
         android:background="#fff"
         app:labelVisibilityMode="unlabeled"
         app:menu="@menu/bottom_nav_menu"

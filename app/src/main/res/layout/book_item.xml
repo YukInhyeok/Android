@@ -11,7 +11,6 @@
         android:layout_height="131dp"
         app:cardBackgroundColor="#FFFFFFFF"
         app:cardCornerRadius="10dp"
-        app:cardElevation="5dp"
         app:cardUseCompatPadding="true">
 
         <LinearLayout

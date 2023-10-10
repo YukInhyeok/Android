@@ -151,43 +151,43 @@ public class BookMainActivity extends AppCompatActivity implements OnDatabaseCal
         return result;
     }
 
-//    //독후감 갯수 카운트
-private void updateBookCount() {
-    // final로 선언된 변수
-    final SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-    final FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+    //    //독후감 갯수 카운트
+    private void updateBookCount() {
+        // final로 선언된 변수
+        final SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        final FirebaseFirestore firestore = FirebaseFirestore.getInstance();
 
-    // 독후감 갯수 가져오기
-    final int savedBookCount = prefs.getInt(KEY_BOOK_COUNT, 0);
+        // 독후감 갯수 가져오기
+        final int savedBookCount = prefs.getInt(KEY_BOOK_COUNT, 0);
 
-    // 독후감 갯수 1 증가
-    final int updatedBookCount = savedBookCount + 1;
+        // 독후감 갯수 1 증가
+        final int updatedBookCount = savedBookCount + 1;
 
-    // Firestore에 독후감 갯수 업데이트
-    DocumentReference docRef = firestore.collection("Book").document("finish");
+        // Firestore에 독후감 갯수 업데이트
+        DocumentReference docRef = firestore.collection("Book").document("finish");
 
-    firestore.runTransaction(new Transaction.Function<Void>() {
-        @Override
-        public Void apply(Transaction transaction) throws FirebaseFirestoreException {
-            transaction.update(docRef, "booknum", updatedBookCount);
-            return null;
-        }
-    }).addOnSuccessListener(new OnSuccessListener<Void>() {
-        @Override
-        public void onSuccess(Void unused) {
-            Log.d(TAG, "Book count successfully updated in Firestore!");
-            // 독후감 갯수를 SharedPreferences에 저장
-            SharedPreferences.Editor editor = prefs.edit();
-            editor.putInt(KEY_BOOK_COUNT, updatedBookCount);
-            editor.apply();
-        }
-    }).addOnFailureListener(new OnFailureListener() {
-        @Override
-        public void onFailure(@NonNull Exception e) {
-            Log.w(TAG, "Error updating Book count", e);
-        }
-    });
-}
+        firestore.runTransaction(new Transaction.Function<Void>() {
+            @Override
+            public Void apply(Transaction transaction) throws FirebaseFirestoreException {
+                transaction.update(docRef, "booknum", updatedBookCount);
+                return null;
+            }
+        }).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                Log.d(TAG, "Book count successfully updated in Firestore!");
+                // 독후감 갯수를 SharedPreferences에 저장
+                SharedPreferences.Editor editor = prefs.edit();
+                editor.putInt(KEY_BOOK_COUNT, updatedBookCount);
+                editor.apply();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.w(TAG, "Error updating Book count", e);
+            }
+        });
+    }
 
 
 

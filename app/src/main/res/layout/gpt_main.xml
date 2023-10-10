@@ -1,19 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="15dp"
-        android:orientation="vertical"
-        android:background="#BDCEE0"
-        tools:context=".ChatGpt">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+              android:gravity="center"
+              android:padding="15dp"
+    android:orientation="vertical"
+    android:background="#BDCEE0"
+    tools:context=".ChatGpt">
 
     <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="50dp">
-
         <ImageButton
                 android:id="@+id/finish_Btn"
                 android:layout_width="wrap_content"
@@ -28,20 +27,19 @@
                 android:layout_marginLeft="13dp"
                 android:textSize="18sp"
                 android:textColor="@color/black"
-                android:fontFamily="@font/pretendard"
+                android:fontFamily="@font/preten_medium"
                 android:text="GPT 선생님">
 
         </TextView>
-
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:layout_marginBottom="15dp"
-            android:layout_above="@+id/bottom_layout"/>
+        android:id="@+id/recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginBottom="15dp"
+        android:layout_above="@+id/bottom_layout"/>
 
     <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/InteractiveBtn"
@@ -50,12 +48,18 @@
             android:fontFamily="@font/pretendard"
             android:text="대화형"
             style="?android:attr/borderlessButtonStyle"
-            android:layout_marginStart="65dp"
-            android:layout_marginBottom="60dp"
+            android:layout_marginBottom="10dp"
             android:textColor="@color/black"
             android:background="@drawable/roundstyle20dp"
             android:textSize="20sp">
     </androidx.appcompat.widget.AppCompatButton>
+    <TextView
+            android:id="@+id/InteractiveText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:text="AI와 대화하며 언어 능력을 기릅니다."
+            android:layout_marginBottom="50dp"/>
 
     <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/QuestionBtn"
@@ -66,15 +70,19 @@
             style="?android:attr/borderlessButtonStyle"
             android:textColor="@color/black"
             android:background="@drawable/roundstyle20dp"
-            android:layout_marginStart="65dp"
-            android:layout_marginBottom="60dp"
+            android:layout_marginBottom="10dp"
             android:textSize="20sp">
     </androidx.appcompat.widget.AppCompatButton>
-
+    <TextView
+            android:id="@+id/QuestionText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:text="AI가 내주는 문제를 풀며 언어능력을 평가합니다."
+            android:layout_marginBottom="60dp"/>
     <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
-
         <Button
                 android:id="@+id/continue_Btn"
                 android:layout_width="100dp"
@@ -83,16 +91,16 @@
                 android:text="다음문제"
                 android:textSize="12dp"
                 android:textColor="@color/black"
-                android:layout_marginStart="220dp"
+                android:layout_marginLeft="220dp"
                 android:layout_marginBottom="15dp"
                 android:visibility="gone"/>
     </LinearLayout>
 
     <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="52dp"
-            android:layout_marginBottom="20dp"
-            android:id="@+id/bottom_layout">
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:layout_marginBottom="20dp"
+        android:id="@+id/bottom_layout">
 
         <EditText
                 android:id="@+id/et_msg"
@@ -115,7 +123,7 @@
                 android:textColor="@color/black"
                 android:layout_marginTop="5dp"
                 style="?android:attr/borderlessButtonStyle"
-                android:fontFamily="@font/pretendard"
+                android:fontFamily="@font/preten_medium"
                 android:textSize="16sp">
         </androidx.appcompat.widget.AppCompatButton>
 
