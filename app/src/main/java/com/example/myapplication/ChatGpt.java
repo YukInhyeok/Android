@@ -537,6 +537,9 @@ public class ChatGpt extends AppCompatActivity {
             //모델명
             object.put("model", "gpt-3.5-turbo");
             object.put("messages", messages);
+            object.put("max_tokens", 3000);
+            object.put("temperature", 0.9);
+            object.put("top_p", 0.8);
 
         } catch (JSONException e) {
             e.printStackTrace();

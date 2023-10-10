@@ -1,9 +1,11 @@
 package com.example.myapplication;
 
+import android.Manifest;
 import android.app.AppOpsManager;
 import android.app.usage.UsageStats;
 import android.app.usage.UsageStatsManager;
 import android.content.*;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
@@ -23,11 +25,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import com.example.myapplication.aladdin.AladdinMainActivity;
 import com.example.myapplication.book.BookMainActivity;
 import com.example.myapplication.screen.MyForegroundService;
-import com.example.myapplication.screen.ScreenOnReceiver;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
@@ -81,8 +83,6 @@ public class MainActivity extends AppCompatActivity{
 
     private int timeValue = 0;
 
-    private long totalTime = 0;
-
     //알라딘
     private RelativeLayout aladdinLayout;
 
@@ -97,10 +97,6 @@ public class MainActivity extends AppCompatActivity{
         // 메뉴 하단바 삭제
         Utils.deleteMenuButton(this);
 
-        // 잠금화면
-        ScreenOnReceiver screenOnReceiver = new ScreenOnReceiver();
-        IntentFilter screenOnFilter = new IntentFilter(Intent.ACTION_SCREEN_ON);
-        registerReceiver(screenOnReceiver, screenOnFilter);
 
         //일일 솔루션
         Today_Sol = findViewById(R.id.today_sol);
@@ -174,6 +170,7 @@ public class MainActivity extends AppCompatActivity{
                     BarEntry barEntry = (BarEntry) e;
                     float value = barEntry.getY();
                     int intValue = Math.round(value);
+                    jum.setVisibility(View.VISIBLE);
 
                     if (intValue == 100) {
                         score_textview.setTextSize(50);
@@ -184,6 +181,7 @@ public class MainActivity extends AppCompatActivity{
                         ViewGroup.MarginLayoutParams jumParams = (ViewGroup.MarginLayoutParams) jum.getLayoutParams();
                         jumParams.topMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 40, getResources().getDisplayMetrics());
                         jum.setLayoutParams(jumParams);
+
                     }
                     else{
                         score_textview.setTextSize(68);
@@ -221,28 +219,28 @@ public class MainActivity extends AppCompatActivity{
     }
 //===============================================================================================================
 
-    //=====================================일일 솔루션=================================================================
-    private void solData(ArrayList<BarEntry> entries) {
-        // 가장 낮은 점수와 해당 과목을 초기값으로 설정합니다.
-        float lowestScore = Float.MAX_VALUE;
-        int lowestScoreSubjectLabel = 0;
+//=====================================일일 솔루션=================================================================
+private void solData(ArrayList<BarEntry> entries) {
+    // 가장 낮은 점수와 해당 과목을 초기값으로 설정합니다.
+    float lowestScore = Float.MAX_VALUE;
+    int lowestScoreSubjectLabel = 0;
 
-        for (int i = 0; i < entries.size(); i++) {
-            BarEntry entry = entries.get(i);
-            float value = entry.getY();
-            int label = (int) entry.getX();
+    for (int i = 0; i < entries.size(); i++) {
+        BarEntry entry = entries.get(i);
+        float value = entry.getY();
+        int label = (int) entry.getX();
 
-            // 현재 과목의 점수가 가장 낮은지 확인하고 업데이트합니다.
-            if (value < lowestScore) {
-                lowestScore = value;
-                lowestScoreSubjectLabel = label;
-            }
+        // 현재 과목의 점수가 가장 낮은지 확인하고 업데이트합니다.
+        if (value < lowestScore) {
+            lowestScore = value;
+            lowestScoreSubjectLabel = label;
         }
-        // 가장 낮은 과목에 해당하는 솔루션을 설정합니다.
-        String lowestScoreSubject = getSubjectByLabel(lowestScoreSubjectLabel);
-        String solution = generateSolutionForSubject(lowestScoreSubject);
-        Today_Sol.setText(solution);
     }
+    // 가장 낮은 과목에 해당하는 솔루션을 설정합니다.
+    String lowestScoreSubject = getSubjectByLabel(lowestScoreSubjectLabel);
+    String solution = generateSolutionForSubject(lowestScoreSubject);
+    Today_Sol.setText(solution);
+}
 
     private String getSubjectByLabel(int label) {
         switch (label) {
@@ -278,70 +276,74 @@ public class MainActivity extends AppCompatActivity{
 
 //===============================================================================================================
 
-    //=====================================레이더 차트==========================================================================
-    private void setData(BarChart barChart) {
-        fetchData(new MyInfo.FirestoreCallback() {
-            @Override
-            public void onDataLoaded(ArrayList<BarEntry> entries) {
-                for (int i = 0; i < entries.size(); i++) {
-                    entries.get(i).setX(i + 1);
-                }
+//=====================================레이더 차트==========================================================================
+private void setData(BarChart barChart) {
+    fetchData(new MyInfo.FirestoreCallback() {
+        @Override
+        public void onDataLoaded(ArrayList<BarEntry> entries) {
+            for (int i = 0; i < entries.size(); i++) {
+                entries.get(i).setX(i + 1);
+            }
 
-                BarDataSet dataSet = new BarDataSet(entries, "주간 데이터");
+            ArrayList<IBarDataSet> dataSets = new ArrayList<>();
+            for (BarEntry entry : entries) {
+                BarDataSet dataSet = new BarDataSet(Arrays.asList(entry), "");
 
-                List<Integer> colors = new ArrayList<>();
-                int startColor = Color.parseColor("#000000");
-                int endColor = Color.parseColor("#202C73");
+                int startColor = Color.parseColor("#ff0844");
+                int endColor = Color.parseColor("#ffb199");
                 dataSet.setGradientColor(startColor, endColor);
 
-                BarData data = new BarData(dataSet);
-                data.setBarWidth(0.5f);
-                barChart.invalidate();
-                barChart.setData(data);
+                dataSet.setDrawValues(false); // 값 레이블 그리기 비활성화;
 
-                String[] labels = {"", "독해력", "문해력", "어휘력"};
-
-                XAxis xAxis = barChart.getXAxis();
-                xAxis.setDrawGridLines(false);
-                xAxis.setValueFormatter(new IndexAxisValueFormatter(labels));
-                xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-
-                YAxis leftAxis = barChart.getAxisLeft();
-                leftAxis.setGranularity(20f);
-                leftAxis.setAxisMinimum(0f);
-                leftAxis.setAxisMaximum(100f);
-                leftAxis.setDrawGridLines(false);
-                leftAxis.setLabelCount(6, true);
-                leftAxis.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART);
-                leftAxis.setDrawLabels(false);
-
-                YAxis rightYAxis = barChart.getAxisRight();
-                rightYAxis.setGranularity(20f);
-                rightYAxis.setAxisMinimum(0f);
-                rightYAxis.setAxisMaximum(100f);
-                rightYAxis.setDrawGridLines(false);
-                leftAxis.setDrawAxisLine(false);
-                rightYAxis.setDrawAxisLine(false);
-                xAxis.setDrawAxisLine(false);
-                rightYAxis.setLabelCount(6, true);
-                rightYAxis.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART); // 값 레이블을 차트 바깥쪽에 표시
-
-                dataSet.setDrawValues(false); // 값 레이블 그리기 비활성화
-
-                barChart.getLegend().setEnabled(false);
-                barChart.getDescription().setEnabled(false);
-                barChart.setScaleEnabled(false);
-
-                barChart.animateY(800);
-                solData(entries);
+                dataSets.add(dataSet);
             }
-        });
-    }
+
+            BarData data = new BarData(dataSets);
+            data.setBarWidth(0.5f);
+            barChart.invalidate();
+            barChart.setData(data);
+
+            String[] labels = {"", "독해력", "문해력", "어휘력"};
+
+            XAxis xAxis = barChart.getXAxis();
+            xAxis.setDrawGridLines(false);
+            xAxis.setValueFormatter(new IndexAxisValueFormatter(labels));
+            xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+
+            YAxis leftAxis = barChart.getAxisLeft();
+            leftAxis.setGranularity(20f);
+            leftAxis.setAxisMinimum(0f);
+            leftAxis.setAxisMaximum(100f);
+            leftAxis.setDrawGridLines(false);
+            leftAxis.setLabelCount(6, true);
+            leftAxis.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART);
+            leftAxis.setDrawLabels(false);
+
+            YAxis rightYAxis = barChart.getAxisRight();
+            rightYAxis.setGranularity(20f);
+            rightYAxis.setAxisMinimum(0f);
+            rightYAxis.setAxisMaximum(100f);
+            rightYAxis.setDrawGridLines(false);
+            leftAxis.setDrawAxisLine(false);
+            rightYAxis.setDrawAxisLine(false);
+            xAxis.setDrawAxisLine(false);
+            rightYAxis.setLabelCount(6, true);
+            rightYAxis.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART); // 값 레이블을 차트 바깥쪽에 표시
+
+            barChart.getLegend().setEnabled(false);
+            barChart.getDescription().setEnabled(false);
+            barChart.setScaleEnabled(false);
+
+            barChart.animateY(800);
+            solData(entries);
+        }
+    });
+}
 
 //=====================================================================================================================
 
 
-    //=====================================클릭 메소드==========================================================================
+//=====================================클릭 메소드==========================================================================
     private void showMessage(String message) {
         Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
     }
@@ -362,6 +364,7 @@ public class MainActivity extends AppCompatActivity{
             public void onClick(DialogInterface dialogInterface, int i) {
                 requestOverlayPermission();
                 requestUsageStatsPermission();
+                requestLocationPermission();
             }
         });
 
@@ -373,14 +376,6 @@ public class MainActivity extends AppCompatActivity{
             }
         });
         builder.show();
-    }
-
-    private void requestUsageStatsPermission() {
-        if (!hasUsageStatsPermission(getApplicationContext())) {
-            Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS,
-                    Uri.parse("package:" + getPackageName()));
-            startActivityForResult(intent, 100);
-        }
     }
 
     private void requestOverlayPermission() {
@@ -397,9 +392,21 @@ public class MainActivity extends AppCompatActivity{
     protected void onStart() {
         super.onStart();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (!Settings.canDrawOverlays(this)) {
+            if (!Settings.canDrawOverlays(this) ||
+                    !hasUsageStatsPermission(getApplicationContext()) ||
+                    ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                            != PackageManager.PERMISSION_GRANTED) {
                 showPermissionDialog();
             }
+        }
+    }
+
+
+    private void requestUsageStatsPermission() {
+        if (!hasUsageStatsPermission(getApplicationContext())) {
+            Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS,
+                    Uri.parse("package:" + getPackageName()));
+            startActivityForResult(intent, 101);
         }
     }
 
@@ -409,6 +416,16 @@ public class MainActivity extends AppCompatActivity{
         return mode == AppOpsManager.MODE_ALLOWED;
     }
 
+    private void requestLocationPermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    101);
+        }
+    }
+
+
 //====================================================================================================
 
     // 뒤로가기 버튼 막기
@@ -416,37 +433,38 @@ public class MainActivity extends AppCompatActivity{
 
     }
 
-    //=====================================Chart==========================================================================
-    private void fetchData(MyInfo.FirestoreCallback callback) {
-        db.collection("Chart").orderBy("label")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            ArrayList<BarEntry> entries = new ArrayList<>();
+//=====================================Chart==========================================================================
+private void fetchData(MyInfo.FirestoreCallback callback) {
+    db.collection("Chart").orderBy("label")
+            .get()
+            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    if (task.isSuccessful()) {
+                        ArrayList<BarEntry> entries = new ArrayList<>();
 
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                float value = document.getDouble("value").floatValue();
-                                int label = document.getLong("label").intValue();
-                                // RadarEntry 대신 BarEntry 사용
-                                entries.add(new BarEntry(label, value));
-                            }
-
-                            callback.onDataLoaded(entries);
-                        } else {
-                            Log.e("MyInfo", "Error fetching data", task.getException());
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            float value = document.getDouble("value").floatValue();
+                            int label = document.getLong("label").intValue();
+                            // RadarEntry 대신 BarEntry 사용
+                            entries.add(new BarEntry(label, value));
                         }
+
+                        callback.onDataLoaded(entries);
+                    } else {
+                        Log.e("MyInfo", "Error fetching data", task.getException());
                     }
-                });
-    }
+                }
+            });
+}
+
     //===============================================================================================================
     // 콜백 인터페이스 추가
     private interface FirestoreCallback {
         void onDataLoaded(ArrayList<RadarEntry> entries);
     }
 
-    // =====================================독후감 책 관련 메서드==========================================================================
+// =====================================독후감 책 관련 메서드==========================================================================
     private void fetchWorkNum() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("Book").document("report")
@@ -489,7 +507,7 @@ public class MainActivity extends AppCompatActivity{
 //====================================================================================================================================================
 
 
-    //=====================================제한 시간 메서드==========================================================================
+//=====================================제한 시간 메서드==========================================================================
     private void fetchLimitTime(long appUsageTime) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         long usedTimeInMinutes = TimeUnit.MILLISECONDS.toMinutes(appUsageTime);
@@ -530,21 +548,21 @@ public class MainActivity extends AppCompatActivity{
 //===============================================================================================================
 
 
-    //=====================================핸드폰 사용시간==========================================================================
+//=====================================핸드폰 사용시간==========================================================================
     public static final String APP_USAGE_TIME_KEY = "app_usage_time";
 
     private BroadcastReceiver appUsageTimeReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             long appUsageTime = intent.getLongExtra(APP_USAGE_TIME_KEY, 0);
-
+            // 사용 시간 정보를 처리하는 코드를 여기에 작성하십시오.
             fetchLimitTime(appUsageTime);
         }
     };
 //===============================================================================================================
 
 
-    //=====================================어플 사용시간==========================================================================
+//=====================================어플 사용시간==========================================================================
     private long getAppUsageTime(Context context, String myapplication) {
         UsageStatsManager usageStatsManager = (UsageStatsManager) context.getSystemService(Context.USAGE_STATS_SERVICE);
 
@@ -576,8 +594,6 @@ public class MainActivity extends AppCompatActivity{
         }
         return dailyUsageTime;
     }
-
-
 
     private String formatMillis(long millis) {
         long minutes = TimeUnit.MILLISECONDS.toMinutes(millis);
@@ -615,7 +631,7 @@ public class MainActivity extends AppCompatActivity{
         updateAppUsageTime();
     }
 
-//     어플 사용시간 가져오기
+    // 어플 사용시간 가져오기
 
     private void updateAppUsageTime() {
         long elapsedTime = System.currentTimeMillis() - appUsageTimeStart; // 어플 사용 시작 시간으로부터 경과한 시간 계산
@@ -637,63 +653,63 @@ public class MainActivity extends AppCompatActivity{
     };
 //===============================================================================================================
 
-    //=========================================앱 종료 메서드=================================================
-    private void showExitDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("앱 종료 확인");
-        builder.setMessage("앱을 종료하시겠습니까?");
+//=========================================앱 종료 메서드=================================================
+private void showExitDialog() {
+    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+    builder.setTitle("앱 종료 확인");
+    builder.setMessage("앱을 종료하시겠습니까?");
 
-        builder.setPositiveButton("예", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                finishAffinity();
-                System.exit(0);
-            }
-        });
+    builder.setPositiveButton("예", new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialogInterface, int i) {
+            finishAffinity();
+            System.exit(0);
+        }
+    });
 
-        builder.setNegativeButton("아니요", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                // 취소 시 처리 코드
-                dialogInterface.dismiss();
-            }
-        });
+    builder.setNegativeButton("아니요", new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialogInterface, int i) {
+            // 취소 시 처리 코드
+            dialogInterface.dismiss();
+        }
+    });
 
-        builder.show();
-    }
-    private void ExitApp(){
+    builder.show();
+}
+private void ExitApp(){
         SharedPreferences sharedPreferences = getSharedPreferences("AppData", Context.MODE_PRIVATE);
         String formattedAppUsageTime = sharedPreferences.getString("formattedAppUsageTime", "0");
         int finishBooknum = sharedPreferences.getInt("finishBooknum", 0);
         long timeValue = sharedPreferences.getLong("timeValue", 0);
         int workNum = sharedPreferences.getInt("workNum", 0);
 
-        if (Long.parseLong(formattedAppUsageTime) >= timeValue && finishBooknum >= workNum){
-            showExitDialog();
-        }
-        if (Long.parseLong(formattedAppUsageTime) >= timeValue){
-            TargetTime(formattedAppUsageTime);
-        }
+    if (Long.parseLong(formattedAppUsageTime) >= timeValue && finishBooknum >= workNum){
+        showExitDialog();
     }
+    if (Long.parseLong(formattedAppUsageTime) >= timeValue){
+        TargetTime(formattedAppUsageTime);
+    }
+}
 //========================================================================================================================
 
 
-    //===============================firebase에 사용시간 추가====================================================================
-    private void TargetTime(String formattedAppUsageTime){
-        DocumentReference documentReference = db.collection("Time").document("TargetTime");
+//===============================firebase에 사용시간 추가====================================================================
+private void TargetTime(String formattedAppUsageTime){
+    DocumentReference documentReference = db.collection("Time").document("TargetTime");
 
-        documentReference.update("Ttime", formattedAppUsageTime)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void unused) {
-                        Log.d("MainActivity", "App usage time successfully updated.");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.e("MainActivity", "Error updating app usage time", e);
-                    }
-                });
+    documentReference.update("Ttime", formattedAppUsageTime)
+            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void unused) {
+                    Log.d("MainActivity", "App usage time successfully updated.");
+                }
+            })
+            .addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.e("MainActivity", "Error updating app usage time", e);
+                }
+            });
     }
 }

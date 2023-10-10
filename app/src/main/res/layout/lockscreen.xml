@@ -76,18 +76,29 @@
                         android:textSize="15sp"
                         android:textColor="@color/white"
                         android:textStyle="bold"
-                        android:layout_marginTop="20dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginStart="90dp"/>
+                <TextView
+                        android:id="@+id/weather_location"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/weather_description"
+                        android:text="위치 정보"
+                        android:fontFamily="@font/pretendard"
+                        android:textSize="13sp"
+                        android:textColor="@color/white"
+                        android:textStyle="bold"
+                        android:layout_marginTop="3dp"
                         android:layout_marginStart="90dp"/>
                 <TextView
                         android:id="@+id/temperature"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@id/weather_description"
+                        android:layout_below="@id/weather_location"
                         android:text="온도"
                         android:textColor="@color/white"
                         android:fontFamily="@font/pretendard"
                         android:textSize="10sp"
-                        android:layout_marginTop="5dp"
                         android:layout_marginStart="90dp" />
                 <TextView
                         android:id="@+id/humidity"

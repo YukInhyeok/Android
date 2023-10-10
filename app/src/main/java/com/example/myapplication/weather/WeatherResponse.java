@@ -47,6 +47,7 @@ public class WeatherResponse {
         @SerializedName("humidity")
         private int humidity;
 
+
         public double getTemp() {
             return temp;
         }
@@ -54,5 +55,6 @@ public class WeatherResponse {
         public int getHumidity() {
             return humidity;
         }
+
     }
 }

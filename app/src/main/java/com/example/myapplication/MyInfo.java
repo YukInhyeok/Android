@@ -57,10 +57,6 @@ public class MyInfo extends AppCompatActivity {
 
     // 주간 목표
     private TextView Sol;
-//    private TextView goalScoreText;
-
-    // 버튼
-//    private Button BookBtn;
 
     private TextView score_text, today_score, date_view, day_view;
 
@@ -79,22 +75,13 @@ public class MyInfo extends AppCompatActivity {
 
         // 메뉴 하단바 삭제
         Utils.deleteMenuButton(this);
-
-//        textView4.setText(getCurrentMonthAndWeek());
-
-//        TextView textView5 = findViewById(R.id.textView5);
-//        textView5.setText(getCurrentWeekDates());
-
+        
         //버튼
         BookBtn = findViewById(R.id.book_button);
 
         Sol = findViewById(R.id.Sol);
         //firebase
         db = FirebaseFirestore.getInstance();
-
-//        int previousGoalScore = loadGoalScore();
-//        goalScoreText = findViewById(R.id.goal_score);
-
 
         // BottomNavigationView 초기화
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
