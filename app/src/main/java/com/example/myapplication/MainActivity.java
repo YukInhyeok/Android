@@ -1,9 +1,11 @@
 package com.example.myapplication;
 
+import android.Manifest;
 import android.app.AppOpsManager;
 import android.app.usage.UsageStats;
 import android.app.usage.UsageStatsManager;
 import android.content.*;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
@@ -23,11 +25,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import com.example.myapplication.aladdin.AladdinMainActivity;
 import com.example.myapplication.book.BookMainActivity;
 import com.example.myapplication.screen.MyForegroundService;
-import com.example.myapplication.screen.ScreenOnReceiver;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
@@ -96,11 +98,6 @@ public class MainActivity extends AppCompatActivity{
 
         // 메뉴 하단바 삭제
         Utils.deleteMenuButton(this);
-
-        // 잠금화면
-        ScreenOnReceiver screenOnReceiver = new ScreenOnReceiver();
-        IntentFilter screenOnFilter = new IntentFilter(Intent.ACTION_SCREEN_ON);
-        registerReceiver(screenOnReceiver, screenOnFilter);
 
         // 앱 사용시간 자정 초기화
         initializeAppUsageTimeAtMidnight();
@@ -372,6 +369,7 @@ private void setData(BarChart barChart) {
             public void onClick(DialogInterface dialogInterface, int i) {
                 requestOverlayPermission();
                 requestUsageStatsPermission();
+                requestLocationPermission();
             }
         });
 
@@ -399,11 +397,15 @@ private void setData(BarChart barChart) {
     protected void onStart() {
         super.onStart();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (!Settings.canDrawOverlays(this)) {
+            if (!Settings.canDrawOverlays(this) ||
+                    !hasUsageStatsPermission(getApplicationContext()) ||
+                    ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                            != PackageManager.PERMISSION_GRANTED) {
                 showPermissionDialog();
             }
         }
     }
+
 
     private void requestUsageStatsPermission() {
         if (!hasUsageStatsPermission(getApplicationContext())) {
@@ -418,6 +420,16 @@ private void setData(BarChart barChart) {
         int mode = appOps.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS, android.os.Process.myUid(), context.getPackageName());
         return mode == AppOpsManager.MODE_ALLOWED;
     }
+
+    private void requestLocationPermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    101);
+        }
+    }
+
 
 //====================================================================================================
 

@@ -213,3 +213,5 @@ G.idea/sonarlint/issuestore/e/c/ecd8aa2d5f822f625c8e29ef69327a9304993405,a\9\a9
 Q.idea/sonarlint/securityhotspotstore/e/c/ecd8aa2d5f822f625c8e29ef69327a9304993405,1\e\1e57f793ed4e636107e0cc807d4c0203f8381196
 Å
 Q.idea/sonarlint/securityhotspotstore/4/4/44a293d92d2473f5cb0783b320f5ef739e6cc8a8,c\0\c0988c7c3c0ee668cc2bea4a8d876158533d8ec8
+?
+settings.gradle,0\5\05efc8b1657769a27696d478ded1e95f38737233
