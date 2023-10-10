@@ -1,8 +1,6 @@
 package com.example.myapplication.screen;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -87,7 +85,7 @@ public class lockscreen extends AppCompatActivity {
         updateWeatherInfo();
 
         ImageView gifImageView = findViewById(R.id.rain_img);
-        Glide.with(this).load(R.drawable.yamero).into(gifImageView);
+        Glide.with(this).load(R.drawable.pika).into(gifImageView);
     }
 
     @Override
@@ -111,22 +109,18 @@ public class lockscreen extends AppCompatActivity {
                 if (diffX > 0) {
                     // 스와이프가 오른쪽으로 발생할 경우
                     animateActivityTransitionRight();
-
                 } else {
                     // 스와이프가 왼쪽으로 발생할 경우
                     animateActivityTransitionLeft();
-
                 }
             } else if (Math.abs(diffY) > SWIPE_THRESHOLD &&
                     Math.abs(velocityY) > SWIPE_VELOCITY_THRESHOLD) {
                 if (diffY > 0) {
                     // 스와이프가 아래쪽으로 발생할 경우
                     animateActivityTransitionDown();
-
                 } else {
                     // 스와이프가 위쪽으로 발생할 경우
                     animateActivityTransitionUp();
-
                 }
             }
 
@@ -145,7 +139,6 @@ public class lockscreen extends AppCompatActivity {
                             // 다른 액티비티로 전환하는 코드 추가
                             Intent intent = new Intent(lockscreen.this, MainActivity.class);
                             startActivity(intent);
-                            lockscreenexit();
                             finish();
                             overridePendingTransition(0, 0);
                         }
@@ -172,19 +165,9 @@ public class lockscreen extends AppCompatActivity {
             float translationY = 200f * (getResources().getDisplayMetrics().density);
             animateActivityTransition(0, translationY);
         }
-    }
-    private void lockscreenexit(){
-        SharedPreferences sharedPreferences = getSharedPreferences("AppData", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean("isLockscreenDisplayed", false);
-        editor.apply();
+
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        lockscreenexit();
-    }
 
     //===================================================================================
     private void updateWeatherInfo() {
@@ -233,8 +216,6 @@ public class lockscreen extends AppCompatActivity {
             }
         });
     }
-
-// updateWeatherUI 메서드 내부에 이미지 로드 코드 추가
     private void updateWeatherUI(WeatherResponse weatherData) {
         int weatherId = weatherData.getWeather().get(0).getId();
         String weatherDescription = WeatherDescriptionConverter.convertToKorean(weatherId);

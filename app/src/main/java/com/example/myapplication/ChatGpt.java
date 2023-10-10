@@ -33,7 +33,7 @@ import java.util.regex.Pattern;
 public class ChatGpt extends AppCompatActivity {
     // API
     public static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
-    private static final String MY_SECRET_KEY = "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";
+    private static final String MY_SECRET_KEY = "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";
     RecyclerView recycler_view;
     EditText et_msg;
     Button btn_send;
