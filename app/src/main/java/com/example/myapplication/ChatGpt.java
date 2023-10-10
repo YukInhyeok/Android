@@ -65,10 +65,12 @@ public class ChatGpt extends AppCompatActivity {
     private String prompt_read = "말";
     private String prompt_voc = "병아리";
 
+    private long conavg = 0;
+
     // API
     public static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
     OkHttpClient client;
-    private static final String MY_SECRET_KEY = "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";
+    private static final String MY_SECRET_KEY = "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";
 
     //네비게이션바 설정
 
@@ -107,23 +109,29 @@ public class ChatGpt extends AppCompatActivity {
         Week = getDayOfWeek();
         Log.d("GPT","Switch: " + Switch);
 
-
         finishBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(Switch == 1){
                     Log.d("GPT", "대화형 ability: " + ability);
+                    // score 변수에 대화형 점수 저장
                     int score = mark_interactive(assistantMessages);
                     DocumentReference dateRef = db.collection("Chart").document(ability);
                     dateRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                                 @Override
                                 public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                    Integer value = documentSnapshot.contains("value") ? documentSnapshot.getLong("value").intValue() : 0;
+                                    Integer ans = documentSnapshot.contains("ans") ? documentSnapshot.getLong("ans").intValue() : 0;
                                     Integer currentCount = documentSnapshot.contains("count") ? documentSnapshot.getLong("count").intValue() : 0;
-
-                                    long newValue = (score + value) / 2;
+                                    Integer conCount = documentSnapshot.contains("con_count") ? documentSnapshot.getLong("con_count").intValue() : 0;
+                                    Integer conScore = documentSnapshot.contains("con_score") ? documentSnapshot.getLong("con_score").intValue() : 0;
+                                    conCount++;
+                                    conavg = (conScore + score) / conCount;
+                                    long newValue = (conavg * conCount  + (ans / (currentCount) * 100) * currentCount) / (conCount + currentCount);
                                     Map<String, Object> newData = new HashMap<>(documentSnapshot.getData());
                                     newData.put("value", Math.round(newValue));
+                                    newData.put("con_count", conCount);
+                                    newData.put("con_score", conScore);
+                                    newData.put("con_avg", conavg);
                                     dateRef.set(newData).addOnSuccessListener(new OnSuccessListener<Void>() {
                                                 @Override
                                                 public void onSuccess(Void aVoid) {
@@ -157,8 +165,10 @@ public class ChatGpt extends AppCompatActivity {
                                 public void onSuccess(DocumentSnapshot documentSnapshot) {
                                     Integer ans = documentSnapshot.contains("ans") ? documentSnapshot.getLong("ans").intValue() : 0;
                                     Integer currentCount = documentSnapshot.contains("count") ? documentSnapshot.getLong("count").intValue() : 0;
+                                    Integer conCount = documentSnapshot.contains("con_count") ? documentSnapshot.getLong("con_count").intValue() : 0;
+                                    Integer con_avg = documentSnapshot.contains("con_avg") ? documentSnapshot.getLong("con_avg").intValue() : 0;
 
-                                    float newValue = (float) ans / (currentCount) * 100;
+                                    float newValue = ((float) ans / (currentCount) * 100) + con_avg * conCount / (conCount + currentCount);
 
                                     // 데이터 갱신
                                     Map<String, Object> newData = new HashMap<>(documentSnapshot.getData());
@@ -212,7 +222,7 @@ public class ChatGpt extends AppCompatActivity {
                     et_msg.setText("");
 
                     callAPI(question);
-                    continueBtn.setVisibility(View.INVISIBLE);
+                    continueBtn.setVisibility(View.GONE);
                 }
             }
         });
@@ -432,25 +442,25 @@ public class ChatGpt extends AppCompatActivity {
             // system message
             JSONObject systemMessage = new JSONObject();
             systemMessage.put("role", "system");
-            systemMessage.put("content", "내 말을 이어서 사자성어를 말해줘");
+            systemMessage.put("content", "10점 단위로 점수 말해줘");
 
             // user message
             JSONObject userMessage1 = new JSONObject();
             userMessage1.put("role", "user");
-            userMessage1.put("content", "일");
+            userMessage1.put("content", "안녕");
 
             // assistant message
             JSONObject assistantMsg = new JSONObject();
             assistantMsg.put("role", "assistant");
-            assistantMsg.put("content", "일취월장");
+            assistantMsg.put("content", "10점");
 
             JSONObject userMessage2 = new JSONObject();
             userMessage2.put("role", "user");
-            userMessage2.put("content", "이");
+            userMessage2.put("content", "하이");
 
             JSONObject assistantMsg1 = new JSONObject();
             assistantMsg1.put("role", "assistant");
-            assistantMsg1.put("content", "이이제이");
+            assistantMsg1.put("content", "20점");
 
             // second user message (question from the method parameter)
             JSONObject userMsg = new JSONObject();
@@ -475,7 +485,7 @@ public class ChatGpt extends AppCompatActivity {
             //모델명
             object.put("model", "gpt-3.5-turbo");
             object.put("messages", messages);
-            object.put("max_tokens", 4096);
+            object.put("max_tokens", 3000);
             object.put("temperature", 0.9);
             object.put("top_p", 0.8);
 
@@ -728,6 +738,8 @@ public class ChatGpt extends AppCompatActivity {
                                 document.getReference().update("ans", 0);
                                 document.getReference().update("wrong_ans", 0);
                                 document.getReference().update("count", 0);
+                                document.getReference().update("con_count", 0);
+                                document.getReference().update("con_score", 0);
                             }
                         } else {
                             Log.w("Firestore", "Error getting documents.", task.getException());
