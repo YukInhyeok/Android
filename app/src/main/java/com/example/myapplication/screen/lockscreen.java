@@ -156,7 +156,6 @@ public class lockscreen extends AppCompatActivity {
                             // 다른 액티비티로 전환하는 코드 추가
                             Intent intent = new Intent(lockscreen.this, MainActivity.class);
                             startActivity(intent);
-//                            lockscreenexit();
                             finish();
                             overridePendingTransition(0, 0);
                         }

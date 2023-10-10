@@ -83,8 +83,6 @@ public class MainActivity extends AppCompatActivity{
 
     private int timeValue = 0;
 
-    private long totalTime = 0;
-
     //알라딘
     private RelativeLayout aladdinLayout;
 
