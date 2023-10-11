@@ -38,6 +38,9 @@ public class Utils {
             newUiOptions ^= View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
             newUiOptions ^= View.SYSTEM_UI_FLAG_FULLSCREEN;
             newUiOptions ^= View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+            newUiOptions ^= View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION;
+            newUiOptions |= View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
+            newUiOptions |= View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
 
             activity.getWindow().getDecorView().setSystemUiVisibility(newUiOptions);
         }
