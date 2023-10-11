@@ -17,8 +17,6 @@ r
 Bapp/src/main/java/com/example/myapplication/screen/lockscreen.java,9\0\90c91895089aa0e5b18df07d9d7675b815085b94
 }
 Mapp/src/main/java/com/example/myapplication/screen/BootCompletedReceiver.java,5\b\5b1ea6f3f0577bbf621d326d1a3aa92e6e6956d3
-x
-Happ/src/main/java/com/example/myapplication/screen/ScreenOnReceiver.java,d\f\df87f6b4968d29875017f73eda001980b8cd5f51
 v
 Fapp/src/main/java/com/example/myapplication/chart/RoundedBarChart.java,d\d\dd0fe712fd1d85ba5dbffd1be4e48d3d3e1c5ade
 P
@@ -65,8 +63,6 @@ Q.idea/sonarlint/securityhotspotstore/5/9/598ceedadfcd0ada8ad64378a5bca730a1f09b
 Q.idea/sonarlint/securityhotspotstore/9/0/90c91895089aa0e5b18df07d9d7675b815085b94,c\4\c4375622608c04284d11394bf24c92ce85e25da2
 Å
 Q.idea/sonarlint/securityhotspotstore/8/c/8c7c292d65ea9e2261359bb4917848e0e30d9e76,9\7\9745467ad8265b65e4bbbbae5145e1f8398f0f3f
-Å
-Q.idea/sonarlint/securityhotspotstore/d/f/df87f6b4968d29875017f73eda001980b8cd5f51,a\f\af57916fc93236a7fd7ccc562857d60342d9f116
 Ñ
 Tapp/src/main/java/com/example/myapplication/weather/WeatherDescriptionConverter.java,1\6\160028fecfe8d26a46caced3f73484754d1f9568
 s
@@ -215,3 +211,7 @@ Q.idea/sonarlint/securityhotspotstore/e/c/ecd8aa2d5f822f625c8e29ef69327a93049934
 Q.idea/sonarlint/securityhotspotstore/4/4/44a293d92d2473f5cb0783b320f5ef739e6cc8a8,c\0\c0988c7c3c0ee668cc2bea4a8d876158533d8ec8
 ?
 settings.gradle,0\5\05efc8b1657769a27696d478ded1e95f38737233
+9
+	README.md,8\e\8ec9a00bfd09b3190ac6b22251dbb1aa95a0579d
+o
+?app/src/main/java/com/example/myapplication/DatabaseHelper.java,9\4\945442e89cf884f497ad4c45ab59064517cd29ba

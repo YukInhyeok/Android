@@ -1,141 +1,133 @@
 
-h	java:S112à"FDefine and throw a dedicated exception instead of using a generic one.(Ò‚Òéüÿÿÿÿ8Ñ¡›˜°1
-h	java:S112®"FDefine and throw a dedicated exception instead of using a generic one.(Ò‚Òéüÿÿÿÿ8Ò¡›˜°1
+h	java:S112”"FDefine and throw a dedicated exception instead of using a generic one.(Ò‚Òéüÿÿÿÿ8¡‚¾Ç±1
+h	java:S112á"FDefine and throw a dedicated exception instead of using a generic one.(Ò‚Òéüÿÿÿÿ8¡‚¾Ç±1
 ~
-java:S1192ù"`Define a constant instead of duplicating this literal "Failed to load response due to " 4 times.(©¤â„8Ö¡›˜°1
+java:S1192¬"`Define a constant instead of duplicating this literal "Failed to load response due to " 4 times.(©¤â„8Ã„¾Ç±1
 h
-java:S1192|"FDefine a constant instead of duplicating this literal "count" 8 times.(‰‚—áúÿÿÿÿ8×·Òø¯1
+java:S1192t"FDefine a constant instead of duplicating this literal "count" 8 times.(‰‚—áúÿÿÿÿ8ë„¾Ç±1
 u
-java:S1192š"WDefine a constant instead of duplicating this literal "Error getting document" 3 times.(ıèÈÎ8×·Òø¯1
+java:S1192Œ"WDefine a constant instead of duplicating this literal "Error getting document" 3 times.(ıèÈÎ8ë„¾Ç±1
 l
-java:S1192î"IDefine a constant instead of duplicating this literal "literacy" 3 times.(­ş‘íÿÿÿÿÿ8×·Òø¯1
-g
-java:S1192~"JDefine a constant instead of duplicating this literal "con_score" 4 times.(…«¡È8×·Òø¯1
+java:S1192á"IDefine a constant instead of duplicating this literal "literacy" 3 times.(­ş‘íÿÿÿÿÿ8ë„¾Ç±1
+m
+java:S1192|"KDefine a constant instead of duplicating this literal "Firestore" 16 times.(¼åú“şÿÿÿÿ8í„¾Ç±1
+l
+java:S1192»"IDefine a constant instead of duplicating this literal "content" 31 times.(ã½ÕÇÿÿÿÿÿ8í„¾Ç±1
 n
-java:S1192Š"KDefine a constant instead of duplicating this literal "Firestore" 16 times.(¼åú“şÿÿÿÿ8×·Òø¯1
-k
-java:S1192†"HDefine a constant instead of duplicating this literal "con_avg" 3 times.(åÆ’úşÿÿÿÿ8×·Òø¯1
-l
-java:S1192Ä"IDefine a constant instead of duplicating this literal "content" 15 times.(ã½ÕÇÿÿÿÿÿ8Ø·Òø¯1
-n
-java:S1192í"KDefine a constant instead of duplicating this literal "vocabulary" 3 times.(¥÷‹úÿÿÿÿ8Ø·Òø¯1
-l
-java:S1192}"JDefine a constant instead of duplicating this literal "con_count" 6 times.(ÃÿÀúÿÿÿÿ8Ø·Òø¯1
-e
-java:S1192ƒ"GDefine a constant instead of duplicating this literal "value" 10 times.(ï ÏÍ8Ø·Òø¯1
+java:S1192à"KDefine a constant instead of duplicating this literal "vocabulary" 3 times.(¥÷‹úÿÿÿÿ8í„¾Ç±1
 d
-java:S1192w"GDefine a constant instead of duplicating this literal "Chart" 12 times.(åƒŞ‹8Ø·Òø¯1
-m
-java:S1192Æ"JDefine a constant instead of duplicating this literal "assistant" 6 times.(„¬Ş½ÿÿÿÿÿ8Ù·Òø¯1
+java:S1192s"GDefine a constant instead of duplicating this literal "value" 12 times.(«·õÖ8í„¾Ç±1
+d
+java:S1192o"GDefine a constant instead of duplicating this literal "Chart" 12 times.(åƒŞ‹8í„¾Ç±1
+n
+java:S1192©"KDefine a constant instead of duplicating this literal "assistant" 14 times.(©™ˆ„üÿÿÿÿ8í„¾Ç±1
 w
-java:S1192’"TDefine a constant instead of duplicating this literal "Error updating data" 4 times.(ûİ‚üÿÿÿÿ8Ù·Òø¯1
-{	java:S135¡"YReduce the total number of break and continue statements in this loop to use at most one.(·ïßûÿÿÿÿ8Ú¡›˜°1
+java:S1192„"TDefine a constant instead of duplicating this literal "Error updating data" 4 times.(ûİ‚üÿÿÿÿ8í„¾Ç±1
+{	java:S135Ô"YReduce the total number of break and continue statements in this loop to use at most one.(·ïßûÿÿÿÿ8í„¾Ç±1
 X
-java:S1141‰"5Extract this nested try block into a separate method.(¡»¢üùÿÿÿÿ8İ¡›˜°1
+java:S1141¼"5Extract this nested try block into a separate method.(¡»¢üùÿÿÿÿ8í„¾Ç±1
 X
-java:S1141Ô"5Extract this nested try block into a separate method.(¡»¢üùÿÿÿÿ8Ş¡›˜°1
-n	java:S117©"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¬œÔ¶8İ·Òø¯1
-s	java:S117ç"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ãÍùÊÿÿÿÿÿ8ß¡›˜°1
-E
-java:S1604‡"(Make this anonymous inner class a lambda(€º÷8îíĞ¯1
-K
-java:S1604"(Make this anonymous inner class a lambda(Ÿ ¹ÿÿÿÿÿ8ïíĞ¯1
+java:S1141‡"5Extract this nested try block into a separate method.(¡»¢üùÿÿÿÿ8í„¾Ç±1
+s	java:S117š"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ãÍùÊÿÿÿÿÿ8í„¾Ç±1
 D
-java:S1604x"(Make this anonymous inner class a lambda(ÒÚÕ8Ş·Òø¯1
+java:S1604y"(Make this anonymous inner class a lambda(€º÷8ğ¶“Ç±1
 K
-java:S1604—"(Make this anonymous inner class a lambda(Ÿ ¹ÿÿÿÿÿ8Ş·Òø¯1
+java:S1604"(Make this anonymous inner class a lambda(Ÿ ¹ÿÿÿÿÿ8ğ¶“Ç±1
+D
+java:S1604p"(Make this anonymous inner class a lambda(ÒÚÕ8í„¾Ç±1
+K
+java:S1604‰"(Make this anonymous inner class a lambda(Ÿ ¹ÿÿÿÿÿ8í„¾Ç±1
 E
-java:S1604±"(Make this anonymous inner class a lambda(€º÷8Ş·Òø¯1
+java:S1604¡"(Make this anonymous inner class a lambda(€º÷8í„¾Ç±1
 K
-java:S1604¹"(Make this anonymous inner class a lambda(Ÿ ¹ÿÿÿÿÿ8ß·Òø¯1
+java:S1604©"(Make this anonymous inner class a lambda(Ÿ ¹ÿÿÿÿÿ8í„¾Ç±1
 E
-java:S1604£"(Make this anonymous inner class a lambda(ÒÚÕ8ß·Òø¯1
+java:S1604•"(Make this anonymous inner class a lambda(ÒÚÕ8í„¾Ç±1
 K
-java:S1604Á"(Make this anonymous inner class a lambda(Ÿ ¹ÿÿÿÿÿ8ß·Òø¯1
+java:S1604±"(Make this anonymous inner class a lambda(Ÿ ¹ÿÿÿÿÿ8í„¾Ç±1
 E
-java:S1604p"(Make this anonymous inner class a lambda(Øä¬Ü8ß·Òø¯1
+java:S1604i"(Make this anonymous inner class a lambda(Øä¬Ü8õ„¾Ç±1
 K
-java:S1604Ñ"(Make this anonymous inner class a lambda(»Üøåıÿÿÿÿ8ß·Òø¯1
+java:S1604Â"(Make this anonymous inner class a lambda(»Üøåıÿÿÿÿ8õ„¾Ç±1
 F
-java:S1604ñ"(Make this anonymous inner class a lambda(­Ú›…8ß·Òø¯1
+java:S1604ä"(Make this anonymous inner class a lambda(­Ú›…8õ„¾Ç±1
 E
-java:S1604ç"(Make this anonymous inner class a lambda(ééèP8à·Òø¯1
+java:S1604Ú"(Make this anonymous inner class a lambda(ééèP8õ„¾Ç±1
 F
-java:S1604¦"(Make this anonymous inner class a lambda(­Ú›…8à·Òø¯1
+java:S1604"(Make this anonymous inner class a lambda(­Ú›…8õ„¾Ç±1
 K
-java:S1604œ"(Make this anonymous inner class a lambda(Ü÷½ûÿÿÿÿ8à·Òø¯1
+java:S1604“"(Make this anonymous inner class a lambda(Ü÷½ûÿÿÿÿ8õ„¾Ç±1
 K
-java:S1604ë"(Make this anonymous inner class a lambda(Ïë£ùÿÿÿÿ8à·Òø¯1
+java:S1604ä"(Make this anonymous inner class a lambda(Ïë£ùÿÿÿÿ8õ„¾Ç±1
 K
-java:S1604ñ"(Make this anonymous inner class a lambda(Ÿ ¹ÿÿÿÿÿ8à·Òø¯1
+java:S1604ê"(Make this anonymous inner class a lambda(Ÿ ¹ÿÿÿÿÿ8õ„¾Ç±1
 E
-java:S1604á"(Make this anonymous inner class a lambda(ÒÚÕ8à·Òø¯1
+java:S1604Ú"(Make this anonymous inner class a lambda(ÒÚÕ8õ„¾Ç±1
 K
-java:S1604ø"(Make this anonymous inner class a lambda(œÁÈÌşÿÿÿÿ8à·Òø¯1
+java:S1604ñ"(Make this anonymous inner class a lambda(œÁÈÌşÿÿÿÿ8õ„¾Ç±1
 K
-java:S1604Û"(Make this anonymous inner class a lambda(Ö…™£ùÿÿÿÿ8à·Òø¯1
+java:S1604Ô"(Make this anonymous inner class a lambda(Ö…™£ùÿÿÿÿ8õ„¾Ç±1
 K
-java:S1604"(Make this anonymous inner class a lambda(˜ã¯şÿÿÿÿ8á·Òø¯1
+java:S1604†"(Make this anonymous inner class a lambda(˜ã¯şÿÿÿÿ8õ„¾Ç±1
 K
-java:S1604»"(Make this anonymous inner class a lambda(Ïë£ùÿÿÿÿ8ã¡›˜°1
+java:S1604î"(Make this anonymous inner class a lambda(Ïë£ùÿÿÿÿ8÷„¾Ç±1
 K
-java:S1604Á"(Make this anonymous inner class a lambda(Ÿ ¹ÿÿÿÿÿ8ã¡›˜°1
+java:S1604ô"(Make this anonymous inner class a lambda(Ÿ ¹ÿÿÿÿÿ8÷„¾Ç±1
 K
-java:S1604Ü"(Make this anonymous inner class a lambda(¯‘àçúÿÿÿÿ8ä¡›˜°1
+java:S1604"(Make this anonymous inner class a lambda(¯‘àçúÿÿÿÿ8÷„¾Ç±1
 K
-java:S1604¯"(Make this anonymous inner class a lambda(Ïë£ùÿÿÿÿ8ä¡›˜°1
+java:S1604à"(Make this anonymous inner class a lambda(Ïë£ùÿÿÿÿ8÷„¾Ç±1
 K
-java:S1604µ"(Make this anonymous inner class a lambda(Ÿ ¹ÿÿÿÿÿ8å¡›˜°1
+java:S1604æ"(Make this anonymous inner class a lambda(Ÿ ¹ÿÿÿÿÿ8÷„¾Ç±1
 K
-java:S1604š"(Make this anonymous inner class a lambda(¯‘àçúÿÿÿÿ8å¡›˜°1
-c
-java:S2184«"@Cast one of the operands of this integer division to a "double".(‘Ä£‹üÿÿÿÿ8ï·Òø¯1
-a
-java:S3518"CMake sure this expression can't be zero before doing this division.(ş¸¿8ñ¿Òø¯1
+java:S1604Ë"(Make this anonymous inner class a lambda(¯‘àçúÿÿÿÿ8÷„¾Ç±1
 f
-java:S3518«"CMake sure this expression can't be zero before doing this division.(‘Ä£‹üÿÿÿÿ8ñ¿Òø¯1
+java:S3518›"CMake sure this expression can't be zero before doing this division.(ïö¾’ûÿÿÿÿ8ßŠ¾Ç±1
 g
-java:S2095é"IUse try-with-resources or close this "InputStream" in a "finally" clause.(«Éå8µ¨›˜°1
-y	java:S116!"XRename this field "recycler_view" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(œ“÷İûÿÿÿÿ8µ íĞ¯1
-m	java:S116""QRename this field "et_msg" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ø¡Ø8µ íĞ¯1
-t	java:S116#"SRename this field "btn_send" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ÇÎÃüÿÿÿÿ8µ íĞ¯1
-z	java:S116%"YRename this field "InteractiveBtn" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(”Û¹ùÿÿÿÿ8µ íĞ¯1
-r	java:S116&"VRename this field "QuestionBtn" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(š×¸À8µ íĞ¯1
-p	java:S1163"ORename this field "Week" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¸Â¿ûÿÿÿÿ8µ íĞ¯1
-u	java:S116;"TRename this field "wrong_ans" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¤—åíşÿÿÿÿ8µ íĞ¯1
-m	java:S116="QRename this field "Switch" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ÅŒ‡®8µ íĞ¯1
-q	java:S116@"URename this field "prompt_lit" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Ä»‚—8µ íĞ¯1
-w	java:S116A"VRename this field "prompt_read" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(£’òÕşÿÿÿÿ8µ íĞ¯1
-q	java:S116B"URename this field "prompt_voc" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(äÁ©¤8µ íĞ¯1
+java:S2095œ"IUse try-with-resources or close this "InputStream" in a "finally" clause.(«Éå8óŠ¾Ç±1
+y	java:S116%"XRename this field "recycler_view" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(œ“÷İûÿÿÿÿ8‡‹¾Ç±1
+m	java:S116&"QRename this field "et_msg" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ø¡Ø8›‹¾Ç±1
+t	java:S116'"SRename this field "btn_send" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ÇÎÃüÿÿÿÿ8°‹¾Ç±1
+z	java:S116("YRename this field "InteractiveBtn" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(”Û¹ùÿÿÿÿ8°‹¾Ç±1
+r	java:S116)"VRename this field "QuestionBtn" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(š×¸À8°‹¾Ç±1
+p	java:S1165"ORename this field "Week" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¸Â¿ûÿÿÿÿ8°‹¾Ç±1
+u	java:S116:"TRename this field "wrong_ans" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¤—åíşÿÿÿÿ8°‹¾Ç±1
+m	java:S116;"QRename this field "Switch" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ÅŒ‡®8°‹¾Ç±1
+v	java:S116="URename this field "prompt_lit" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(æÿ¬£ıÿÿÿÿ8°‹¾Ç±1
+w	java:S116>"VRename this field "prompt_read" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¤ğ²Ïşÿÿÿÿ8°‹¾Ç±1
+q	java:S116?"URename this field "prompt_voc" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(òÜ™8°‹¾Ç±1
+L
+java:S1659+"*Declare "questionText" on a separate line.(Œ¸Ï›ûÿÿÿÿ8Â‹¾Ç±1
 u
-java:S14508"XRemove the "mRunnable" field and declare it as a local variable in the relevant methods.(çšµÈ8½ íĞ¯1
+java:S14508"XRemove the "mRunnable" field and declare it as a local variable in the relevant methods.(çšµÈ8Ä‹¾Ç±1
 t
-java:S3776N"RRefactor this method to reduce its Cognitive Complexity from 84 to the 15 allowed.(¨Œşÿÿÿÿ8•ÀÒø¯1
-T
-java:S1117{"7Rename "ans" which hides the field declared at line 58.(¢ÖÄå8ªÀÒø¯1
-D
-java:S2185ƒ"&Remove this silly call to "Math.round"(ï ÏÍ8°ÀÒø¯1
+java:S3776E"RRefactor this method to reduce its Cognitive Complexity from 68 to the 15 allowed.(¨Œşÿÿÿÿ8ê‹¾Ç±1
+b
+java:S1854t"@Remove this useless assignment to local variable "currentCount".(‰‚—áúÿÿÿÿ8€Œ¾Ç±1
+S
+java:S1481t"1Remove this unused "currentCount" local variable.(‰‚—áúÿÿÿÿ8€Œ¾Ç±1
+C
+java:S2185x"&Remove this silly call to "Math.round"(ï ÏÍ8€Œ¾Ç±1
 U
-java:S1117¦"7Rename "ans" which hides the field declared at line 58.(¢ÖÄå8ºÀÒø¯1
+java:S1117˜"7Rename "ans" which hides the field declared at line 57.(¢ÖÄå8’Œ¾Ç±1
 Y
-java:S1117ê"6Rename "db" which hides the field declared at line 53.(ôï¼ÿúÿÿÿÿ8ĞÁÒø¯1
+java:S1117İ"6Rename "db" which hides the field declared at line 54.(ôï¼ÿúÿÿÿÿ8¨Œ¾Ç±1
 a
-java:S1155†">Use isEmpty() to check whether the collection is empty or not.(Ú¾şöÿÿÿÿÿ8ßÁÒø¯1
+java:S1155û">Use isEmpty() to check whether the collection is empty or not.(Ú¾şöÿÿÿÿÿ8»Œ¾Ç±1
 ;
-java:S2119ˆ"Save and re-use this "Random".(¼İÅf8âÁÒø¯1
+java:S2119ı"Save and re-use this "Random".(¼İÅf8ÏŒ¾Ç±1
 Y
-java:S1117Ÿ"6Rename "db" which hides the field declared at line 53.(ôï¼ÿúÿÿÿÿ8æÁÒø¯1
+java:S1117–"6Rename "db" which hides the field declared at line 54.(ôï¼ÿúÿÿÿÿ8ãŒ¾Ç±1
 ;
-java:S2119·"Save and re-use this "Random".(¼İÅf8ïÁÒø¯1
+java:S2119®"Save and re-use this "Random".(¼İÅf8üŒ¾Ç±1
 a
-java:S1155¹">Use isEmpty() to check whether the collection is empty or not.(Ú¾şöÿÿÿÿÿ8ñÁÒø¯1
+java:S1155°">Use isEmpty() to check whether the collection is empty or not.(Ú¾şöÿÿÿÿÿ8üŒ¾Ç±1
 \
-java:S1155›">Use isEmpty() to check whether the collection is empty or not.(·Ï†²8•ÂÒø¯1
-Y	java:S125£"<This block of commented-out lines of code should be removed.(Å‡8™ÂÒø¯1
-k	java:S100œ"NRename this method name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¨ıÖ÷8è«›˜°1
+java:S1155’">Use isEmpty() to check whether the collection is empty or not.(·Ï†²8œ¾Ç±1
+k	java:S100Ï"NRename this method name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¨ıÖ÷8Ë¾Ç±1
 m
-java:S2674ë"JCheck the return value of the "read" call to see how many bytes were read.(ë¥áïøÿÿÿÿ8è«›˜°1
-k	java:S100ˆ"NRename this method name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(æÇöÆ8ø«›˜°1
-p	java:S100"NRename this method name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ŠÔ›”ûÿÿÿÿ8ø«›˜°1
+java:S2674"JCheck the return value of the "read" call to see how many bytes were read.(ë¥áïøÿÿÿÿ8á¾Ç±1
+k	java:S100»"NRename this method name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(æÇöÆ8á¾Ç±1
+p	java:S100Ñ"NRename this method name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ŠÔ›”ûÿÿÿÿ8á¾Ç±1
 O
-java:S1172¹",Remove this unused method parameter "value".(º™˜ˆûÿÿÿÿ8ø«›˜°1
+java:S1172ì",Remove this unused method parameter "value".(º™˜ˆûÿÿÿÿ8á¾Ç±1

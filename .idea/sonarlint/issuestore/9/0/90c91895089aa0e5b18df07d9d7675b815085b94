@@ -1,18 +1,28 @@
 
 k
-java:S1192û"HDefine a constant instead of duplicating this literal "Picasso" 3 times.(Šüƒ–ÿÿÿÿÿ8»İòÑ¯1
+java:S1192”"HDefine a constant instead of duplicating this literal "Picasso" 3 times.(Šüƒ–ÿÿÿÿÿ8”¥®Á±1
 F
-java:S1604"(Make this anonymous inner class a lambda(Å½÷ç8¼İòÑ¯1
-i	java:S101$"MRename this class name to match the regular expression '^[A-Z][a-zA-Z0-9]*$'.(ß®ö8íïÑ¯1
+java:S1604™"(Make this anonymous inner class a lambda(Å½÷ç8¯ŸÇÇ±1
+i	java:S101)"MRename this class name to match the regular expression '^[A-Z][a-zA-Z0-9]*$'.(ß®ö8¯ŸÇÇ±1
 Ÿ
-java:S1186"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(å…£ê8äô¯1
+java:S1186§"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(å…£ê8ó¥®Á±1
 }
-java:S1450&"[Remove the "dateTextView" field and declare it as a local variable in the relevant methods.(£ùôÈıÿÿÿÿ8ÊíïÑ¯1
+java:S1450+"[Remove the "dateTextView" field and declare it as a local variable in the relevant methods.(£ùôÈıÿÿÿÿ8” ÇÇ±1
 }
-java:S1450%"[Remove the "yearTextView" field and declare it as a local variable in the relevant methods.(–”Ÿıÿÿÿÿ8ËíïÑ¯1
+java:S1450*"[Remove the "yearTextView" field and declare it as a local variable in the relevant methods.(–”Ÿıÿÿÿÿ8” ÇÇ±1
 T
-java:S18749"7Remove this use of "FLAG_FULLSCREEN"; it is deprecated.(¡¼áÈ8ÔíïÑ¯1
+java:S1874A"7Remove this use of "FLAG_FULLSCREEN"; it is deprecated.(¡¼áÈ8£ ÇÇ±1
 Z
-java:S1874:"=Remove this use of "FLAG_SHOW_WHEN_LOCKED"; it is deprecated.(ŒŒüù8ÕíïÑ¯1
+java:S1874B"=Remove this use of "FLAG_SHOW_WHEN_LOCKED"; it is deprecated.(ŒŒüù8£ ÇÇ±1
 _
-java:S1874;"=Remove this use of "FLAG_DISMISS_KEYGUARD"; it is deprecated.(Ï°í¢ÿÿÿÿÿ8ÕíïÑ¯1
+java:S1874C"=Remove this use of "FLAG_DISMISS_KEYGUARD"; it is deprecated.(Ï°í¢ÿÿÿÿÿ8£ ÇÇ±1
+u
+java:S3776¼"RRefactor this method to reduce its Cognitive Complexity from 23 to the 15 allowed.(Ú²ñ‹úÿÿÿÿ8³ ÇÇ±1
+z
+java:S3252½"WUse static access with "androidx.core.content.ContextCompat" for "checkSelfPermission".(Ìîş½ùÿÿÿÿ8³ ÇÇ±1
+z
+java:S3252¾"WUse static access with "androidx.core.content.ContextCompat" for "checkSelfPermission".(ó„Âœüÿÿÿÿ8³ ÇÇ±1
+Z
+java:S1874Í"7Remove this use of "getFromLocation"; it is deprecated.(ÇÌôÄúÿÿÿÿ8³ ÇÇ±1
+a
+java:S1155Î">Use isEmpty() to check whether the collection is empty or not.(¦Áøÿÿÿÿ8³ ÇÇ±1
