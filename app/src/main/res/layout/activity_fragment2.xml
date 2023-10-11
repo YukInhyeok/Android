@@ -19,14 +19,20 @@
         android:layout_above="@+id/button"
         android:orientation="vertical" />
 
-    <Button
-        android:id="@+id/button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_margin="10dp"
-        android:text="새로고침"
-        app:backgroundTint="@color/teal_200" />
+    <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="10dp"
+            style="?android:attr/borderlessButtonStyle"
+            android:fontFamily="@font/pretendard"
+            android:text="새로고침"
+            android:background="@drawable/btn"
+            android:textColor="#202C73"
+            android:textSize="18dp">
+
+    </androidx.appcompat.widget.AppCompatButton>
 
 </RelativeLayout>
