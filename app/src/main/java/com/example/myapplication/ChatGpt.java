@@ -60,7 +60,7 @@ public class ChatGpt extends AppCompatActivity {
 
     private String prompt_lit = "나와 이야기 하며 문해력 점수를 판단해줘. 시작";
     private String prompt_read = "나와 이야기 하며 독해력 점수를 판단해줘. 시작";
-    private String prompt_voc = "나와 이야기 하며 어휘력 점수를 판단해줘. 시작";
+    private String prompt_voc = "어려운 단어를 사용하여 나와 이야기 하며 내 어휘력 점수를 판단해줘. 시작";
 
 
     //네비게이션바 설정
@@ -496,7 +496,7 @@ public class ChatGpt extends AppCompatActivity {
 
             JSONObject assistantMsg10 = new JSONObject();
             assistantMsg10.put("role", "assistant");
-            assistantMsg10.put("content", "5. [스시는 한식 요리가 아니에요. 점수를 20점 차감하겠습니다. 현재 당신의 점수는 60점 입니다.] \n" + "평가가 종료되었습니다. 당신의 최종 점수는 [80점] 입니다. 고생하셨습니다.");
+            assistantMsg10.put("content", "5. [스시는 한식 요리가 아니에요. 점수를 20점 차감하겠습니다. 현재 당신의 점수는 60점 입니다.] \n" + "평가가 종료되었습니다. 당신의 최종 점수는 [60점] 입니다. 고생하셨습니다.");
 
 
             JSONObject userMsg = new JSONObject();
@@ -535,11 +535,9 @@ public class ChatGpt extends AppCompatActivity {
         JSONObject object = new JSONObject();
         try {
             //모델명
-            object.put("model", "gpt-3.5-turbo");
+            object.put("model", "gpt-4");
             object.put("messages", messages);
-            object.put("max_tokens", 3000);
-            object.put("temperature", 0.9);
-            object.put("top_p", 0.8);
+
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -613,7 +611,7 @@ public class ChatGpt extends AppCompatActivity {
         JSONObject object = new JSONObject();
         try {
             //모델명
-            object.put("model", "gpt-3.5-turbo");
+            object.put("model", "gpt-4");
             object.put("messages", messages);
 
         } catch (JSONException e) {
