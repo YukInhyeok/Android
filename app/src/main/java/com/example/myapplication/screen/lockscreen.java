@@ -52,6 +52,8 @@ public class lockscreen extends AppCompatActivity {
 
     private FusedLocationProviderClient fusedLocationProviderClient;
 
+    private int backgroundResourceId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,8 +98,8 @@ public class lockscreen extends AppCompatActivity {
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         updateWeatherInfo();
 
-        ImageView gifImageView = findViewById(R.id.rain_img);
-        Glide.with(this).load(R.drawable.rain2).into(gifImageView);
+//        ImageView gifImageView = findViewById(R.id.rain_img);
+//        Glide.with(this).load(R.drawable.rain2).into(gifImageView);
 
     }
 
@@ -289,7 +291,55 @@ public class lockscreen extends AppCompatActivity {
                         Log.e("Picasso", "Error loading image: " + e.getMessage());
                     }
                 });
+        Log.d("background1", "배경 이미지 리소스 ID: " + backgroundResourceId);
+        ImageView backgroundImageView = findViewById(R.id.rain_img);  // 화면의 배경을 표시할 ImageView 참조 (레이아웃 파일에 추가해야 함)
+        backgroundResourceId = setWeatherBackground(weatherIcon);
+        Log.d("background", "배경 이미지 리소스 ID: " + backgroundResourceId);
+        Glide.with(this).load(backgroundResourceId).into(backgroundImageView);
 
+    }
+
+    private int setWeatherBackground(String icon) {
+        switch (icon) {
+            case "01d":
+            case "02d":
+            case "03d":
+                return R.drawable.stone;   // 맑은 하늘을 나타내는 리소스 ID (낮)
+
+            case "01n":
+            case "02n":
+            case "03n":
+                return R.drawable.stone;   // 맑은 하늘을 나타내는 리소스 ID (밤)
+
+            case "04d":
+            case "04n":
+                return R.drawable.stone;  // 흐린 하늘을 나타내는 리소스 ID
+
+            case "09d":
+            case "10d":
+                return R.drawable.rain2;      // 비 오는 상황을 나타내는 리소스 ID (낮)
+
+            case "09n":
+            case "10n":
+                return R.drawable.rainynight;      // 비 오는 상황을 나타내는 리소스 ID (밤)
+
+            case "11d":
+            case "11n":
+                return R.drawable.stone;  // 천둥 번개가 치는 상황을 나타내는 리소스 ID
+
+            case "13d":
+                return R.drawable.snow;  // 눈이 오는 상황을 나타내는 리소스 ID (낮)
+
+            case "13n":
+                return R.drawable.snow2;  // 눈이 오는 상황을 나타내는 리소스 ID (밤)
+
+            case "50d":
+            case "50n":
+                return R.drawable.stone;  // 안개가 껴있는 상황을 나타내는 리소스 ID
+
+            default:
+                return R.drawable.stone;  // 기본 배경 이미지 리소스 ID
+        }
     }
 
     protected void onBackpressed(){
