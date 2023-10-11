@@ -33,7 +33,7 @@ import java.util.regex.Pattern;
 public class ChatGpt extends AppCompatActivity {
     // API
     public static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
-    private static final String MY_SECRET_KEY = "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";
+    private static final String MY_SECRET_KEY = "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";
     RecyclerView recycler_view;
     EditText et_msg;
     Button btn_send;
@@ -383,6 +383,7 @@ public class ChatGpt extends AppCompatActivity {
                 .writeTimeout(120, TimeUnit.SECONDS)
                 .readTimeout(60, TimeUnit.SECONDS)
                 .build();
+
     }
 
     // 대화 내용을 채팅창에 추가
@@ -535,9 +536,8 @@ public class ChatGpt extends AppCompatActivity {
         JSONObject object = new JSONObject();
         try {
             //모델명
-            object.put("model", "gpt-3.5-turbo");
+            object.put("model", "gpt-4");
             object.put("messages", messages);
-            object.put("max_tokens", 3000);
             object.put("temperature", 0.9);
             object.put("top_p", 0.8);
 
@@ -613,8 +613,10 @@ public class ChatGpt extends AppCompatActivity {
         JSONObject object = new JSONObject();
         try {
             //모델명
-            object.put("model", "gpt-3.5-turbo");
+            object.put("model", "gpt-4");
             object.put("messages", messages);
+            object.put("temperature", 0.9);
+            object.put("top_p", 0.8);
 
         } catch (JSONException e) {
             e.printStackTrace();
