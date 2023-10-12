@@ -33,7 +33,7 @@ import java.util.regex.Pattern;
 public class ChatGpt extends AppCompatActivity {
     // API
     public static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
-    private static final String MY_SECRET_KEY = "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";
+    private static final String MY_SECRET_KEY = BuildConfig.GPT_KEY;
     RecyclerView recycler_view;
     EditText et_msg;
     Button btn_send;
@@ -60,7 +60,7 @@ public class ChatGpt extends AppCompatActivity {
 
     private String prompt_lit = "나와 이야기 하며 문해력 점수를 판단해줘. 시작";
     private String prompt_read = "나와 이야기 하며 독해력 점수를 판단해줘. 시작";
-    private String prompt_voc = "나와 이야기 하며 어휘력 점수를 판단해줘. 시작";
+    private String prompt_voc = "당신은 한국어 선생님 입니다. 당신은 학생의 어휘력을 테스트 해야합니다. 당신이 생각하기에 어려운 한국어 단어를 말하고 뜻을 물어봐주세요. 시작";
 
 
     //네비게이션바 설정

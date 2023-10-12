@@ -16,6 +16,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import com.bumptech.glide.Glide;
+import com.example.myapplication.BuildConfig;
 import com.example.myapplication.MainActivity;
 import com.example.myapplication.R;
 import com.example.myapplication.Utils;
@@ -46,7 +47,7 @@ public class lockscreen extends AppCompatActivity {
     private TextView humidityTextView;
     private TextView weatherlocationTextView;
     private ImageView weatherImageView;
-    private static final String API_KEY = "9bc00b8817211dc754226b2faae450bc";
+    private static final String API_KEY = BuildConfig.OPEN_WEATHER_API_KEY;
 
     private GestureDetector gestureDetector;
 
@@ -309,7 +310,7 @@ public class lockscreen extends AppCompatActivity {
             case "01n":
             case "02n":
             case "03n":
-                return R.drawable.stone;   // 맑은 하늘을 나타내는 리소스 ID (밤)
+                return R.drawable.night;   // 맑은 하늘을 나타내는 리소스 ID (밤)
 
             case "04d":
             case "04n":
@@ -317,7 +318,7 @@ public class lockscreen extends AppCompatActivity {
 
             case "09d":
             case "10d":
-                return R.drawable.rain2;      // 비 오는 상황을 나타내는 리소스 ID (낮)
+                return R.drawable.rain_day;      // 비 오는 상황을 나타내는 리소스 ID (낮)
 
             case "09n":
             case "10n":
