@@ -16,6 +16,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import com.bumptech.glide.Glide;
+import com.example.myapplication.BuildConfig;
 import com.example.myapplication.MainActivity;
 import com.example.myapplication.R;
 import com.example.myapplication.Utils;
@@ -46,10 +47,8 @@ public class lockscreen extends AppCompatActivity {
     private TextView humidityTextView;
     private TextView weatherlocationTextView;
     private ImageView weatherImageView;
-    private static final String API_KEY = "9bc00b8817211dc754226b2faae450bc";
-
+    private static final String API_KEY = BuildConfig.weather_API;
     private GestureDetector gestureDetector;
-
     private FusedLocationProviderClient fusedLocationProviderClient;
 
     @Override
@@ -95,10 +94,8 @@ public class lockscreen extends AppCompatActivity {
         // 날씨 정보 업데이트 메서드 호출
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         updateWeatherInfo();
-
         ImageView gifImageView = findViewById(R.id.rain_img);
-        Glide.with(this).load(R.drawable.rain2).into(gifImageView);
-
+        Glide.with(this).load(R.drawable.night).into(gifImageView);
     }
 
     @Override
@@ -136,7 +133,6 @@ public class lockscreen extends AppCompatActivity {
                     animateActivityTransitionUp();
                 }
             }
-
             return super.onFling(e1, e2, velocityX, velocityY);
         }
 
@@ -178,7 +174,6 @@ public class lockscreen extends AppCompatActivity {
             float translationY = 200f * (getResources().getDisplayMetrics().density);
             animateActivityTransition(0, translationY);
         }
-
     }
 
     //===================================================================================
@@ -236,9 +231,7 @@ public class lockscreen extends AppCompatActivity {
                 .build();
 
         WeatherApi weatherApi = retrofit.create(WeatherApi.class);
-
         Call<WeatherResponse> call = weatherApi.getOneCall(lat, lon, API_KEY);
-
         Log.d("Retrofit", "URL: " + call.request().url());
 
         call.enqueue(new Callback<WeatherResponse>() {
@@ -249,7 +242,6 @@ public class lockscreen extends AppCompatActivity {
                     updateWeatherUI(weatherData);
                 } else { /*...*/ }
             }
-
             @Override
             public void onFailure(Call<WeatherResponse> call, Throwable t) { /*...*/ }
         });

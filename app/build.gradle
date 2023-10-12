@@ -3,6 +3,8 @@ plugins {
     // Add the Google services Gradle plugin
     id 'com.google.gms.google-services'
 }
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
 
 android {
     namespace 'com.example.myapplication'
@@ -15,7 +17,14 @@ android {
         versionCode 1
         versionName "1.0"
 
+        buildConfigField("String", "GPT_API", properties["GPT_API"])
+        buildConfigField("String", "weather_API", properties["weather_API"])
+
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildFeatures{
+        buildConfig true
     }
 
     buildTypes {
