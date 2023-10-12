@@ -50,7 +50,6 @@ public class lockscreen extends AppCompatActivity {
     private static final String API_KEY = BuildConfig.OPEN_WEATHER_API_KEY;
 
     private GestureDetector gestureDetector;
-
     private FusedLocationProviderClient fusedLocationProviderClient;
 
     private int backgroundResourceId;
@@ -125,25 +124,20 @@ public class lockscreen extends AppCompatActivity {
                 if (diffX > 0) {
                     // 스와이프가 오른쪽으로 발생할 경우
                     animateActivityTransitionRight();
-
                 } else {
                     // 스와이프가 왼쪽으로 발생할 경우
                     animateActivityTransitionLeft();
-
                 }
             } else if (Math.abs(diffY) > SWIPE_THRESHOLD &&
                     Math.abs(velocityY) > SWIPE_VELOCITY_THRESHOLD) {
                 if (diffY > 0) {
                     // 스와이프가 아래쪽으로 발생할 경우
                     animateActivityTransitionDown();
-
                 } else {
                     // 스와이프가 위쪽으로 발생할 경우
                     animateActivityTransitionUp();
-
                 }
             }
-
             return super.onFling(e1, e2, velocityX, velocityY);
         }
 
@@ -243,9 +237,7 @@ public class lockscreen extends AppCompatActivity {
                 .build();
 
         WeatherApi weatherApi = retrofit.create(WeatherApi.class);
-
         Call<WeatherResponse> call = weatherApi.getOneCall(lat, lon, API_KEY);
-
         Log.d("Retrofit", "URL: " + call.request().url());
 
         call.enqueue(new Callback<WeatherResponse>() {
@@ -256,7 +248,6 @@ public class lockscreen extends AppCompatActivity {
                     updateWeatherUI(weatherData);
                 } else { /*...*/ }
             }
-
             @Override
             public void onFailure(Call<WeatherResponse> call, Throwable t) { /*...*/ }
         });

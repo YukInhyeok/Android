@@ -3,6 +3,8 @@ plugins {
     // Add the Google services Gradle plugin
     id 'com.google.gms.google-services'
 }
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
 
 Properties properties = new Properties()
 properties.load(project.rootProject.file('local.properties').newDataInputStream())
@@ -18,6 +20,9 @@ android {
         versionCode 1
         versionName "1.0"
 
+        buildConfigField("String", "GPT_API", properties["GPT_API"])
+        buildConfigField("String", "weather_API", properties["weather_API"])
+
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         buildConfigField("String", "GPT_KEY", properties['ChatGPT_api_key'])
@@ -26,6 +31,10 @@ android {
     }
 
     buildFeatures {
+        buildConfig true
+    }
+
+    buildFeatures{
         buildConfig true
     }
 
