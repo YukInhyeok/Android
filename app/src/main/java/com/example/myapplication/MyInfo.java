@@ -1,19 +1,13 @@
 package com.example.myapplication;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
@@ -66,7 +60,6 @@ public class MyInfo extends AppCompatActivity {
     private static final String WEEKLY_RESET_ALARM_SET = "WeeklyResetAlarmSet";
 
     private PeriodicWorkRequest resetWeeklyWorkRequest;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

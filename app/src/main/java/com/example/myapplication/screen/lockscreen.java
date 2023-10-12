@@ -314,7 +314,7 @@ public class lockscreen extends AppCompatActivity {
 
             case "04d":
             case "04n":
-                return R.drawable.stone;  // 흐린 하늘을 나타내는 리소스 ID
+                return R.drawable.cloudyday;  // 흐린 하늘을 나타내는 리소스 ID
 
             case "09d":
             case "10d":
@@ -332,14 +332,14 @@ public class lockscreen extends AppCompatActivity {
                 return R.drawable.snow;  // 눈이 오는 상황을 나타내는 리소스 ID (낮)
 
             case "13n":
-                return R.drawable.snow2;  // 눈이 오는 상황을 나타내는 리소스 ID (밤)
+                return R.drawable.snow_night;  // 눈이 오는 상황을 나타내는 리소스 ID (밤)
 
             case "50d":
             case "50n":
-                return R.drawable.stone;  // 안개가 껴있는 상황을 나타내는 리소스 ID
+                return R.drawable.fog;  // 안개가 껴있는 상황을 나타내는 리소스 ID
 
             default:
-                return R.drawable.stone;  // 기본 배경 이미지 리소스 ID
+                return R.drawable.rain2;  // 기본 배경 이미지 리소스 ID
         }
     }
 

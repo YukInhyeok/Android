@@ -1,29 +1,29 @@
 
 k
-java:S1192–"HDefine a constant instead of duplicating this literal "Picasso" 3 times.(Šüƒ–ÿÿÿÿÿ8Úú‹æ±1
+java:S1192—"HDefine a constant instead of duplicating this literal "Picasso" 3 times.(Šüƒ–ÿÿÿÿÿ8Úú‹æ±1
 F
-java:S1604›"(Make this anonymous inner class a lambda(Å½÷ç8Úú‹æ±1
-i	java:S101)"MRename this class name to match the regular expression '^[A-Z][a-zA-Z0-9]*$'.(ß®ö8Úú‹æ±1
+java:S1604œ"(Make this anonymous inner class a lambda(Å½÷ç8Úú‹æ±1
+i	java:S101*"MRename this class name to match the regular expression '^[A-Z][a-zA-Z0-9]*$'.(ß®ö8Úú‹æ±1
 Ÿ
-java:S1186Ù"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(å…£ê8¥û‹æ±1
+java:S1186Ú"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(å…£ê8¥û‹æ±1
 }
-java:S1450+"[Remove the "dateTextView" field and declare it as a local variable in the relevant methods.(£ùôÈıÿÿÿÿ8¥û‹æ±1
+java:S1450,"[Remove the "dateTextView" field and declare it as a local variable in the relevant methods.(£ùôÈıÿÿÿÿ8¥û‹æ±1
 }
-java:S1450*"[Remove the "yearTextView" field and declare it as a local variable in the relevant methods.(–”Ÿıÿÿÿÿ8¥û‹æ±1
+java:S1450+"[Remove the "yearTextView" field and declare it as a local variable in the relevant methods.(–”Ÿıÿÿÿÿ8¥û‹æ±1
 T
-java:S1874C"7Remove this use of "FLAG_FULLSCREEN"; it is deprecated.(¡¼áÈ8µû‹æ±1
+java:S1874D"7Remove this use of "FLAG_FULLSCREEN"; it is deprecated.(¡¼áÈ8µû‹æ±1
 Z
-java:S1874D"=Remove this use of "FLAG_SHOW_WHEN_LOCKED"; it is deprecated.(ŒŒüù8µû‹æ±1
+java:S1874E"=Remove this use of "FLAG_SHOW_WHEN_LOCKED"; it is deprecated.(ŒŒüù8µû‹æ±1
 _
-java:S1874E"=Remove this use of "FLAG_DISMISS_KEYGUARD"; it is deprecated.(Ï°í¢ÿÿÿÿÿ8µû‹æ±1
-X	java:S125e"<This block of commented-out lines of code should be removed.(á¼¼û8µû‹æ±1
+java:S1874F"=Remove this use of "FLAG_DISMISS_KEYGUARD"; it is deprecated.(Ï°í¢ÿÿÿÿÿ8µû‹æ±1
+X	java:S125f"<This block of commented-out lines of code should be removed.(á¼¼û8µû‹æ±1
 u
-java:S3776¾"RRefactor this method to reduce its Cognitive Complexity from 23 to the 15 allowed.(Ú²ñ‹úÿÿÿÿ8Åû‹æ±1
+java:S3776¿"RRefactor this method to reduce its Cognitive Complexity from 23 to the 15 allowed.(Ú²ñ‹úÿÿÿÿ8Åû‹æ±1
 z
-java:S3252¿"WUse static access with "androidx.core.content.ContextCompat" for "checkSelfPermission".(Ìîş½ùÿÿÿÿ8Åû‹æ±1
+java:S3252À"WUse static access with "androidx.core.content.ContextCompat" for "checkSelfPermission".(Ìîş½ùÿÿÿÿ8Åû‹æ±1
 z
-java:S3252À"WUse static access with "androidx.core.content.ContextCompat" for "checkSelfPermission".(ó„Âœüÿÿÿÿ8Åû‹æ±1
+java:S3252Á"WUse static access with "androidx.core.content.ContextCompat" for "checkSelfPermission".(ó„Âœüÿÿÿÿ8Åû‹æ±1
 Z
-java:S1874Ï"7Remove this use of "getFromLocation"; it is deprecated.(ÇÌôÄúÿÿÿÿ8Åû‹æ±1
+java:S1874Ğ"7Remove this use of "getFromLocation"; it is deprecated.(ÇÌôÄúÿÿÿÿ8Åû‹æ±1
 a
-java:S1155Ğ">Use isEmpty() to check whether the collection is empty or not.(¦Áøÿÿÿÿ8Åû‹æ±1
+java:S1155Ñ">Use isEmpty() to check whether the collection is empty or not.(¦Áøÿÿÿÿ8Åû‹æ±1

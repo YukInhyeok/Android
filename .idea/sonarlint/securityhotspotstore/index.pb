@@ -211,3 +211,10 @@ Q.idea/sonarlint/securityhotspotstore/4/4/44a293d92d2473f5cb0783b320f5ef739e6cc8
 	README.md,8\e\8ec9a00bfd09b3190ac6b22251dbb1aa95a0579d
 o
 ?app/src/main/java/com/example/myapplication/DatabaseHelper.java,9\4\945442e89cf884f497ad4c45ab59064517cd29ba
+@
+local.properties,0\7\0712df971a99ac4d2fccb8e0fb19f377f3374cca
+>
+app/.gitignore,5\1\51e1c5d383dfaa35e0e7e5873a0a99355a86880f
+:
+
+.gitignore,a\5\a5cc2925ca8258af241be7e5b0381edf30266302
