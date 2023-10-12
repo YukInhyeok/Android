@@ -34,6 +34,7 @@
             android:exported="false" />
         <activity
             android:name=".ChatGpt"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".book.BookMainActivity"
