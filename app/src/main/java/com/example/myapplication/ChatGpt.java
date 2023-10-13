@@ -58,13 +58,11 @@ public class ChatGpt extends AppCompatActivity {
     private int wrong_ans = 0;
     private int Switch = 0;
 
-    private String prompt_lit = "나와 이야기 하며 문해력 점수를 판단해줘. 시작";
+    private String prompt_lit = "내 문해력을 테스트 하기위해 나에게 긴 지문을 주고 그 지문에 대한 질문을 해줘. 시작";
     private String prompt_read = "당신은 국어선생님 입니다. 당신은 학생의 독해력을 테스트 해야합니다. 학생이 최근 읽은 책이 무엇인지 물어보고 그 내용을 잘 이해했는지 확인해 주세요. 시작";
     private String prompt_voc = "당신은 국어선생님 입니다. 당신은 학생의 어휘력을 테스트 해야합니다. 당신이 생각하기에 어려운 한국어 단어를 말하고 뜻을 물어봐주세요. 시작";
 
-
     //네비게이션바 설정
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
