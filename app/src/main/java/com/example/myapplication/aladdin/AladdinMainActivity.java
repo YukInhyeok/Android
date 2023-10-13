@@ -4,7 +4,6 @@ import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 
 import android.view.inputmethod.EditorInfo;
 import android.widget.*;
-import android.widget.TextView.OnEditorActionListener;
 import android.view.KeyEvent;
 import android.content.DialogInterface;
 import android.content.res.AssetManager;
@@ -16,9 +15,9 @@ import android.view.View;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.myapplication.MainActivity;
 import com.example.myapplication.R;
 
+import com.example.myapplication.Utils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -48,6 +47,9 @@ public class AladdinMainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_aladdin_main);
+
+        // 하단 메뉴바 삭제
+        Utils.deleteMenuButton(this);
 
         searchEditText = findViewById(R.id.searchEditText);
         searchButton = findViewById(R.id.searchButton);

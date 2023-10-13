@@ -123,6 +123,7 @@
                 android:layout_centerVertical="true"
                 android:background="@drawable/roundstyle20dp"
                 android:text="전송"
+                android:visibility="gone"
                 android:textColor="@color/black"
                 style="?android:attr/borderlessButtonStyle"
                 android:fontFamily="@font/preten_medium"

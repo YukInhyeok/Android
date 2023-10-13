@@ -59,12 +59,11 @@ public class ChatGpt extends AppCompatActivity {
     private int Switch = 0;
 
     private final String prompt_lit = "당신은 사용자에게 장문의 글을 주고 문해력을 테스트 해야합니다. 당신이 생각하는 어려운 글을 만들고, 사용자에게 문제를 내야합니다. 시작";
-    private final String prompt_read = "나와 이야기 하며 독해력 점수를 판단해줘. 시작";
+    private final String prompt_read = "당신은 국어선생님 입니다. 당신은 학생의 독해력을 테스트 해야합니다. 학생이 최근 읽은 책이 무엇인지 물어보고 그 내용을 잘 이해했는지 확인해 주세요. 시작";
     private final String prompt_voc = "당신은 한국어 선생님 입니다. 당신은 학생의 어휘력을 테스트 해야합니다. 당신이 생각하기에 어려운 한국어 단어를 말하고 뜻을 물어봐주세요. 시작";
 
 
     //네비게이션바 설정
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -143,6 +142,8 @@ public class ChatGpt extends AppCompatActivity {
                                     Log.w("Firestore", "Error getting document", e);
                                 }
                             });
+                    Intent intent = new Intent(ChatGpt.this, MainActivity.class);
+                    startActivity(intent);
                     finish();
                 }
 
@@ -187,14 +188,38 @@ public class ChatGpt extends AppCompatActivity {
                                 }
                             });
 
+                    Intent intent = new Intent(ChatGpt.this, MainActivity.class);
+                    startActivity(intent);
                     finish();
                 } else {
 
+                    Intent intent = new Intent(ChatGpt.this, MainActivity.class);
+                    startActivity(intent);
                     finish();
                 }
             }
         });
 
+        et_msg.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                // 텍스트 변경 전에 수행할 작업
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (charSequence.length() > 0) {
+                    btn_send.setVisibility(View.VISIBLE);
+                } else {
+                    btn_send.setVisibility(View.GONE); // 텍스트가 없을 때 버튼 비활성화
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                // 텍스트 변경 후에 수행할 작업
+            }
+        });
         btn_send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -452,12 +477,10 @@ public class ChatGpt extends AppCompatActivity {
             systemMessage.put("role", "system");
             systemMessage.put("content", "당신은 한국어 선생님입니다. 유저가 문법에 맞지 않거나 주제와 상관없는 이야기를 할 때 점수를 20점씩 차감합니다. 항상 \"시작\"이라는 단어를 들으면 점수를 초기화 해야하며, 6마디의 대화를 나눈 뒤에는 반드시 점수를 알려주어야 합니다.");
 
-            // user message
             JSONObject userMessage1 = new JSONObject();
             userMessage1.put("role", "user");
             userMessage1.put("content", "시작");
 
-            // assistant message
             JSONObject assistantMsg1 = new JSONObject();
             assistantMsg1.put("role", "assistant");
             assistantMsg1.put("content", "1. 안녕하세요 당신의 어휘력을 평가하겠습니다. 금일 날씨는 어떤가요?");
