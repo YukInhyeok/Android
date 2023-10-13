@@ -347,56 +347,6 @@ public class MyInfo extends AppCompatActivity {
         return nextMonday.getTimeInMillis() - now.getTimeInMillis();
     }
 
-    // 목표 점수 저장
-//    private void saveGoalScore(int goalScore) {
-//        SharedPreferences sharedPreferences = getSharedPreferences("GoalScorePrefs", Context.MODE_PRIVATE);
-//        SharedPreferences.Editor editor = sharedPreferences.edit();
-//        editor.putInt("goalScore", goalScore);
-//        editor.apply();
-//    }
-//    private int loadGoalScore() {
-//        SharedPreferences sharedPreferences = getSharedPreferences("GoalScorePrefs", Context.MODE_PRIVATE);
-//        return sharedPreferences.getInt("goalScore", 0);
-//    }
-
-    //목표 점수
-//    private void showGoalScorePopup() {
-//        AlertDialog.Builder builder = new AlertDialog.Builder(MyInfo.this);
-//        LayoutInflater inflater = getLayoutInflater();
-//        View popupView = inflater.inflate(R.layout.goal_score_popup, null);
-//        builder.setView(popupView);
-//
-//        final NumberPicker numberPicker = popupView.findViewById(R.id.num_picker);
-//
-//        String[] values = new String[]{"0", "10", "20", "30", "40", "50", "60", "70", "80", "90", "100"};
-//
-//        for (int i = 0; i < values.length; i++) {
-//            int value = Integer.parseInt(values[i]);
-//            values[i] = (value / 10 * 10) + "";
-//        }
-//
-//        numberPicker.setMinValue(0);
-//        numberPicker.setMaxValue(values.length - 1);
-//        numberPicker.setDisplayedValues(values);
-//
-//        Button goalScoreBtn = popupView.findViewById(R.id.btn);
-//
-//        final AlertDialog alertDialog = builder.create();
-//        alertDialog.show();
-//
-//        goalScoreBtn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                int selectedGoalScore = numberPicker.getValue() * 10;
-//                goalScoreText.setText("" + selectedGoalScore);
-//                alertDialog.dismiss();
-//
-//                // 목표 점수 저장
-//                saveGoalScore(selectedGoalScore);
-//                updateChartWithGoalScore(selectedGoalScore);
-//            }
-//        });
-//    }
 // 오늘의 점수 가져오기
     private void fetchTodayDataAndCalculateAverage() {
         fetchtodayData(new FirestoreCallback() {
