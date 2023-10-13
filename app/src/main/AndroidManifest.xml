@@ -28,12 +28,14 @@
         <activity
             android:name=".aladdin.WebActivity" />
         <activity
-            android:name=".aladdin.AladdinMainActivity" />
+            android:name=".aladdin.AladdinMainActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"/>
         <activity
             android:name=".MyInfo"
             android:exported="false" />
         <activity
             android:name=".ChatGpt"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".book.BookMainActivity"
@@ -43,7 +45,9 @@
         <service android:name=".screen.MyForegroundService"
             android:exported="false"/>
 
-        <activity android:name=".screen.lockscreen"/>
+        <activity
+            android:name=".screen.lockscreen"
+            android:configChanges="orientation|screenSize"/>
 
         <receiver
             android:name=".screen.BootCompletedReceiver"
