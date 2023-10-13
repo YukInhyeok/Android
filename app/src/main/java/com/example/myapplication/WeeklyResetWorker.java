@@ -34,6 +34,9 @@ public class WeeklyResetWorker extends Worker {
         int zeroValue = 0;
         Map<String, Object> data = new HashMap<>();
         data.put("average", zeroValue);
+        data.put("literacy", zeroValue);
+        data.put("read", zeroValue);
+        data.put("vocabulary", zeroValue);
 
         // 'WeekChart' 컬렉션의 문서 목록
         String[] weekdays = {"Mon", "Tues", "Wed", "Thurs", "Fri"};
