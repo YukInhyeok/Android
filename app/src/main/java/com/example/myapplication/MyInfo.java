@@ -79,7 +79,6 @@ public class MyInfo extends AppCompatActivity {
         //버튼
         BookBtn = findViewById(R.id.book_button);
 
-        Sol = findViewById(R.id.Sol);
         //firebase
         db = FirebaseFirestore.getInstance();
 
@@ -267,18 +266,21 @@ public class MyInfo extends AppCompatActivity {
                 leftAxis.setDrawLabels(false);
                 leftAxis.setDrawAxisLine(false);
 
-                leftAxis.setLabelCount(0, true);
-
                 YAxis rightYAxis = barChart.getAxisRight();
-                rightYAxis.setDrawLabels(false);
-                // 오른쪽 Y축 그리드 선 없애기
+                rightYAxis.setGranularity(20f);
+                rightYAxis.setAxisMinimum(0f);
+                rightYAxis.setAxisMaximum(100f);
                 rightYAxis.setDrawGridLines(false);
                 leftAxis.setDrawAxisLine(false);
                 rightYAxis.setDrawAxisLine(false);
+                xAxis.setDrawAxisLine(false);
+                rightYAxis.setLabelCount(6, true);
+                rightYAxis.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART); // 값 레이블을 차트 바깥쪽에 표시
 
-                barChart.setScaleEnabled(false);
-                barChart.getDescription().setEnabled(false);
                 barChart.getLegend().setEnabled(false);
+                barChart.getDescription().setEnabled(false);
+                barChart.setScaleEnabled(false);
+
                 barChart.animateY(800);
 
             }
