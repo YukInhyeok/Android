@@ -6,6 +6,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#F0F0F0"
+        android:gravity="bottom"
         android:orientation="vertical">
 
     <LinearLayout
@@ -19,11 +20,9 @@
                 android:fontFamily="@font/pretendard"
                 android:textSize="30sp"
                 android:textStyle="bold"
-                android:layout_marginTop="35dp"
+                android:layout_marginTop="20dp"
                 android:text="내 정보"
-                android:textColor="@color/black">
-
-        </TextView>
+                android:textColor="@color/black"/>
     </LinearLayout>
     <LinearLayout
             android:layout_width="match_parent"
@@ -47,9 +46,7 @@
                         android:layout_marginTop="10dp"
                         android:fontFamily="@font/pretendard"
                         android:text="오늘의 점수">
-
                 </TextView>
-
             </LinearLayout>
             <LinearLayout
                     android:layout_width="match_parent"
@@ -108,7 +105,7 @@
 
     <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="250dp"
+            android:layout_height="400dp"
             android:gravity="center">
 
         <LinearLayout
@@ -172,48 +169,17 @@
 
     <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="270dp"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:gravity="center">
-        <LinearLayout
-                android:layout_width="330dp"
-                android:layout_height="150dp"
-                android:background="@drawable/roundstyle10dp"
-                android:backgroundTint="@color/white"
-                android:padding="15dp"
-                android:orientation="vertical">
-            <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/pretendard"
-                    android:textColor="#888888"
-                    android:textStyle="bold"
-                    android:textSize="18sp"
-                    android:text="주간 솔루션">
-            </TextView>
-            <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-                <TextView
-                        android:id="@+id/Sol"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:fontFamily="@font/pretendard"
-                        android:textSize="12sp"
-                        android:textStyle="bold"
-                        android:textColor="#222222"
-                        android:text="배고파요 ㅜㅜ">
-                </TextView>
-            </LinearLayout>
+            android:gravity="bottom">
 
-
-        </LinearLayout>
         <RelativeLayout
                 android:id="@+id/book_button"
                 android:layout_width="330dp"
                 android:layout_height="80dp"
+                android:layout_gravity="center"
                 android:layout_marginTop="15dp"
+                android:layout_marginBottom="15dp"
                 android:background="@drawable/roundstyle10dp"
                 android:backgroundTint="@color/white">
 
@@ -249,10 +215,6 @@
 
         </RelativeLayout>
 
-    </LinearLayout>
-    <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
         <com.google.android.material.bottomnavigation.BottomNavigationView
                 android:id="@+id/bottomNavigationView"
                 android:layout_width="match_parent"
@@ -265,5 +227,6 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"/>
-    </LinearLayout>
+
+        </LinearLayout>
 </androidx.appcompat.widget.LinearLayoutCompat>
