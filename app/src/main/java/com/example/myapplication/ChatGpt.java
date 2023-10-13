@@ -58,9 +58,9 @@ public class ChatGpt extends AppCompatActivity {
     private int wrong_ans = 0;
     private int Switch = 0;
 
-    private String prompt_lit = "나와 이야기 하며 문해력 점수를 판단해줘. 시작";
-    private String prompt_read = "나와 이야기 하며 독해력 점수를 판단해줘. 시작";
-    private String prompt_voc = "당신은 한국어 선생님 입니다. 당신은 학생의 어휘력을 테스트 해야합니다. 당신이 생각하기에 어려운 한국어 단어를 말하고 뜻을 물어봐주세요. 시작";
+    private final String prompt_lit = "당신은 사용자에게 장문의 글을 주고 문해력을 테스트 해야합니다. 당신이 생각하는 어려운 글을 만들고, 사용자에게 문제를 내야합니다. 시작";
+    private final String prompt_read = "나와 이야기 하며 독해력 점수를 판단해줘. 시작";
+    private final String prompt_voc = "당신은 한국어 선생님 입니다. 당신은 학생의 어휘력을 테스트 해야합니다. 당신이 생각하기에 어려운 한국어 단어를 말하고 뜻을 물어봐주세요. 시작";
 
 
     //네비게이션바 설정
@@ -118,12 +118,14 @@ public class ChatGpt extends AppCompatActivity {
                                     long newValue = (score + value) / 2;
                                     Map<String, Object> newData = new HashMap<>(documentSnapshot.getData());
                                     newData.put("value", Math.round(newValue));
+
                                     dateRef.set(newData).addOnSuccessListener(new OnSuccessListener<Void>() {
                                                 @Override
                                                 public void onSuccess(Void aVoid) {
                                                     Log.d("Firestore", "Value and count were successfully updated!");
                                                     // 업데이트 후에 평균을 계산하고 저장
                                                     saveWeeklyAverage();
+                                                    updateWeekChart(ability, newValue);
                                                 }
                                             })
                                             .addOnFailureListener(new OnFailureListener() {
@@ -132,6 +134,7 @@ public class ChatGpt extends AppCompatActivity {
                                                     Log.w("Firestore", "Error updating data", e);
                                                 }
                                             });
+
                                 }
                             })
                             .addOnFailureListener(new OnFailureListener() {
@@ -164,6 +167,7 @@ public class ChatGpt extends AppCompatActivity {
                                                     Log.d("Firestore", "Value and count were successfully updated!");
                                                     // 업데이트 후에 평균을 계산하고 저장
                                                     saveWeeklyAverage();
+                                                    updateWeekChart(ability, Math.round(newValue));
                                                 }
                                             })
                                             .addOnFailureListener(new OnFailureListener() {
@@ -172,8 +176,10 @@ public class ChatGpt extends AppCompatActivity {
                                                     Log.w("Firestore", "Error updating data", e);
                                                 }
                                             });
+
                                 }
                             })
+
                             .addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
@@ -188,8 +194,6 @@ public class ChatGpt extends AppCompatActivity {
                 }
             }
         });
-
-
 
         btn_send.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -381,6 +385,43 @@ public class ChatGpt extends AppCompatActivity {
                 .build();
     }
 
+    private void updateWeekChart(String ability, long newValue) {
+        DocumentReference weekDocRef = db.collection("WeekChart").document(Week);
+
+        weekDocRef.update(ability, newValue)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d("Firestore", "WeekChart was successfully updated!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w("Firestore", "Error updating WeekChart", e);
+                    }
+                });
+
+    }
+
+    private void updateWeekChart(String ability, float newValue){
+        DocumentReference weekDocRef = db.collection("WeekChart").document(Week);
+
+        weekDocRef.update(ability, newValue)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d("Firestore", "WeekChart was successfully updated!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w("Firestore", "Error updating WeekChart", e);
+                    }
+                });
+    }
+
     // 대화 내용을 채팅창에 추가
     void addToChat(String message, String sentBy) {
         runOnUiThread(new Runnable() {
@@ -550,7 +591,7 @@ public class ChatGpt extends AppCompatActivity {
         JSONObject object = new JSONObject();
         try {
             //모델명
-            object.put("model", "gpt-4");
+            object.put("model", "gpt-3.5-turbo-16k");
             object.put("messages", messages);
             object.put("temperature", 0.9);
             object.put("top_p", 0.8);
@@ -627,7 +668,7 @@ public class ChatGpt extends AppCompatActivity {
         JSONObject object = new JSONObject();
         try {
             //모델명
-            object.put("model", "gpt-4");
+            object.put("model", "gpt-3.5-turbo-16k");
             object.put("messages", messages);
             object.put("temperature", 0.9);
             object.put("top_p", 0.8);
@@ -875,6 +916,7 @@ public class ChatGpt extends AppCompatActivity {
                                 double average = (double) sum / count;
                                 Map<String, Object> data = new HashMap<>();
                                 data.put("average", Math.round(average));
+
 
                                 DocumentReference weekDocRef = db.collection("WeekChart").document(Week);
                                 weekDocRef.update(data)
