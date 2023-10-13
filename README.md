@@ -7,6 +7,7 @@
 <img src="https://img.shields.io/badge/android-3DDC84?style=for-the-badge&logo=android&logoColor=ffffff"/>
 <img src="https://img.shields.io/badge/java-007396?style=for-the-badge&logo=java&logoColor=white">
 <img src="https://img.shields.io/badge/GPT-74AA9C?style=for-the-badge&logo=openAI&logoColor=white">
+<img src="https://img.shields.io/badge/SQLite-003B57?style=for-the-badge&logo=sqlite&logoColor=white">
 <img src="https://img.shields.io/badge/fire base-FFCA28?style=for-the-badge&logo=firebase&logoColor=black">
 <img src="https://img.shields.io/badge/intellij-F62E5C?style=for-the-badge&logo=intellijidea&logoColor=black">
 
