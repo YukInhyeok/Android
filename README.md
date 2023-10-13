@@ -34,7 +34,7 @@
 <img width="15%" src="https://github.com/YukInhyeok/Android/assets/72872676/fd7629fd-ba50-467e-aa7a-95afcfea387d"/>
 <img width="15%" src="https://github.com/YukInhyeok/Android/assets/72872676/4e875f18-a8e4-4783-9880-99a1ecec0a48"/>
 <img width="15%" src="https://github.com/YukInhyeok/Android/assets/72872676/eac0d789-d101-4238-917d-147e43762fef"/><br><br>
-This is a Korean language problem solving application using GPT.<br><br>
+This is a Korean language problem-solving application using GPT.<br><br>
 If you talk with GPT or guess the questions that GPT presents, GPT will be evaluated. The score is displayed graphically on the home screen and my information window, and comments are made according to the score. <br><br>
 Use the parent app (administrator) to control your child's cell phone. Parents can assign missions to their children by specifying the number of reading comments and how long they use the app, and if they do not complete the mission, the app installed on their children's mobile phones will be forced to run. <br><br>
 Children can spend more time using the app while talking to GPT or solving problems, and the app will be unlocked when they complete the mission by writing a book report.<br><br>
