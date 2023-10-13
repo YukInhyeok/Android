@@ -6,9 +6,6 @@ plugins {
 Properties properties = new Properties()
 properties.load(project.rootProject.file('local.properties').newDataInputStream())
 
-Properties properties = new Properties()
-properties.load(project.rootProject.file('local.properties').newDataInputStream())
-
 android {
     namespace 'com.example.myapplication'
     compileSdk 33
@@ -19,19 +16,11 @@ android {
         targetSdk 33
         versionCode 1
         versionName "1.0"
-
-        buildConfigField("String", "GPT_API", properties["GPT_API"])
-        buildConfigField("String", "weather_API", properties["weather_API"])
-
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         buildConfigField("String", "GPT_KEY", properties['ChatGPT_api_key'])
         buildConfigField("String", "OPEN_WEATHER_API_KEY", properties['OpenWeather_api_key'])
 
-    }
-
-    buildFeatures {
-        buildConfig true
     }
 
     buildFeatures{
