@@ -88,6 +88,9 @@ public class MainActivity extends AppCompatActivity{
 
     private BarChart barChart;
 
+    //핸드폰 사용시간
+    private long usedTimeInMinutes = 0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -157,6 +160,7 @@ public class MainActivity extends AppCompatActivity{
 
         //어플 사용 시간
         appUseTimeTextView = findViewById(R.id.app_use_time);
+
 
 //========================================= 차트 그래프 터치 ================================================
         // 점수
@@ -510,7 +514,7 @@ private void fetchData(MyInfo.FirestoreCallback callback) {
 //=====================================제한 시간 메서드==========================================================================
     private void fetchLimitTime(long appUsageTime) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        long usedTimeInMinutes = TimeUnit.MILLISECONDS.toMinutes(appUsageTime);
+        usedTimeInMinutes = TimeUnit.MILLISECONDS.toMinutes(appUsageTime);
         db.collection("Time").document("SetTime")
                 .addSnapshotListener(new EventListener<DocumentSnapshot>() {
                     @Override
@@ -525,7 +529,6 @@ private void fetchData(MyInfo.FirestoreCallback callback) {
                             timeValue = convertTimeStringToMinutes(timeString);
                             limitTime.setText(formattedAppUsageTime +" / " + timeValue + " min");
                             appUseTimeTextView.setText(usedTimeInMinutes + " min");
-                            TargetTime(usedTimeInMinutes);
 
                         }
                     }
@@ -648,8 +651,9 @@ private void fetchData(MyInfo.FirestoreCallback callback) {
                 updateAppUsageTime();
                 lastUpdateTime = System.currentTimeMillis();
                 Log.d("AppUsageTime", "App usage time updated"); // 작동 로그 추가
+                TargetTime();
             }
-            handler.postDelayed(this, updateTimeThreshold); // 1초 간격으로 반복 실행
+            handler.postDelayed(this, updateTimeThreshold);
         }
     };
 //===============================================================================================================
@@ -693,7 +697,7 @@ private void ExitApp(){
 
 
 //===============================firebase에 사용시간 추가====================================================================
-private void TargetTime(long usedTimeInMinutes){
+private void TargetTime(){
     DocumentReference documentReference = db.collection("Time").document("TargetTime");
 
     documentReference.update("Ttime", usedTimeInMinutes)
