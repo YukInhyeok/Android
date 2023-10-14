@@ -218,3 +218,9 @@ o
 :
 
 .gitignore,a\5\a5cc2925ca8258af241be7e5b0381edf30266302
+x
+Happ/src/main/java/com/example/myapplication/book/OnDatabaseCallback.java,7\2\725bc33637e88ef273d374f655bbaea5eac16ffd
+}
+Mapp/src/main/java/com/example/myapplication/book/OnBookItemClickListener.java,2\3\230473be32cb5751ce77df4904dcafdd6e41afa8
+r
+Bapp/src/main/java/com/example/myapplication/book/BookDatabase.java,2\c\2c5ccd14d9057663e23c17d8cd842f68732a31e0

@@ -1,8 +1,11 @@
 package com.example.myapplication;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -34,6 +37,9 @@ public class ChatGpt extends AppCompatActivity {
     // API
     public static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
     private static final String MY_SECRET_KEY = BuildConfig.GPT_KEY;
+    private final String prompt_lit = "당신은 사용자에게 장문의 글을 주고 문해력을 테스트 해야합니다. 당신이 생각하는 어려운 글을 만들고, 사용자에게 문제를 내야합니다. 시작";
+    private final String prompt_read = "당신은 국어선생님 입니다. 당신은 학생의 독해력을 테스트 해야합니다. 학생이 최근 읽은 책이 무엇인지 물어보고 그 내용을 잘 이해했는지 확인해 주세요. 시작";
+    private final String prompt_voc = "당신은 한국어 선생님 입니다. 당신은 학생의 어휘력을 테스트 해야합니다. 당신이 생각하기에 어려운 한국어 단어를 말하고 뜻을 물어봐주세요. 시작";
     RecyclerView recycler_view;
     EditText et_msg;
     Button btn_send;
@@ -57,11 +63,6 @@ public class ChatGpt extends AppCompatActivity {
     private int ans = 0;
     private int wrong_ans = 0;
     private int Switch = 0;
-
-    private final String prompt_lit = "당신은 사용자에게 장문의 글을 주고 문해력을 테스트 해야합니다. 당신이 생각하는 어려운 글을 만들고, 사용자에게 문제를 내야합니다. 시작";
-    private final String prompt_read = "당신은 국어선생님 입니다. 당신은 학생의 독해력을 테스트 해야합니다. 학생이 최근 읽은 책이 무엇인지 물어보고 그 내용을 잘 이해했는지 확인해 주세요. 시작";
-    private final String prompt_voc = "당신은 한국어 선생님 입니다. 당신은 학생의 어휘력을 테스트 해야합니다. 당신이 생각하기에 어려운 한국어 단어를 말하고 뜻을 물어봐주세요. 시작";
-
 
     //네비게이션바 설정
     @Override
@@ -104,7 +105,7 @@ public class ChatGpt extends AppCompatActivity {
         finishBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(Switch == 1){
+                if (Switch == 1) {
                     Log.d("GPT", "대화형 ability: " + ability);
                     int score = mark_interactive(assistantMessages);
                     DocumentReference dateRef = db.collection("Chart").document(ability);
@@ -145,9 +146,7 @@ public class ChatGpt extends AppCompatActivity {
                     Intent intent = new Intent(ChatGpt.this, MainActivity.class);
                     startActivity(intent);
                     finish();
-                }
-
-                else if (Switch == 2) {
+                } else if (Switch == 2) {
                     Log.d("GPT", "문제형 ability: " + ability);
                     DocumentReference dateRef = db.collection("Chart").document(ability);
                     dateRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -429,7 +428,7 @@ public class ChatGpt extends AppCompatActivity {
 
     }
 
-    private void updateWeekChart(String ability, float newValue){
+    private void updateWeekChart(String ability, float newValue) {
         DocumentReference weekDocRef = db.collection("WeekChart").document(Week);
 
         weekDocRef.update(ability, newValue)

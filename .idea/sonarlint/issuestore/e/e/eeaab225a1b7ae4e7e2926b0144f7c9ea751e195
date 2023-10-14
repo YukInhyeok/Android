@@ -1,51 +1,49 @@
 
-i
-java:S1192ƒ"KDefine a constant instead of duplicating this literal "MY_APP_TAG" 4 times.(ÃÓ¹8ˆ¾˜ì±1
 d
-java:S1192›"FDefine a constant instead of duplicating this literal "label" 4 times.(¶Äº8ˆ¾˜ì±1
+java:S1192"FDefine a constant instead of duplicating this literal "label" 4 times.(¶Äº8åäº²1
+i
+java:S1192‚"KDefine a constant instead of duplicating this literal "MY_APP_TAG" 4 times.(ÃÓ¹8¤öÒÄ²1
 J
-java:S1604Q"(Make this anonymous inner class a lambda(õßØµüÿÿÿÿ8ˆ¾˜ì±1
+java:S1604P"(Make this anonymous inner class a lambda(õßØµüÿÿÿÿ8´öÒÄ²1
 K
-java:S1604‰"(Make this anonymous inner class a lambda(£®»Ûùÿÿÿÿ8ˆ¾˜ì±1
+java:S1604ˆ"(Make this anonymous inner class a lambda(£®»Ûùÿÿÿÿ8ÄöÒÄ²1
 K
-java:S1604Ô"(Make this anonymous inner class a lambda(ˆÀøÿÿÿÿ8ˆ¾˜ì±1
+java:S1604Ó"(Make this anonymous inner class a lambda(ˆÀøÿÿÿÿ8ÕöÒÄ²1
 K
-java:S1604ß"(Make this anonymous inner class a lambda(Í–ğùÿÿÿÿ8ˆ¾˜ì±1
+java:S1604Ş"(Make this anonymous inner class a lambda(Í–ğùÿÿÿÿ8èäº²1
 K
-java:S1604"(Make this anonymous inner class a lambda(¯‘àçúÿÿÿÿ8ˆ¾˜ì±1
+java:S1604Ÿ"(Make this anonymous inner class a lambda(¯‘àçúÿÿÿÿ8çäº²1
 K
-java:S1604¶"(Make this anonymous inner class a lambda(¯‘àçúÿÿÿÿ8ˆ¾˜ì±1
+java:S1604¸"(Make this anonymous inner class a lambda(¯‘àçúÿÿÿÿ8çäº²1
 F
-java:S1604’"(Make this anonymous inner class a lambda(­¶¤È8ˆ¾˜ì±1
+java:S1604â"(Make this anonymous inner class a lambda(­¶¤È8èäº²1
 F
-java:S1604®"(Make this anonymous inner class a lambda(­¶¤È8ˆ¾˜ì±1
+java:S1604ş"(Make this anonymous inner class a lambda(­¶¤È8ÖöÒÄ²1
 _
-java:S2184ã"ACast one of the operands of this addition operation to a "float".(µ›ÓŞ8•¾˜ì±1
-j	java:S1165"NRename this field "Sol" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ÎŞÒ‡8·¿˜ì±1
-v	java:S1167"URename this field "score_text" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(²´Èûÿÿÿÿ8·¿˜ì±1
-w	java:S1167"VRename this field "today_score" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(²´Èûÿÿÿÿ8·¿˜ì±1
-u	java:S1167"TRename this field "date_view" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(²´Èûÿÿÿÿ8·¿˜ì±1
-t	java:S1167"SRename this field "day_view" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(²´Èûÿÿÿÿ8·¿˜ì±1
-n	java:S1169"RRename this field "BookBtn" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ıõÃÔ8·¿˜ì±1
+java:S2184â"ACast one of the operands of this addition operation to a "float".(µ›ÓŞ8ÛöÒÄ²1
+j	java:S1165"NRename this field "Sol" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ÎŞÒ‡8¿™äº²1
+v	java:S1167"URename this field "score_text" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(²´Èûÿÿÿÿ8¿™äº²1
+w	java:S1167"VRename this field "today_score" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(²´Èûÿÿÿÿ8¿™äº²1
+u	java:S1167"TRename this field "date_view" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(²´Èûÿÿÿÿ8¿™äº²1
+t	java:S1167"SRename this field "day_view" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(²´Èûÿÿÿÿ8¿™äº²1
+n	java:S1169"RRename this field "BookBtn" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ıõÃÔ8À™äº²1
 j
-java:S16597"HDeclare "today_score" and all following declarations on a separate line.(²´Èûÿÿÿÿ8Æ¿˜ì±1
+java:S16597"HDeclare "today_score" and all following declarations on a separate line.(²´Èûÿÿÿÿ8Ğ™äº²1
 s
-java:S14509"VRemove the "BookBtn" field and declare it as a local variable in the relevant methods.(ıõÃÔ8Æ¿˜ì±1
+java:S14509"VRemove the "BookBtn" field and declare it as a local variable in the relevant methods.(ıõÃÔ8Ñ™äº²1
 €
-java:S1450/"cRemove the "bottomNavigationView" field and declare it as a local variable in the relevant methods.(ê¥ÎÚ8Æ¿˜ì±1
+java:S1450/"cRemove the "bottomNavigationView" field and declare it as a local variable in the relevant methods.(ê¥ÎÚ8Ò™äº²1
 z
-java:S14507"XRemove the "date_view" field and declare it as a local variable in the relevant methods.(²´Èûÿÿÿÿ8Æ¿˜ì±1
+java:S14507"XRemove the "date_view" field and declare it as a local variable in the relevant methods.(²´Èûÿÿÿÿ8Ò™äº²1
 y
-java:S14507"WRemove the "day_view" field and declare it as a local variable in the relevant methods.(²´Èûÿÿÿÿ8Æ¿˜ì±1
+java:S14507"WRemove the "day_view" field and declare it as a local variable in the relevant methods.(²´Èûÿÿÿÿ8Ó™äº²1
 t
-java:S3776A"RRefactor this method to reduce its Cognitive Complexity from 16 to the 15 allowed.(¨Œşÿÿÿÿ8Ö¿˜ì±1
+java:S3776A"RRefactor this method to reduce its Cognitive Complexity from 16 to the 15 allowed.(¨Œşÿÿÿÿ8ä™äº²1
 m
-java:S1874Q"KRemove this use of "setOnNavigationItemSelectedListener"; it is deprecated.(õßØµüÿÿÿÿ8Ö¿˜ì±1
+java:S1874P"KRemove this use of "setOnNavigationItemSelectedListener"; it is deprecated.(õßØµüÿÿÿÿ8¼ùÒÄ²1
 Ÿ
-java:S1186À"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(÷”Öš8å¿˜ì±1
-^	java:S125Æ"<This block of commented-out lines of code should be removed.(Ñøıÿÿÿÿ8å¿˜ì±1
-^	java:S125ß"<This block of commented-out lines of code should be removed.(ºûı’øÿÿÿÿ8õ¿˜ì±1
-Y	java:S125ë"<This block of commented-out lines of code should be removed.(æ÷„î8õ¿˜ì±1
-^	java:S125Ÿ"<This block of commented-out lines of code should be removed.(ò¥€Çıÿÿÿÿ8…À˜ì±1
+java:S1186¿"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(÷”Öš8ÕùÒÄ²1
+^	java:S125Å"<This block of commented-out lines of code should be removed.(Ñøıÿÿÿÿ8ØùÒÄ²1
+^	java:S125ï"<This block of commented-out lines of code should be removed.(ò¥€Çıÿÿÿÿ8€›äº²1
 `
-java:S1144­"=Remove this unused private "updateChartWithGoalScore" method.(¸àÂÒüÿÿÿÿ8…À˜ì±1
+java:S1144ı"=Remove this unused private "updateChartWithGoalScore" method.(¸àÂÒüÿÿÿÿ8…›äº²1
