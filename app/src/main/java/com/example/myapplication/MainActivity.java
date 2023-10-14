@@ -525,6 +525,7 @@ private void fetchData(MyInfo.FirestoreCallback callback) {
                             timeValue = convertTimeStringToMinutes(timeString);
                             limitTime.setText(formattedAppUsageTime +" / " + timeValue + " min");
                             appUseTimeTextView.setText(usedTimeInMinutes + " min");
+                            TargetTime(usedTimeInMinutes);
 
                         }
                     }
@@ -687,18 +688,15 @@ private void ExitApp(){
     if (Long.parseLong(formattedAppUsageTime) >= timeValue && finishBooknum >= workNum){
         showExitDialog();
     }
-    if (Long.parseLong(formattedAppUsageTime) >= timeValue){
-        TargetTime(formattedAppUsageTime);
-    }
 }
 //========================================================================================================================
 
 
 //===============================firebase에 사용시간 추가====================================================================
-private void TargetTime(String formattedAppUsageTime){
+private void TargetTime(long usedTimeInMinutes){
     DocumentReference documentReference = db.collection("Time").document("TargetTime");
 
-    documentReference.update("Ttime", formattedAppUsageTime)
+    documentReference.update("Ttime", usedTimeInMinutes)
             .addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void unused) {
