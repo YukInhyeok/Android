@@ -1,6 +1,7 @@
 package com.example.myapplication;
 
 import android.content.Intent;
+import android.opengl.Visibility;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -18,7 +19,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.myapplication.adapter.MessageAdapter;
 import com.example.myapplication.model.Message;
-import com.example.myapplication.screen.lockscreen;
+
 import com.google.android.gms.tasks.*;
 import com.google.firebase.firestore.*;
 import okhttp3.*;
@@ -61,6 +62,8 @@ public class ChatGpt extends AppCompatActivity {
     private int ans = 0;
     private int wrong_ans = 0;
     private int Switch = 0;
+
+    private int send_count = 0;
 
     private String prompt_lit = "내 문해력을 테스트 하기위해 나에게 긴 지문을 주고 그 지문에 대한 질문을 해줘. 시작";
     private String prompt_read = "당신은 국어선생님 입니다. 당신은 학생의 독해력을 테스트 해야합니다. 학생이 최근 읽은 책이 무엇인지 물어보고 그 내용을 잘 이해했는지 확인해 주세요. 시작";
@@ -217,7 +220,7 @@ public class ChatGpt extends AppCompatActivity {
                 // 텍스트 변경 후에 수행할 작업
             }
         });
-                btn_send.setOnClickListener(new View.OnClickListener() {
+        btn_send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (Switch == 2) {
@@ -237,6 +240,12 @@ public class ChatGpt extends AppCompatActivity {
                     callAPI(question);
                     continueBtn.setVisibility(View.GONE);
                 }
+
+                send_count += 1;
+                if (send_count >= 5){
+                    finishBtn.setVisibility(View.VISIBLE);
+                }
+                Log.d("GPT", "send_count: " + send_count);
             }
         });
 
