@@ -34,6 +34,7 @@ import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -49,10 +50,7 @@ public class MyInfo extends AppCompatActivity {
     //firebase
     private FirebaseFirestore db;
 
-    // 주간 목표
-    private TextView Sol;
-
-    private TextView score_text, today_score, date_view, day_view;
+    private TextView score_text, today_score, date_view, day_view, lit_text, voc_text, gra_text, wkscore_text, lit_score, voc_score, gra_score;
 
     private RelativeLayout BookBtn;
 
@@ -173,7 +171,13 @@ public class MyInfo extends AppCompatActivity {
         //========================================= 차트 그래프 터치 ================================================
         // 점수
         score_text = findViewById(R.id.score_text);
-
+        lit_text = findViewById(R.id.lit_text);
+        voc_text = findViewById(R.id.voc_text);
+        gra_text = findViewById(R.id.gra_text);
+        wkscore_text = findViewById(R.id.wkscore_text);
+        lit_score = findViewById(R.id.lit_score);
+        voc_score = findViewById(R.id.voc_score);
+        gra_score = findViewById(R.id.gra_score);
         barChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
             @Override
             public void onValueSelected(Entry e, Highlight h) {
@@ -184,6 +188,27 @@ public class MyInfo extends AppCompatActivity {
 
                     score_text.setTextSize(18);
                     score_text.setText(String.valueOf(intValue));
+                    lit_text.setTextColor(Color.BLACK);
+                    voc_text.setTextColor(Color.BLACK);
+                    gra_text.setTextColor(Color.BLACK);
+                    wkscore_text.setTextColor(Color.BLACK);
+                    lit_score.setTextColor(Color.BLACK);
+                    voc_score.setTextColor(Color.BLACK);
+                    gra_score.setTextColor(Color.BLACK);
+
+                    String[] daysOfWeek = {"", "Mon", "Tues", "Wed", "Thurs", "Fri"};
+                    int selectedDayIndex = (int) barEntry.getX();
+                    String selectedDay = daysOfWeek[selectedDayIndex];
+
+                    fetchSubjectScores(selectedDay, new SubjectScoresCallback() {
+                        @Override
+                        public void onSubjectScoresLoaded(int literacy, int vocabulary, int grammar) {
+                            // 각 과목별 점수를 출력
+                            lit_score.setText(String.valueOf(literacy));
+                            voc_score.setText(String.valueOf(vocabulary));
+                            gra_score.setText(String.valueOf(grammar));
+                        }
+                    });
                 }
             }
 
@@ -193,21 +218,8 @@ public class MyInfo extends AppCompatActivity {
             }
         });
 
-        // 목표 점수
-//        goalScoreText = findViewById(R.id.goal_score);
-//        goalScoreText.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                showGoalScorePopup();
-//            }
-//        });
-//        if (previousGoalScore != 0) {
-//            goalScoreText.setText("" + previousGoalScore);
-//            updateChartWithGoalScore(previousGoalScore);
-//        }
 
-        //버튼 메소
-
+        //버튼 메소드
         BookBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -330,10 +342,41 @@ public class MyInfo extends AppCompatActivity {
                 });
     }
 
+    private void fetchSubjectScores(String selectedDay, SubjectScoresCallback callback) {
+        db.collection("WeekChart")
+                .document(selectedDay) // 선택한 요일에 해당하는 문서를 가져옵니다.
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            if (document.exists()) {
+                                int literacy = document.getLong("literacy").intValue();
+                                int vocabulary = document.getLong("vocabulary").intValue();
+                                int grammar = document.getLong("read").intValue();
+
+                                // 각 과목별 점수를 콜백을 통해 반환
+                                callback.onSubjectScoresLoaded(literacy, vocabulary, grammar);
+                            } else {
+                                Log.e("MyInfo", "No such document");
+                            }
+                        } else {
+                            Log.e("MyInfo", "Error fetching document", task.getException());
+                        }
+                    }
+                });
+    }
+
+
     // 콜백 인터페이스 추가
     public interface FirestoreCallback {
         void onDataLoaded(ArrayList<BarEntry> entries);
     }
+    public interface SubjectScoresCallback {
+        void onSubjectScoresLoaded(int literacy, int vocabulary, int grammar);
+    }
+
 
     // 주간 데이터 초기화
     private long calculateDelayForNextMonday() {
@@ -376,36 +419,4 @@ public class MyInfo extends AppCompatActivity {
         });
     }
 
-
-    // 솔루션
-    private void updateChartWithGoalScore(int goalScore) {
-        fetchtodayData(new FirestoreCallback() {
-            @Override
-            public void onDataLoaded(ArrayList<BarEntry> entries) {
-                // 사용자가 선택한 목표 점수보다 작은 값의 레이블 추출
-                List<String> labelsSmallerThanGoalScore = new ArrayList<>();
-
-                for (BarEntry entry : entries) {
-                    if (entry.getY() < goalScore) {
-                        int index = Math.round(entry.getX());
-                        if (index == 0) {
-                            labelsSmallerThanGoalScore.add("독해력");
-                        } else if (index == 1) {
-                            labelsSmallerThanGoalScore.add("문해력");
-                        } else if (index == 2) {
-                            labelsSmallerThanGoalScore.add("어휘력");
-                        }
-                    }
-                }
-
-//                 결과 출력
-                if (!labelsSmallerThanGoalScore.isEmpty()) {
-                    String labelsStr = String.join(", ", labelsSmallerThanGoalScore);
-                    Sol.setText("목표점수보다 낮은 유형은 " + labelsStr + " 입니다.");
-                } else {
-                    Sol.setText("축하합니다. 모두 목표점수보다 높습니다 ^^");
-                }
-            }
-        });
-    }
 }

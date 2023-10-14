@@ -5,8 +5,8 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#F0F0F0"
         android:gravity="bottom"
+        android:background="#F0F0F0"
         android:orientation="vertical">
 
     <LinearLayout
@@ -103,36 +103,118 @@
         </LinearLayout>
     </LinearLayout>
 
-    <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="400dp"
-            android:gravity="center">
-
         <LinearLayout
-                android:layout_width="330dp"
-                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:layout_height="400dp"
                 android:background="@drawable/roundstyle10dp"
                 android:backgroundTint="@color/white"
                 android:padding="15dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
                 android:orientation="vertical">
-
-            <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="30dp"
-                    android:gravity="end"
-                    android:paddingEnd="20dp"
-                    android:fontFamily="@font/pretendard"
-                    android:text="해당 점수"
-                    android:textStyle="bold"
-                    android:textColor="#CCC">
-            </TextView>
 
             <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="end"
+                    android:orientation="horizontal">
+                <Space
+                        android:layout_width="20dp"
+                        android:layout_height="wrap_content" />
+                <TextView
+                        android:id="@+id/lit_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="문해력"
+                        android:fontFamily="@font/pretendard"
+                        android:textStyle="bold"
+                        android:textColor="#CCC"/>
+                <Space
+                        android:layout_width="30dp"
+                        android:layout_height="wrap_content" />
+                <TextView
+                        android:id="@+id/voc_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="어휘력"
+                        android:fontFamily="@font/pretendard"
+                        android:textStyle="bold"
+                        android:textColor="#CCC"/>
+                <Space
+                        android:layout_width="30dp"
+                        android:layout_height="wrap_content" />
+                <TextView
+                        android:id="@+id/gra_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="문법"
+                        android:fontFamily="@font/pretendard"
+                        android:textStyle="bold"
+                        android:textColor="#CCC"/>
+                <View
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
+                <TextView
+                        android:id="@+id/wkscore_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="30dp"
+                        android:layout_gravity="end"
+                        android:paddingEnd="20dp"
+                        android:fontFamily="@font/pretendard"
+                        android:text="해당 점수"
+                        android:textStyle="bold"
+                        android:textColor="#CCC">
+            </TextView>
+            </LinearLayout>
+
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:paddingEnd="15dp"
                     android:orientation="horizontal">
+                <Space
+                        android:layout_width="25dp"
+                        android:layout_height="wrap_content" />
+                <TextView
+                        android:id="@+id/lit_score"
+                        android:layout_width="25dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:text="0"
+                        android:fontFamily="@font/pretendard"
+                        android:textStyle="bold"
+                        android:textColor="#CCC"/>
+                <Space
+                        android:layout_width="40dp"
+                        android:layout_height="wrap_content" />
+                <TextView
+                        android:id="@+id/voc_score"
+                        android:layout_width="25dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:text="0"
+                        android:fontFamily="@font/pretendard"
+                        android:textStyle="bold"
+                        android:textColor="#CCC"/>
+                <Space
+                        android:layout_width="35dp"
+                        android:layout_height="wrap_content" />
+                <TextView
+                        android:id="@+id/gra_score"
+                        android:layout_width="25dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:text="0"
+                        android:fontFamily="@font/pretendard"
+                        android:textStyle="bold"
+                        android:textColor="#CCC"/>
+                <View
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
 
                 <TextView
                         android:id="@+id/score_text"
@@ -165,21 +247,20 @@
                     android:backgroundTint="@color/white"
                     tools:visivility="visible"/>
         </LinearLayout>
-    </LinearLayout>
 
     <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="112dp"
             android:orientation="vertical"
+            android:padding="15dp"
             android:gravity="bottom">
 
         <RelativeLayout
                 android:id="@+id/book_button"
-                android:layout_width="330dp"
+                android:layout_width="match_parent"
                 android:layout_height="80dp"
                 android:layout_gravity="center"
                 android:layout_marginTop="15dp"
-                android:layout_marginBottom="15dp"
                 android:background="@drawable/roundstyle10dp"
                 android:backgroundTint="@color/white">
 
@@ -212,21 +293,18 @@
                     android:layout_centerVertical="true"
                     android:layout_marginEnd="5dp"
                     android:src="@drawable/right"/>
-
         </RelativeLayout>
+    </LinearLayout>
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
                 android:id="@+id/bottomNavigationView"
                 android:layout_width="match_parent"
                 android:layout_height="77dp"
                 android:background="@color/white"
-                android:layout_gravity="bottom"
                 app:labelVisibilityMode="unlabeled"
                 app:menu="@menu/bottom_nav_menu"
                 app:itemIconTint="@drawable/menu_selector_color"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"/>
+                />
 
-        </LinearLayout>
+
 </androidx.appcompat.widget.LinearLayoutCompat>
