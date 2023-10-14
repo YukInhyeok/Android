@@ -1,7 +1,6 @@
 package com.example.myapplication;
 
 import android.content.Intent;
-import android.opengl.Visibility;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -65,6 +64,9 @@ public class ChatGpt extends AppCompatActivity {
 
     private int send_count = 0;
 
+    private int con_cnt = 0;
+    private int con_Ans = 0;
+
     private final String prompt_lit = "당신은 사용자에게 장문의 글을 주고 문해력을 테스트 해야합니다. 당신이 생각하는 어려운 글을 만들고, 사용자에게 문제를 내야합니다. 시작";
     private final String prompt_read = "당신은 국어선생님 입니다. 당신은 학생의 독해력을 테스트 해야합니다. 학생이 최근 읽은 책이 무엇인지 물어보고 그 내용을 잘 이해했는지 확인해 주세요. 시작";
     private final String prompt_voc = "당신은 한국어 선생님 입니다. 당신은 학생의 어휘력을 테스트 해야합니다. 당신이 생각하기에 어려운 한국어 단어를 말하고 뜻을 물어봐주세요. 시작";
@@ -107,6 +109,7 @@ public class ChatGpt extends AppCompatActivity {
         Log.d("GPT", "Switch: " + Switch);
 
         finishBtn.setOnClickListener(new View.OnClickListener() {
+            int interactive_ans = 0;
             @Override
             public void onClick(View view) {
                 if(Switch == 1){
@@ -116,12 +119,21 @@ public class ChatGpt extends AppCompatActivity {
                     dateRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                                 @Override
                                 public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                    Integer value = documentSnapshot.contains("value") ? documentSnapshot.getLong("value").intValue() : 0;
                                     Integer currentCount = documentSnapshot.contains("count") ? documentSnapshot.getLong("count").intValue() : 0;
+                                    Integer count = documentSnapshot.contains("con_count") ? documentSnapshot.getLong("con_count").intValue() : 0;
+                                    Integer ans = documentSnapshot.contains("ans") ? documentSnapshot.getLong("ans").intValue() : 0;
+                                    Integer con_ans = documentSnapshot.contains("con_ans") ? documentSnapshot.getLong("con_ans").intValue() : 0;
 
-                                    long newValue = (score + value) / 2;
+                                    count += con_cnt;
+                                    interactive_ans = score / 20;
+                                    con_Ans = con_ans + interactive_ans;
+
+                                    float newValue = ((float)(ans + con_Ans)) / (currentCount + count*5) * 100;
+
                                     Map<String, Object> newData = new HashMap<>(documentSnapshot.getData());
                                     newData.put("value", Math.round(newValue));
+                                    newData.put("con_count", count);
+                                    newData.put("con_ans", con_Ans);
                                     dateRef.set(newData).addOnSuccessListener(new OnSuccessListener<Void>() {
                                                 @Override
                                                 public void onSuccess(Void aVoid) {
@@ -157,8 +169,10 @@ public class ChatGpt extends AppCompatActivity {
                                 public void onSuccess(DocumentSnapshot documentSnapshot) {
                                     Integer ans = documentSnapshot.contains("ans") ? documentSnapshot.getLong("ans").intValue() : 0;
                                     Integer currentCount = documentSnapshot.contains("count") ? documentSnapshot.getLong("count").intValue() : 0;
+                                    Integer count = documentSnapshot.contains("con_count") ? documentSnapshot.getLong("con_count").intValue() : 0;
+                                    Integer con_ans = documentSnapshot.contains("con_ans") ? documentSnapshot.getLong("con_ans").intValue() : 0;
 
-                                    float newValue = (float) ans / (currentCount) * 100;
+                                    float newValue = ((float)(ans + con_ans))/ (currentCount + count*5) * 100;
 
                                     // 데이터 갱신
                                     Map<String, Object> newData = new HashMap<>(documentSnapshot.getData());
@@ -252,6 +266,8 @@ public class ChatGpt extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 FirebaseFirestore db = FirebaseFirestore.getInstance();
+                con_cnt++;
+                Log.d("GPT", "con_cnt: " + con_cnt);
 
                 // 각 과목별 점수 읽기
                 Task<DocumentSnapshot> taskVocabulary = db.collection("Chart").document("vocabulary").get();
