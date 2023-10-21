@@ -39,7 +39,7 @@ public class WeeklyResetWorker extends Worker {
         data.put("vocabulary", zeroValue);
 
         // 'WeekChart' 컬렉션의 문서 목록
-        String[] weekdays = {"Mon", "Tues", "Wed", "Thurs", "Fri"};
+        String[] weekdays = {"Mon", "Tues", "Wed", "Thurs", "Fri", "Sat", "Sun"};
         for (int i = 0; i < weekdays.length; i++) {
             DocumentReference weekDocRef = db.collection("WeekChart").document(weekdays[i]);
             weekDocRef.set(data, SetOptions.merge());

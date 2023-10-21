@@ -196,7 +196,7 @@ public class MyInfo extends AppCompatActivity {
                     voc_score.setTextColor(Color.BLACK);
                     gra_score.setTextColor(Color.BLACK);
 
-                    String[] daysOfWeek = {"", "Mon", "Tues", "Wed", "Thurs", "Fri"};
+                    String[] daysOfWeek = {"", "Mon", "Tues", "Wed", "Thurs", "Fri", "Sat", "Sun"};
                     int selectedDayIndex = (int) barEntry.getX();
                     String selectedDay = daysOfWeek[selectedDayIndex];
 
@@ -249,11 +249,11 @@ public class MyInfo extends AppCompatActivity {
                 }
 
                 BarData data = new BarData(dataSets);
-                data.setBarWidth(0.5f);
+                data.setBarWidth(0.3f);
                 barChart.setData(data);
                 barChart.invalidate();
 
-                String[] labels = {"", "Mon", "Tue", "Wed", "Thr", "Fri"};
+                String[] labels = {"", "Mon", "Tue", "Wed", "Thr", "Fri", "Sat", "Sun"};
 
                 XAxis xAxis = barChart.getXAxis();
                 xAxis.setValueFormatter(new IndexAxisValueFormatter(labels));
