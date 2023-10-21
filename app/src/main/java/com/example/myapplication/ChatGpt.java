@@ -931,7 +931,7 @@ public class ChatGpt extends AppCompatActivity {
             case Calendar.FRIDAY:
                 return "Fri";
             case Calendar.SATURDAY:
-                return "Satur";
+                return "Sat";
             case Calendar.SUNDAY:
                 return "Sun";
             default:
