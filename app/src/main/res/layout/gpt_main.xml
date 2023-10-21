@@ -86,10 +86,11 @@
             android:layout_height="wrap_content">
         <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/continue_Btn"
-                android:layout_width="100dp"
+                android:layout_width="80dp"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/pretendard"
                 android:text="다음문제"
+                style="?android:attr/borderlessButtonStyle"
                 android:textSize="12dp"
                 android:textColor="#202C73"
                 android:background="@drawable/btn"

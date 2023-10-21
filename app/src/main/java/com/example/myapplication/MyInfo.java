@@ -249,7 +249,7 @@ public class MyInfo extends AppCompatActivity {
                 }
 
                 BarData data = new BarData(dataSets);
-                data.setBarWidth(0.3f);
+                data.setBarWidth(0.5f);
                 barChart.setData(data);
                 barChart.invalidate();
 
@@ -259,7 +259,7 @@ public class MyInfo extends AppCompatActivity {
                 xAxis.setValueFormatter(new IndexAxisValueFormatter(labels));
                 xAxis.setDrawAxisLine(false);
                 xAxis.setAxisMinimum(0f);
-                xAxis.setAxisMaximum(6f);
+                xAxis.setAxisMaximum(8f);
                 xAxis.setDrawGridLines(false);
                 xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
 
