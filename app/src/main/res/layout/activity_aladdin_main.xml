@@ -7,6 +7,23 @@
     android:padding="16dp"
                 android:background="#FFF"
     tools:context=".aladdin.AladdinMainActivity">
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center">
+        <ImageView
+                android:id="@+id/closeBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/close_2"/>
+
+        <Space
+                android:layout_width="10dp"
+                android:layout_height="match_parent"/>
+
+        <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
     <EditText
             android:id="@+id/searchEditText"
@@ -23,11 +40,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:layout_alignParentRight="true"
+        android:layout_gravity="end"
         android:src="@drawable/search"
         android:background="@null"
         android:contentDescription="검색"
         android:onClick="onSearchButtonClick"/>
+
+    </FrameLayout>
+</LinearLayout>
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/categoryButton"
         android:layout_width="80dp"
@@ -43,9 +63,8 @@
 
     <ListView
         android:id="@+id/resultListView"
-        android:layout_marginTop="60dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/searchEditText" />
+        android:layout_below="@id/categoryButton" />
 
 </RelativeLayout>

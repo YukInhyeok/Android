@@ -1,22 +1,17 @@
 package com.example.myapplication.aladdin;
 
-import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
-
-import android.view.inputmethod.EditorInfo;
-import android.widget.*;
-import android.view.KeyEvent;
 import android.content.DialogInterface;
 import android.content.res.AssetManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
-
+import android.view.inputmethod.EditorInfo;
+import android.widget.*;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.example.myapplication.R;
-
 import com.example.myapplication.Utils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -26,11 +21,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
+import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 
 public class AladdinMainActivity extends AppCompatActivity {
     private static final String BASE_URL = "http://www.aladdin.co.kr/ttb/api/ItemSearch.aspx?";
@@ -40,6 +33,7 @@ public class AladdinMainActivity extends AppCompatActivity {
 
     private ListView resultListView;
     private ImageAdapter adapter;
+    private ImageView closeBtn;
 
     private List<Item> searchResults = new ArrayList<>();
 
@@ -55,6 +49,7 @@ public class AladdinMainActivity extends AppCompatActivity {
         searchButton = findViewById(R.id.searchButton);
         resultListView = findViewById(R.id.resultListView);
         categoryButton = findViewById(R.id.categoryButton);
+        closeBtn = findViewById(R.id.closeBtn);
 
         adapter = new ImageAdapter(this, searchResults);
         resultListView.setAdapter(adapter);
@@ -75,6 +70,13 @@ public class AladdinMainActivity extends AppCompatActivity {
                         Log.e("MyApp", "예외 발생: " + e.getMessage());
                     }
                 }
+            }
+        });
+
+        closeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
             }
         });
 

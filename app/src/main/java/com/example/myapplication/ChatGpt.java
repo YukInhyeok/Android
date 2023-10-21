@@ -67,6 +67,8 @@ public class ChatGpt extends AppCompatActivity {
     private int con_cnt = 0;
     private int con_Ans = 0;
 
+    private TextView ChatText;
+
     private final String prompt_lit = "당신은 사용자에게 장문의 글을 주고 문해력을 테스트 해야합니다. 당신이 생각하는 어려운 글을 만들고, 사용자에게 문제를 내야합니다. 시작";
     private final String prompt_read = "당신은 국어선생님 입니다. 당신은 학생의 독해력을 테스트 해야합니다. 학생이 최근 읽은 책이 무엇인지 물어보고 그 내용을 잘 이해했는지 확인해 주세요. 시작";
     private final String prompt_voc = "당신은 한국어 선생님 입니다. 당신은 학생의 어휘력을 테스트 해야합니다. 당신이 생각하기에 어려운 한국어 단어를 말하고 뜻을 물어봐주세요. 시작";
@@ -140,6 +142,7 @@ public class ChatGpt extends AppCompatActivity {
                                                     Log.d("Firestore", "Value and count were successfully updated!");
                                                     // 업데이트 후에 평균을 계산하고 저장
                                                     saveWeeklyAverage();
+                                                    updateWeekChart(ability, newValue);
                                                 }
                                             })
                                             .addOnFailureListener(new OnFailureListener() {
@@ -184,6 +187,7 @@ public class ChatGpt extends AppCompatActivity {
                                                     Log.d("Firestore", "Value and count were successfully updated!");
                                                     // 업데이트 후에 평균을 계산하고 저장
                                                     saveWeeklyAverage();
+                                                    updateWeekChart(ability, newValue);
                                                 }
                                             })
                                             .addOnFailureListener(new OnFailureListener() {
@@ -635,7 +639,7 @@ public class ChatGpt extends AppCompatActivity {
         JSONObject object = new JSONObject();
         try {
             //모델명
-            object.put("model", "gpt-3.5-turbo-16k");
+            object.put("model", "gpt-4");
             object.put("messages", messages);
             object.put("temperature", 0.9);
             object.put("top_p", 0.8);
@@ -712,7 +716,7 @@ public class ChatGpt extends AppCompatActivity {
         JSONObject object = new JSONObject();
         try {
             //모델명
-            object.put("model", "gpt-3.5-turbo-16k");
+            object.put("model", "gpt-4");
             object.put("messages", messages);
             object.put("temperature", 0.9);
             object.put("top_p", 0.8);

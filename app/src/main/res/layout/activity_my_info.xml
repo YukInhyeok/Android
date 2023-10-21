@@ -5,10 +5,12 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="bottom"
         android:background="#F0F0F0"
         android:orientation="vertical">
-
+<LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
     <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="80dp"
@@ -105,7 +107,7 @@
 
         <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="400dp"
+                android:layout_height="320dp"
                 android:background="@drawable/roundstyle10dp"
                 android:backgroundTint="@color/white"
                 android:padding="15dp"
@@ -295,16 +297,20 @@
                     android:src="@drawable/right"/>
         </RelativeLayout>
     </LinearLayout>
-
+</LinearLayout>
+<RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
         <com.google.android.material.bottomnavigation.BottomNavigationView
                 android:id="@+id/bottomNavigationView"
                 android:layout_width="match_parent"
                 android:layout_height="77dp"
                 android:background="@color/white"
+                android:layout_alignParentBottom="true"
                 app:labelVisibilityMode="unlabeled"
                 app:menu="@menu/bottom_nav_menu"
                 app:itemIconTint="@drawable/menu_selector_color"
                 />
-
+</RelativeLayout>
 
 </androidx.appcompat.widget.LinearLayoutCompat>
