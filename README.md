@@ -51,6 +51,10 @@ Problem Type: When choosing, show GPT the existing literary work you have and GP
 
 Interactive Type: Evaluate the user's Korean proficiency through daily conversations with GPT. If you say something that doesn't match the topic, or if you have an error in grammar, subtract 20 points each. The conversation is always five-barred, and the fifth answer always returns a score.
 
+<h3>
+  Example
+</h3>
+
 ---
 <h3>
   소개
@@ -70,3 +74,16 @@ OpenAI에서 개발한 Chat GPT 모델을 사용하였습니다. GPT는 사용�
 (추후 문학작품을 사용자가 선택할 수 있도록 개선 예정) 
 
 대화형 : GPT와의 일상적인 대화를 통하여 사용자의 한국어 실력을 평가합니다. 주제와 맞지 않는 이야기를 하거나, 문법에 오류가 있을 때 점수를 20점씩 차감합니다. 대화는 항상 5마디씩 이루어지며, 5번째 대답은 항상 점수를 반환합니다. 
+
+
+<h3>
+  예시
+</h3>
+문해력 문항
+(사용자가 시작 버튼을 누르며 시작)
+GPT : 지문을 읽어본 후에 질문에 답해주세요 (지문 생략) 1. 지문에서 언급된 도시에서 농촌으로 이동하는 사람들이 농촌 생활을 선호하는 이유가 무엇인가요? 
+사용자 : 스트레스에서 벗어나 자연 친화적인 곳에서 생할하기 위함 
+GPT : 정답입니다. 농촌에서는 어떤 것들을 즐길 수 있는지 지문에 언급되어 있나요? 
+사용자 : 편의시설의 부족
+GPT : 틀렸습니다. [답변이 틀렸습니다, 점수를 20점 차감합니다, 현재 당신의 점수는 80점입니다.] 지문에서는 신선한 공기와 맑은 물, 그리고 더 많은 공간을 즐길 수 있다고 언급되어 있습니다. 
+(중략)
