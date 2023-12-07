@@ -54,6 +54,21 @@ Interactive Type: Evaluate the user's Korean proficiency through daily conversat
 <h3>
   Example
 </h3>
+literacy problem
+
+(User presses start button to start)
+
+GPT: After reading the text, answer the question (fingerprint omitted). 1. Why do people who move from urban to rural areas like rural life?
+
+User: To escape stress and live in a nature-friendly place
+
+GPT: Correct. Does the fingerprint mention what you can enjoy in rural areas?
+
+User: Lack of amenities
+
+GPT: Incorrect. [The answer is wrong. I'll deduct 20 points. Your score is 80 points]
+
+Fingerprints say you can enjoy fresh air, clear water and more space. (Omitted)
 
 ---
 <h3>
